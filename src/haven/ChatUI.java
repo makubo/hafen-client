@@ -172,6 +172,8 @@ public class ChatUI extends Widget {
 	    public boolean mousedown(Channel chan, CharPos pos, Coord c, int btn) {return(false);}
 	    public boolean mouseup(Channel chan, CharPos pos, Coord c, int btn) {return(false);}
 	    public boolean clicked(Channel chan, CharPos pos, Coord c, int btn) {return(false);}
+	    
+	    public abstract String message();
 	}
 
 	private RenderedMessage soldest = null, snewest = null;
@@ -303,6 +305,11 @@ public class ChatUI extends Widget {
 		else
 		    return(() -> fnd.render(RichText.Parser.quote(text), w, TextAttribute.FOREGROUND, col));
 	    }
+	    
+	    @Override
+	    public String message() {
+		return text;
+	    }
 	}
 
 	public Channel(boolean closable) {
@@ -339,7 +346,7 @@ public class ChatUI extends Widget {
 		createLog();
 	    }
 	    if(log != null) {
-		String text = msg.text().text;
+		String text = msg.message();
 		log.println(text);
 		log.flush();
 	    }
@@ -959,7 +966,7 @@ public class ChatUI extends Widget {
 		}
 
 		public Text get() {
-		    return(fnd.render(RichText.Parser.quote(String.format("%s: %s", nm, text)), w, TextAttribute.FOREGROUND, col));
+		    return(fnd.render(RichText.Parser.quote(format(nm)), w, TextAttribute.FOREGROUND, col));
 		}
 	    }
 
@@ -974,6 +981,15 @@ public class ChatUI extends Widget {
 
 	    public boolean valid(Indir<Text> data) {
 		return(((Rendered)data).nm.equals(nm()));
+	    }
+	    
+	    String format(String name) {
+		return String.format("%s: %s", name, text);
+	    }
+	    
+	    @Override
+	    public String message() {
+		return format(nm());
 	    }
 	}
 
@@ -1063,13 +1079,13 @@ public class ChatUI extends Widget {
 	
 	public class InMessage extends SimpleMessage {
 	    public InMessage(String text) {
-		super(">> " + text, new Color(255, 128, 128, 255), w);
+		super(">> " + text, new Color(255, 128, 128, 255));
 	    }
 	}
 
 	public class OutMessage extends SimpleMessage {
 	    public OutMessage(String text) {
-		super("<< " + text, new Color(128, 128, 255, 255), w);
+		super("<< " + text, new Color(128, 128, 255, 255));
 	    }
 	}
 

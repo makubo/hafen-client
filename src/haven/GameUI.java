@@ -578,14 +578,14 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	if(chat.visible() && !chat.hasfocus) {
 	    setfocus(chat);
 	} else {
-	    if(chat.targeth == 0) {
-		chat.sresize(chat.savedh);
-		setfocus(chat);
+	    if(chat.targetshow) {
+		chat.sshow(false);
 	    } else {
-		chat.sresize(0);
+		chat.sshow(true);
+		setfocus(chat);
 	    }
 	}
-	Utils.setprefb("chatvis", chat.targeth != 0);
+	Utils.setprefb("chatvis", chat.targetshow);
     }
 
     public void toggleCraftDB() {

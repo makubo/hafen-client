@@ -36,8 +36,9 @@ public class LoginTogglesCfgWnd extends WindowX {
 	}
 
 	pack();
-	if(asz.x < 120) {
-	    resize(new Coord(200, asz.y));
+	//FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
+	if(sz.x < 120) {
+	    resize(new Coord(200, sz.y));
 	}
     }
 

@@ -26,15 +26,11 @@
 
 package haven;
 
-import haven.rx.CharterBook;
 import haven.rx.Reactor;
 import me.ender.WindowDetector;
 
 import java.awt.*;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.util.Collection;
-import java.util.LinkedList;
 
 import static haven.PUtils.*;
 
@@ -85,8 +81,6 @@ public class Window extends Widget implements DTarget {
     public static final String ON_DESTROY = "destroy";
     public static final String ON_PACK = "pack";
     
-    public final Coord tlo, rbo, mrgn;
-    public final IButton cbtn;
     public Deco deco;
     public boolean dt = false;
     public String cap;
@@ -96,7 +90,6 @@ public class Window extends Widget implements DTarget {
     public boolean large = false;
     protected WidgetCfg cfg = null;
     public boolean justclose = false;;
-    protected final Collection<Widget> twdgs = new LinkedList<Widget>();
     private String title;
     protected Text.Furnace rcf = cf;
 
@@ -112,7 +105,7 @@ public class Window extends Widget implements DTarget {
     
     public Window(Coord sz, String cap, boolean lg, Deco deco, boolean defdeco) {
 	super(sz);
-	this.cap = cap;
+	chcap(cap);
 	this.large = lg;
 	setfocustab(true);
 	chdeco(defdeco ? makedeco() : deco);
@@ -141,6 +134,7 @@ public class Window extends Widget implements DTarget {
     }
 
     protected void initCfg() {
+	System.out.printf("initCfg '%s'%n", title);
 	if(cfg != null && cfg.c != null) {
 	    c = xlate(cfg.c, false);
 	} else {
@@ -165,12 +159,11 @@ public class Window extends Widget implements DTarget {
     }
 
     public void chcap(String cap) {
+	System.out.printf("chcap '%s'%n", cap);
 	title = cap;
-	if(cap == null) {
-	    this.cap = null;
-	} else {
-	    this.cap = rcf.render(L10N.window(cap));
-	    cfg = WidgetCfg.get(cfgName(cap));
+	this.cap = L10N.window(cap);
+	if(title != null) {
+	    cfg = WidgetCfg.get(cfgName(title));
 	}
     }
     
@@ -246,9 +239,20 @@ public class Window extends Widget implements DTarget {
 
 	public DefaultDeco(boolean lg) {
 	    this.lg = lg;
-	    cbtn = add(new IButton(cbtni[0], cbtni[1], cbtni[2])).action(() -> parent.wdgmsg("close"));
+	    cbtn = add(new IButton(cbtni[0], cbtni[1], cbtni[2])).action(this::tryClose);
 	}
 	public DefaultDeco() {this(false);}
+	
+	protected void tryClose() {
+	    if(parent instanceof Window) {
+		Window wnd = (Window) parent;
+		if(wnd.justclose) {
+		    wnd.close();
+		    return;
+		}
+	    }
+	    parent.wdgmsg("close");
+	}
 
 	public DefaultDeco dragsize(boolean v) {
 	    this.dragsize = v;
@@ -384,7 +388,7 @@ public class Window extends Widget implements DTarget {
     public Coord contentsz() {
 	Coord max = new Coord(0, 0);
 	for(Widget wdg = child; wdg != null; wdg = wdg.next) {
-	    if(wdg == deco || twdgs.contains(wdg))
+	    if(wdg == deco)
 		continue;
 	    if(!wdg.visible)
 		continue;
@@ -398,21 +402,20 @@ public class Window extends Widget implements DTarget {
     }
     
     public void addtwdg(Widget wdg) {
-	twdgs.add(wdg);
-	placetwdgs();
+	if(deco != null && deco instanceof DecoX){
+	    ((DecoX) deco).addtwdg(wdg);
+	}
     }
     
     public void remtwdg(Widget wdg) {
-	twdgs.remove(wdg);
-	placetwdgs();
+	if(deco != null && deco instanceof DecoX){
+	    ((DecoX) deco).remtwdg(wdg);
+	}
     }
     
-    protected void placetwdgs() {
-	int x = sz.x - UI.scale(20);
-	for(Widget ch : twdgs) {
-	    if(ch.visible){
-		ch.c = xlate(new Coord(x -= ch.sz.x + UI.scale(5), ctl.y - ch.sz.y/2), false);
-	    }
+    public void placetwdgs() {
+	if(deco != null && deco instanceof DecoX){
+	    ((DecoX) deco).placetwdgs();
 	}
     }
 

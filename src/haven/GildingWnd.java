@@ -61,7 +61,8 @@ public class GildingWnd extends WindowX {
 	resize(new Coord(w + UI.scale(45), h + UI.scale(100) + (matches != null ? matches.getHeight() : 0)));
     
 	add(new FWItem(target.item), UI.scale(10, 5));
-	add(new FWItem(gild.item), asz.x - UI.scale(5) - gild.sz.x, UI.scale(5));
+	//FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
+	add(new FWItem(gild.item), sz.x - UI.scale(5) - gild.sz.x, UI.scale(5));
     
 	boolean canSlot = true;
 	try {
@@ -81,12 +82,12 @@ public class GildingWnd extends WindowX {
 		public void click() {
 		    gild();
 		}
-	    }, asz.x / 2 - UI.scale(60), asz.y - UI.scale(20));
+	    }, sz.x / 2 - UI.scale(60), sz.y - UI.scale(20)); //FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
 	} else {
 	    String msg = "Can't gild: " + (canSlot ? "there are no more slots left!" : "item of this type already slotted!");
 	    Label label = new Label(msg);
 	    label.setcolor(Color.RED);
-	    add(label, (asz.x - label.sz.x) / 2, asz.y - UI.scale(15));
+	    add(label, (sz.x - label.sz.x) / 2, sz.y - UI.scale(15)); //FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
 	}
     }
 
@@ -142,18 +143,19 @@ public class GildingWnd extends WindowX {
     public void cdraw(GOut g) {
 	int itemH = Math.max(target.sz.y, gild.sz.y);
 	g.image(islots, UI.scale(5, 10).addy(itemH));
-	g.image(igild, new Coord(asz.x - UI.scale(5) - igild.getWidth(), UI.scale(10) + itemH));
+	g.image(igild, new Coord(this.sz.x - UI.scale(5) - igild.getWidth(), UI.scale(10) + itemH)); //FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
 	if(matches != null) {
-	    Coord c1 = new Coord(asz.x / 2, asz.y - matches.getHeight() - UI.scale(70));
+	    Coord c1 = new Coord(this.sz.x / 2, this.sz.y - matches.getHeight() - UI.scale(70)); //FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
 	    g.atext("Matching skills:", c1, 0.5, 0.5);
 	    g.image(matches, c1.sub(matches.getWidth() / 2, matches.getHeight() / 2).add(UI.scale(0, 18)));
 	}
-	Coord ul = new Coord(0, asz.y - UI.scale(34));
-	Coord sz = new Coord(asz.x, UI.scale(14));
+	//FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
+	Coord ul = new Coord(0, this.sz.y - UI.scale(34));
+	Coord sz = new Coord(this.sz.x, UI.scale(14));
 	g.chcolor(new Color(122, 61, 61, 255));
 	g.frect(ul, sz);
 	g.chcolor(new Color(35, 111, 33, 255));
-	g.frect(ul, new Coord((int) (asz.x * koeff), UI.scale(14)));
+	g.frect(ul, new Coord((int) (this.sz.x * koeff), UI.scale(14)));//FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
 	g.chcolor();
 	g.atext("Chance for a new slot:", ul.add(sz.div(2)).sub(UI.scale(0, 16)), 0.5, 0.5);
 	g.atext(String.format("%.2f%%", 100 * koeff), ul.add(sz.div(2)), 0.5, 0.5);

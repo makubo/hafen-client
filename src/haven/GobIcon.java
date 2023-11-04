@@ -86,6 +86,7 @@ public class GobIcon extends GAttrib {
 	}
  
 	public Image(Resource.Image rimg, BufferedImage img) {
+	    this.res = rimg.getres();
 	    Tex tex = new TexI(img);
 	    if ((tex.sz().x > size) || (tex.sz().y > size)) {
 		BufferedImage buf;
@@ -313,7 +314,7 @@ public class GobIcon extends GAttrib {
 	    dst.addlist(Utils.mapencn(buf));
 	}
 
-	public static Settings loadold(Message buf, UI ui) {
+	public static Settings loadold(Message buf) {
 	    if(!Arrays.equals(buf.bytes(sig.length), sig))
 		throw(new Message.FormatError("Invalid signature"));
 	    int ver = buf.uint8();
@@ -364,11 +365,10 @@ public class GobIcon extends GAttrib {
 		    set.defshow = set.show;
 		ret.settings.put(res.name, set);
 	    }
-	    Radar.addCustomSettings(ret.settings, ui);
 	    return(ret);
 	}
 
-	public static Settings load(Message blob) {
+	public static Settings load(Message blob, UI ui) {
 	    if(!Arrays.equals(blob.bytes(sig.length), sig))
 		throw(new Message.FormatError("Invalid signature"));
 	    int ver = blob.uint8();
@@ -398,6 +398,7 @@ public class GobIcon extends GAttrib {
 		}
 		ret.settings.put(res.name, set);
 	    }
+	    Radar.addCustomSettings(ret.settings, ui);
 	    return(ret);
 	}
     }

@@ -76,7 +76,7 @@ public class WindowDetector {
     
     public static Widget newWindow(Coord sz, String title, boolean lg) {
 	if(isPortal(title)) {
-	    return new CharterBook(sz, title, lg, Coord.z, Coord.z);
+	    return new CharterBook(sz, title, lg);
 	} else if(isProspecting(title)) {
 	    return new ProspectingWnd(sz, title);
 	}

@@ -50,7 +50,7 @@ public abstract class ItemInfo {
     public static ItemInfo make(Session sess, String resname, Object... args) {
 	Resource res = Resource.remote().load(resname).get();
 	InfoFactory f = res.layer(Resource.CodeEntry.class).get(InfoFactory.class);
-	return f.build(new SessOwner(sess), args);
+	return f.build(new SessOwner(sess), null, args);
     }
     
     public interface Owner extends OwnerContext {

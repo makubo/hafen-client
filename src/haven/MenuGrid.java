@@ -108,6 +108,9 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	public KeyBinding binding() {
 	    return(KeyBinding.get("scm/" + res.name, hotkey()));
 	}
+	public void use() {
+	    pag.scm.wdgmsg("act", (Object[])res.flayer(Resource.action).ad);
+	}
 	public void use(Interaction iact) {
 	    Object[] args = Utils.extend(new Object[0], res.flayer(Resource.action).ad);
 	    args = Utils.extend(args, Integer.valueOf(pag.scm.ui.modflags()));

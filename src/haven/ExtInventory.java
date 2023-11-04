@@ -141,10 +141,8 @@ public class ExtInventory extends Widget {
 	addInventory(this);
 	wnd = null;//just in case
 	Window tmp;
-	//do not try to add if we are in small floaty contents widget 
-	if(!(parent instanceof GItem.Contents)
-	    //or in the contents window
-	    && !(parent instanceof GItem.ContentsWindow)
+	//do not try to add if we are in the contents window
+	if(!(parent instanceof GItem.ContentsWindow)
 	    //or in the item
 	    && !(parent instanceof GItem)
 	    //or if we have no window parent, 
@@ -200,7 +198,7 @@ public class ExtInventory extends Widget {
 	if(inv.visible && parent != null) {
 	    szx = inv.sz.x;
 	    for (Widget w : wnd.children()) {
-		if(w != this && (wnd != parent || w != wnd.cbtn && !wnd.twdgs.contains(w))) {
+		if(w != this && (wnd != parent || w != wnd.deco)) {
 		    Position p = w.pos("br");
 		    szx = Math.max(szx, p.x);
 		    szy = Math.max(szy, p.y);
