@@ -153,7 +153,7 @@ public class OptWnd extends WindowX {
 		    Label dpy = new Label.Untranslated("");
 		    final int steps = 4;
 		    addhlp(prev.pos("bl").adds(0, 2), UI.scale(5),
-			   prev = new HSlider(UI.scale(160), -2 * steps, 2 * steps, (int)Math.round(steps * Math.log(prefs.rscale.val) / Math.log(2.0f))) {
+			   prev = new HSlider(UI.scale(160), -2 * steps, 1 * steps, (int)Math.round(steps * Math.log(prefs.rscale.val) / Math.log(2.0f))) {
 			       protected void added() {
 				   dpy();
 			       }
@@ -280,15 +280,17 @@ public class OptWnd extends WindowX {
 		prev = add(new Label("Light-source limit"), prev.pos("bl").adds(0, 5).x(0));
 		{
 		    Label dpy = new Label("");
-		    int val = prefs.maxlights.val;
+		    int val = prefs.maxlights.val, max = 32;
 		    if(val == 0) {    /* XXX: This is just ugly. */
 			if(prefs.lightmode.val == GSettings.LightMode.ZONED)
 			    val = Lighting.LightGrid.defmax;
 			else
 			    val = Lighting.SimpleLights.defmax;
 		    }
+		    if(prefs.lightmode.val == GSettings.LightMode.SIMPLE)
+			max = 4;
 		    addhlp(prev.pos("bl").adds(0, 2), UI.scale(5),
-			   prev = new HSlider(UI.scale(160), 1, 32, val / 4) {
+			   prev = new HSlider(UI.scale(160), 1, max, val / 4) {
 			       protected void added() {
 				   dpy();
 			       }
@@ -447,6 +449,25 @@ public class OptWnd extends WindowX {
 			ui.audio.amb.setvolume(val / 1000.0);
 		    }
 		}, prev.pos("bl").adds(0, 2));
+	    prev = add(new Label("Audio latency"), prev.pos("bl").adds(0, 15));
+	    {
+		Label dpy = new Label("");
+		addhlp(prev.pos("bl").adds(0, 2), UI.scale(5),
+		       prev = new HSlider(UI.scale(160), 128, Math.round(Audio.fmt.getSampleRate() / 4), Audio.bufsize()) {
+			       protected void added() {
+				   dpy();
+			       }
+			       void dpy() {
+				   dpy.settext(Math.round((this.val * 1000) / Audio.fmt.getSampleRate()) + " ms");
+			       }
+			       public void changed() {
+				   Audio.bufsize(val, true);
+				   dpy();
+			       }
+			   }, dpy);
+		prev.settip("Sets the size of the audio buffer. Smaller sizes are better, " +
+			    "but larger sizes can fix issues with broken sound.", true);
+	    }
 	    add(new PButton(UI.scale(200), "Back", 27, back), prev.pos("bl").adds(0, 30));
 	    pack();
 	}

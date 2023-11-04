@@ -508,12 +508,13 @@ public class WItem extends Widget implements DTarget2 {
 	return(true);
     }
 
-    public boolean mousehover(Coord c) {
-	if(item.contents != null && (!CFG.UI_STACK_SUB_INV_ON_SHIFT.get() || ui.modshift)) {
-	    item.hovering = this;
+    public boolean mousehover(Coord c, boolean on) {
+	boolean ret = super.mousehover(c, on);
+	if(on && (item.contents != null) && (!CFG.UI_STACK_SUB_INV_ON_SHIFT.get() || ui.modshift)) {
+	    item.hovering(this);
 	    return(true);
 	}
-	return(super.mousehover(c));
+	return(ret);
     }
     
     public void tryDrop() {
