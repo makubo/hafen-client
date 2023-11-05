@@ -134,7 +134,6 @@ public class Window extends Widget implements DTarget {
     }
 
     protected void initCfg() {
-	System.out.printf("initCfg '%s'%n", title);
 	if(cfg != null && cfg.c != null) {
 	    c = xlate(cfg.c, false);
 	} else {
@@ -159,7 +158,6 @@ public class Window extends Widget implements DTarget {
     }
 
     public void chcap(String cap) {
-	System.out.printf("chcap '%s'%n", cap);
 	title = cap;
 	this.cap = L10N.window(cap);
 	if(title != null) {
