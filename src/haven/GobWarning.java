@@ -162,9 +162,9 @@ public class GobWarning extends GAttrib implements RenderTree.Node {
 	    box.changed(val -> WarnCFG.set(midges, message, val));
 	    
 	    pack();
-	    //FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
-	    if(sz.x < 200) {
-		resize(new Coord(200, sz.y));
+	    Coord asz = ca().sz();
+	    if(asz.x < 200) {
+		resize(new Coord(200, asz.y));
 	    }
 	}
     }

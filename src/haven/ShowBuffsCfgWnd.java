@@ -42,9 +42,9 @@ public class ShowBuffsCfgWnd extends WindowX {
 	}
 
 	pack();
-	//FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
-	if(sz.x < 120) {
-	    resize(new Coord(200, sz.y));
+	Coord asz = ca().sz();
+	if(asz.x < 120) {
+	    resize(new Coord(200, asz.y));
 	}
     }
 

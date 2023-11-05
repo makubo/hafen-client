@@ -43,7 +43,7 @@ public class MapWnd2 extends MapWnd {
     public void resize(Coord sz) {
 	super.resize(sz);
 	if(cfg != null) {
-	    cfg.sz = sz; //FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
+	    cfg.sz = ca().sz();
 	}
 	if(!switching) {storeCfg();}
     }

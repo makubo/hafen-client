@@ -64,8 +64,7 @@ public class CraftWindow extends GameUI.Hidewnd {
     @Override
     public void cdraw(GOut g) {
 	super.cdraw(g);
-	//FIXME: fix resizing logic - it was using 'asz' instead of 'sz' before Deco rework
-	frame.draw(g, new Coord(0, Math.max(0, tabStrip.sz.y - 1)), sz.sub(0, tabStrip.sz.y));
+	frame.draw(g, new Coord(0, Math.max(0, tabStrip.sz.y - 1)), ca().sz().sub(0, tabStrip.sz.y));
     }
 
     @Override
