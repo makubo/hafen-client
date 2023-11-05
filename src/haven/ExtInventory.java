@@ -23,14 +23,14 @@ public class ExtInventory extends Widget {
     private static final String CFG_GROUP = "ext.group";
     private static final String CFG_SHOW = "ext.show";
     private static final String CFG_INV = "ext.inv";
-    private static final String[] TYPES = new String[]{"Quality", "Name", "Info"};
-    //TODO: remove name as it is not really needed
+    private static int curType = 0;
     private static final List<Widget> INVENTORIES = new LinkedList<>();
     private static final Set<String> EXCLUDES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Steelbox", "Pouch", "Frame", "Tub", "Fireplace", "Rack", "Pane mold", "Table", "Purse")));
     public final Inventory inv;
     private final ItemGroupList list;
     private final Widget extension;
-    private final Label space, type;
+    private final Label space;
+    private final TextButton type;
     private SortedMap<ItemType, List<WItem>> groups;
     private final Dropbox<Grouping> grouping;
     private boolean disabled = false;
@@ -86,7 +86,7 @@ public class ExtInventory extends Widget {
 	    }
 	};
 	space = new Label("");
-	type = new Label(TYPES[0]);
+	type = new TextButton(DisplayType.values()[curType].name(), Coord.of(70, 0), this::changeDisplayType);
 	grouping.sel = Grouping.NONE;
 	composer.addr(
 	    new Label("Group:"), 
@@ -290,13 +290,20 @@ public class ExtInventory extends Widget {
 	}
 	if(extension.visible) {
 	    updateSpace();
-	    String t = TYPES[(int) (ui.root.ALTs() % TYPES.length)];
-	    if(!t.equals(type.texts)) {
-		type.settext(t);
-		type.c.x = listw - type.sz.x - margin;
-	    }
+	    updateTypeText();
 	}
 	super.tick(dt);
+    }
+    
+    private void changeDisplayType(Integer btn) {
+	curType = (curType + (btn == 1 ? 1 : -1) + DisplayType.values().length) % DisplayType.values().length;
+	updateTypeText();
+    }
+    
+    private void updateTypeText() {
+	String t = DisplayType.values()[curType].name();
+	type.setText(t);
+	type.c.x = listw - type.sz.x - margin;
     }
     
     private void processItem(SortedMap<ItemType, List<WItem>> groups, WItem witem) {
@@ -425,16 +432,16 @@ public class ExtInventory extends Widget {
 		quality = type.quality;
 	    }
 	    String quantity = Utils.f2s(items.stream().map(wItem -> wItem.quantity.get()).reduce(0f, Float::sum));
-	    this.text[1] = fnd.render(String.format("×%s %s", quantity, type.name)).tex();
+	    this.text[DisplayType.Name.ordinal()] = fnd.render(String.format("×%s %s", quantity, type.name)).tex();
 	    if(!Double.isNaN(quality)) {
 		String avg = type.quality != null ? "" : "~";
 		String sign = (g == Grouping.NONE || g == Grouping.Q) ? "" : "+";
 		String q = String.format("%sq%s%s", avg, Utils.f2s(quality, 1), sign);
-		this.text[0] = fnd.render(String.format("×%s %s", quantity, q)).tex();
+		this.text[DisplayType.Quality.ordinal()] = fnd.render(String.format("×%s %s", quantity, q)).tex();
 	    } else {
-		this.text[0] = text[1];
+		this.text[DisplayType.Quality.ordinal()] = text[DisplayType.Name.ordinal()];
 	    }
-	    this.text[2] = info(sample, quantity, text[1]);
+	    this.text[DisplayType.Info.ordinal()] = info(sample, quantity, text[DisplayType.Name.ordinal()]);
 	    flowerSubscription = Reactor.FLOWER_CHOICE.subscribe(this::flowerChoice);
 	}
     
@@ -485,7 +492,7 @@ public class ExtInventory extends Widget {
 		    }
 		}
 	    }
-	    int mode = (int) (ui.root.ALTs() % text.length);
+	    int mode = curType % text.length;
 	    if(icon != null) {
 		double meter = sample.meter();
 		if(meter > 0) {
@@ -708,6 +715,10 @@ public class ExtInventory extends Widget {
 	    args[i++] = wdg.wdgid();
 	}
 	return args;
+    }
+    
+    enum DisplayType {
+	Quality, Name, Info
     }
     
     enum Grouping {
