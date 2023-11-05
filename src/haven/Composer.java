@@ -98,6 +98,20 @@ public class Composer {
         }
         y += maxh + vmrgn;
     }
+    
+    /**Same as addr but does not center children vertically*/
+    public void addr2(Widget ... children) {
+        int maxh = 0;
+        for (Widget child : children) {
+            maxh = Math.max(maxh, child.sz.y);
+        }
+        int x = hpad;
+        for (Widget child : children) {
+            wdg.add(child, new Coord(x, vpad + y));
+            x += child.sz.x + hmrgn;
+        }
+        y += maxh + vmrgn;
+    }
 
     public void addrf(int firstw, Widget ... children) {
         int maxh = 0;

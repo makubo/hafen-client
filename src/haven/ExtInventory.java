@@ -53,6 +53,7 @@ public class ExtInventory extends Widget {
 	    .settip("LClick to toggle extra info\nRClick to hide inventory when info is visible\nTapping ALT toggles between displaying quality, name and info", true);
     
 	Composer composer = new Composer(extension).hmrgn(margin).vmrgn(margin);
+	composer.add(0);
 	grouping = new Dropbox<Grouping>(UI.scale(75), 5, UI.scale(16)) {
 	    {bgcolor = new Color(16, 16, 16, 128);}
 	    
@@ -99,7 +100,7 @@ public class ExtInventory extends Widget {
 	type.c.x = listw - type.sz.x - margin;
 	extension.pack();
 	composer = new Composer(this).hmrgn(margin);
-	composer.addr(inv, extension);
+	composer.addr2(inv, extension);
 	pack();
     }
     
