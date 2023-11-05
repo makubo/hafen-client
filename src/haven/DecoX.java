@@ -48,7 +48,7 @@ public class DecoX extends Window.DefaultDeco {
 	if(theme != null) {
 	    theme.apply(wnd, this);
 	} else {
-	    wnd.resize(wnd.sz);
+	    wnd.resize(wnd.contentsz());
 	}
     }
     
@@ -110,12 +110,29 @@ public class DecoX extends Window.DefaultDeco {
 	return theme.checkhit(c, this);
     }
     
+    
+    public void siresize(Coord isz) {
+	super.iresize(isz);
+    }
+    
+    public void sdrawbg(GOut g) {
+	super.drawbg(g);
+    }
+    
+    public void sdrawframe(GOut g) {
+	super.drawframe(g);
+    }
+    
+    public boolean scheckhit(Coord c) {
+	return super.checkhit(c);
+    }
+    
     public enum DecoThemeType {
 	Big, Small
     }
     
     public interface DecoTheme {
-	DecoTheme BIG = null;
+	DecoTheme BIG = new Pretty();
 	DecoTheme SMALL = new Slim();
 	
 	static DecoTheme fromType(DecoThemeType type) {
@@ -229,6 +246,34 @@ public class DecoX extends Window.DefaultDeco {
 	public boolean checkhit(Coord c, DecoX decoX) {
 	    return c.isect(decoX.cptl, decoX.sz)
 		|| c.isect(decoX.cptl.addy(-cm.sz.y), decoX.cpsz);
+	}
+    }
+    
+    private static class Pretty implements DecoTheme {
+	@Override
+	public void apply(WindowX wndX, DecoX decoX) {
+	    decoX.cbtn.images(Window.cbtni[0], Window.cbtni[1], Window.cbtni[2]);
+	    DecoTheme.super.apply(wndX, decoX);
+	}
+	
+	@Override
+	public void iresize(Coord isz, DecoX decoX) {
+	    decoX.siresize(isz);
+	}
+	
+	@Override
+	public void drawbg(GOut g, DecoX decoX) {
+	    decoX.sdrawbg(g);
+	}
+	
+	@Override
+	public void drawframe(GOut g, DecoX decoX) {
+	    decoX.sdrawframe(g);
+	}
+	
+	@Override
+	public boolean checkhit(Coord c, DecoX decoX) {
+	    return decoX.scheckhit(c);
 	}
     }
 }
