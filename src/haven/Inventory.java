@@ -324,11 +324,11 @@ public class Inventory extends Widget implements DTarget {
 	    canDropItems = true;
 	    dropsCallback = this::doDrops;
 	    ItemAutoDrop.addCallback(dropsCallback);
-	    wnd.addtwdg(wnd.add(new ICheckBox("gfx/hud/btn-adrop", "", "-d", "-h")
+	    wnd.addtwdg(new ICheckBox("gfx/hud/btn-adrop", "", "-d", "-h")
 		.changed(this::doEnableDrops)
 		.rclick(this::showDropCFG)
 		.settip("Left-click to toggle item dropping\nRight-click to open settings", true)
-	    ));
+	    );
 	}
     }
     public void itemsChanged() {

@@ -53,7 +53,7 @@ public class DecoX extends Window.DefaultDeco {
     }
     
     public void addtwdg(Widget wdg) {
-	twdgs.add(wdg);
+	twdgs.add(add(wdg));
 	placetwdgs();
     }
     
@@ -63,11 +63,12 @@ public class DecoX extends Window.DefaultDeco {
     }
     
     protected void placetwdgs() {
-	int x = cbtn.c.x - UI.scale(5);
+	int x = cbtn.c.x;
 	int y = cbtn.c.y + cbtn.sz.y / 2;
 	for (Widget ch : twdgs) {
 	    if(ch.visible) {
-		ch.c = xlate(new Coord(x -= ch.sz.x + UI.scale(5), y - ch.sz.y / 2), false);
+		x -= ch.sz.x + UI.scale(3);
+		ch.c = new Coord(x, y - ch.sz.y / 2);
 	    }
 	}
     }
@@ -129,7 +130,7 @@ public class DecoX extends Window.DefaultDeco {
 	}
 	
 	default void apply(WindowX wndX, DecoX decoX) {
-	    wndX.resize(wndX.sz);
+	    wndX.resize(wndX.contentsz());
 	}
 	
 	void iresize(Coord isz, DecoX decoX);

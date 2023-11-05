@@ -535,12 +535,12 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public void toggleCraftList() {
 	if(craftlist == null){
 	    craftlist = add(new ActWindow("Craft…", "paginae/craft/.+"));
-	    craftlist.addtwdg(craftlist.add(new IButton("gfx/hud/btn-help", "","-d","-h"){
+	    craftlist.addtwdg(new IButton("gfx/hud/btn-help", "","-d","-h"){
 		@Override
 		public void click() {
 		    ItemFilter.showHelp(ui, HELP_SIMPLE, HELP_CURIO, HELP_FEP, HELP_ARMOR, HELP_SYMBEL, HELP_ATTR, HELP_INPUTS);
 		}
-	    }));
+	    });
 	} else if(craftlist.visible) {
 	    craftlist.hide();
 	} else {
@@ -551,12 +551,12 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public void toggleBuildList() {
 	if(buildlist == null){
 	    buildlist = add(new ActWindow("Build…", "paginae/bld/.+"));
-	    buildlist.addtwdg(buildlist.add(new IButton("gfx/hud/btn-help", "","-d","-h"){
+	    buildlist.addtwdg(new IButton("gfx/hud/btn-help", "","-d","-h"){
 		@Override
 		public void click() {
 		    ItemFilter.showHelp(ui, HELP_SIMPLE, HELP_INPUTS);
 		}
-	    }));
+	    });
 	} else if(buildlist.visible) {
 	    buildlist.hide();
 	} else {
