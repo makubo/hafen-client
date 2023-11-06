@@ -65,6 +65,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     private GobWarning warning = null;
     public StatusUpdates status = new StatusUpdates();
     private final CustomColor customColor = new CustomColor();
+    private final GobCustomScale customScale = new GobCustomScale();
     private final Set<GobTag> tags = new HashSet<>();
     public boolean drivenByPlayer = false;
     public boolean mapProcessed = false;
@@ -169,16 +170,18 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     private static class CustomColor implements SetupMod {
 	Pipe.Op op = null;
 	Color c = null;
-    
-	boolean color(Color c) {
-	    boolean changed = !Objects.equals(c, this.c);
+
+	void color(Color c) {
+	    if(Objects.equals(c, this.c)) {
+		return;
+	    }
+	    
 	    if(c == null) {
 		op = null;
 	    } else {
 		op = new MixColor(c);
 	    }
 	    this.c = c;
-	    return changed;
 	}
     
 	@Override
@@ -477,6 +480,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    addDmg();
 	}
 	setupmods.add(customColor);
+	setupmods.add(customScale);
 	info = new GeneralGobInfo(this);
 	setattr(info);
 	updwait(this::drawableUpdated, waiting -> {});
@@ -1371,6 +1375,10 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	if(status.updated(StatusType.drawable, StatusType.hitbox, StatusType.visibility)) {
 	    updateHitbox();
 	}
+	
+	if(status.updated(StatusType.drawable)) {
+	    customScale.update(this);
+	}
     
 	if(status.updated(StatusType.drawable, StatusType.id, StatusType.icon)) {
 	    updateIcon();
@@ -1411,7 +1419,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 		}
 	    }
 	}
-	if(customColor.color(c)) {updstate();}
+	customColor.color(c);
     }
     
     private static class StatusUpdates {

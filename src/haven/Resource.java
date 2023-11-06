@@ -313,6 +313,7 @@ public class Resource implements Serializable {
 	}
     }
     
+/*
     public static class CustomizedJarSource extends JarSource {
 	public CustomizedJarSource(String base) {
 	    super(base);
@@ -329,6 +330,7 @@ public class Resource implements Serializable {
 	    return ("'custom' jar source");
 	}
     }
+**/
     
     public static class HttpSource implements ResSource, Serializable {
 	public static final String USER_AGENT;
@@ -844,7 +846,7 @@ public class Resource implements Serializable {
 	if(_remote == null) {
 	    synchronized(Resource.class) {
 		if(_remote == null) {
-		    Pool remote = new Pool(local(), new CustomizedJarSource("customized-remote"));
+		    Pool remote = new Pool(local()/*, new CustomizedJarSource("customized-remote")*/);
 		    if(prscache != null)
 			remote.add(new CacheSource(prscache));
 		    _remote = remote;;

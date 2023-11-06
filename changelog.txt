@@ -1,6 +1,10 @@
-$size[14]{$u{Update for 05.11.23:}
+$size[14]{$u{Update for 06.11.23:}
   * merged loftar's code
   * List inventory: display mode now switched by clicking on label, not by pressing ALT
+  * added missing ores/rocks/pavings to tile highlight and icon group lists
+  * removed broken flat cupboard option
+  * added option to scale cupboards vertically
+  * added option to scale palisades and brick walls vertically
  
 $size[14]{$u{Update for 25.03.23:}
   * merged loftar's code

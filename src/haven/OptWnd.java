@@ -1090,9 +1090,6 @@ public class OptWnd extends WindowX {
 	panel.add(new CFGBox("Show object info", CFG.DISPLAY_GOB_INFO, "Enables damage and crop/tree growth stage displaying", true), x, y);
     
 	y += STEP;
-	panel.add(new CFGBox("Flat cupboards (needs restart)", CFG.FLAT_CUPBOARDS, "Makes cupboards look like floor hatches", true), x, y);
-
-	y += STEP;
 	panel.add(new CFGBox("Display container fullness", CFG.SHOW_CONTAINER_FULLNESS, "Makes containers tint different colors when they are empty or full", true), x, y);
     
 	y += STEP;
@@ -1124,10 +1121,41 @@ public class OptWnd extends WindowX {
 	}, x, y);
  
 	my = Math.max(my, y);
-
+	
+	x += UI.scale(250);
+	y = START;
+	
+	y = addSlider(CFG.DISPLAY_SCALE_CUPBOARDS, "Cupboard scale", "Scale cupboard vertically, changes are applied on open/close of cupboard or zone reload.", panel, x, y, STEP);
+	
+	y += STEP;
+	y = addSlider(CFG.DISPLAY_SCALE_WALLS, "Wall scale", "Scale palisade and brick wall vertically, changes are applied on zone reload.", panel, x, y, STEP);
+	
+	my = Math.max(my, y);
+	
 	panel.add(new PButton(UI.scale(200), "Back", 27, main), new Coord(0, my + UI.scale(35)));
 	panel.pack();
 	title.c.x = (panel.sz.x - title.sz.x) / 2;
+    }
+    
+    private int addSlider(CFG<Integer> cfg, String text, String tip, Panel panel, int x, int y, int STEP) {
+	final Label label = panel.add(new Label(text), x, y);
+	label.settip(tip);
+	
+	y += STEP;
+	panel.add(new HSlider(UI.scale(200), 15, 100, cfg.get()) {
+	    protected void attach(UI ui) {
+		super.attach(ui);
+		val = cfg.get();
+		label.settext(String.format("%s: %d%%", text, val));
+	    }
+	    
+	    public void changed() {
+		cfg.set(val);
+		label.settext(String.format("%s: %d%%", text, val));
+	    }
+	}, x, y).settip(tip);
+	
+	return y;
     }
     
     private void initUIPanel(Panel panel) {
