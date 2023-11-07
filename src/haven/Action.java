@@ -27,6 +27,7 @@ public enum Action {
     TOGGLE_INSPECT(gui -> { gui.map.toggleInspectMode(); }, "Toggle inspect mode"),
     TRACK_OBJECT(gui -> { gui.map.toggleTrackingMode(); }, "Track object"),
     BOT_PICK_ALL_HERBS(Bot::pickup, "Auto-pick stuff", "Will automatically pickup all herbs/mussels/clay/frogs/grasshoppers etc. in radius that can be changed in Options->General."),
+    BOT_OPEN_GATE(Bot::openGate, "Toggle closest gate", "Will right click on closest gate in 3 tile radius."),
     TOGGLE_PEACE(GameUI::togglePeace, "Toggle Peace", "Toggle peace for current target"),
     
     //Camera controls

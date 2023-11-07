@@ -87,6 +87,7 @@ public class KeyBinder {
 	add(KeyEvent.VK_R, ALT,   TOGGLE_GOB_RADIUS);
 	add(KeyEvent.VK_Z, CTRL,  TOGGLE_TILE_CENTERING);
 	add(KeyEvent.VK_Q, ALT,   BOT_PICK_ALL_HERBS);
+	add(KeyEvent.VK_W, ALT,   BOT_OPEN_GATE);
 	
 	//Camera controls
 	add(KeyEvent.VK_ADD, NONE, CAM_ZOOM_IN);

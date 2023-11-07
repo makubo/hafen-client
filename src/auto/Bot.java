@@ -66,10 +66,14 @@ public class Bot implements Defer.Callable<Void> {
     }
     
     private static void start(Bot bot, UI ui) {
+	start(bot, ui, false);
+    }
+    
+    private static void start(Bot bot, UI ui, boolean silent) {
 	cancel();
 	synchronized (lock) { current = bot; }
 	bot.run((result) -> {
-	    if (CFG.SHOW_BOT_MESSAGES.get())
+	    if (!silent && CFG.SHOW_BOT_MESSAGES.get())
 	    	ui.message(String.format("Task is %s.", result), GameUI.MsgType.INFO);
 	});
     }
@@ -105,6 +109,18 @@ public class Bot implements Defer.Callable<Void> {
     
     public static void pickup(GameUI gui) {
 	pickup(gui, has(GobTag.PICKUP));
+    }
+    
+    public static void openGate(GameUI gui) {
+	List<Target> targets = gui.ui.sess.glob.oc.stream()
+	    .filter(has(GobTag.GATE))
+	    .filter(gob -> distanceToPlayer(gob) <= 35)
+	    .sorted(byDistance)
+	    .limit(1)
+	    .map(Target::new)
+	    .collect(Collectors.toList());
+	
+	start(new Bot(targets, Target::rclick), gui.ui, true);
     }
     
     public static void selectFlower(GameUI gui, long gobid, String option) {

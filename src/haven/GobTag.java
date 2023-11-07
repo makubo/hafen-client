@@ -20,7 +20,7 @@ public enum GobTag {
     GEM,
     VEHICLE, PUSHED, //vehicle that is pushed (wheelbarrow, plow)
     
-    CONTAINER, DRACK,
+    CONTAINER, DRACK, GATE,
     
     PLAYER, ME, FRIEND, FOE,
     KO, DEAD, EMPTY, READY, FULL,
@@ -130,6 +130,8 @@ public enum GobTag {
                         tags.add(AGGRESSIVE);
                     }
                 }
+            } else if(name.startsWith("gfx/terobjs/arch/") && name.endsWith("gate")) {
+                tags.add(GATE);
             } else if(name.endsWith("/dframe")) {
                 tags.add(DRACK);
                 boolean empty = ols.isEmpty();
