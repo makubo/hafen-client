@@ -7,6 +7,7 @@ $size[14]{$u{Update for 07.11.23:}
   * added option to scale palisades and brick walls vertically
   * fixed gilding window not working
   * added hotkey to interact with the closest gate. ALT+W by default, can be customized in Options->Shortcut settings.
+  * fixed craft window not adding tabs for recipes opened through ingredient lookup
  
 $size[14]{$u{Update for 25.03.23:}
   * merged loftar's code

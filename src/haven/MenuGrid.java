@@ -109,6 +109,9 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    return(KeyBinding.get("scm/" + res.name, hotkey()));
 	}
 	public void use() {
+	    if(pag.scm.isCrafting(pag)) {
+		pag.scm.lastCraft = pag;
+	    }
 	    pag.scm.wdgmsg("act", (Object[])res.flayer(Resource.action).ad);
 	}
 	public void use(Interaction iact) {
@@ -118,6 +121,9 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 		args = Utils.extend(args, iact.mc.floor(OCache.posres));
 		if(iact.click != null)
 		    args = Utils.extend(args, iact.click.clickargs());
+	    }
+	    if(pag.scm.isCrafting(pag)) {
+		pag.scm.lastCraft = pag;
 	    }
 	    pag.scm.wdgmsg("act", args);
 	}
@@ -671,9 +677,6 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	} else {
 	    r.pag.newp = 0;
 	    r.use(iact);
-	    if(isCrafting(r.pag)) {
-		lastCraft = r.pag;
-	    }
 	    if(reset)
 		change(null);
 	}
