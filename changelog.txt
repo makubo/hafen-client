@@ -1,5 +1,7 @@
 $size[14]{$u{Update for 09.11.23:}
   * add progress coloring for tanning tubs
+  * added bay shrimp to auto pickup list
+  * fixed highlight of stacks with matching items
  
 $size[14]{$u{Update for 08.11.23:}
   * merged loftar's code
