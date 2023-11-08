@@ -1,4 +1,4 @@
-$size[14]{$u{Update for 07.11.23:}
+$size[14]{$u{Update for 08.11.23:}
   * merged loftar's code
   * List inventory: display mode now switched by clicking on label, not by pressing ALT
   * added missing ores/rocks/pavings to tile highlight and icon group lists
@@ -8,6 +8,9 @@ $size[14]{$u{Update for 07.11.23:}
   * fixed gilding window not working
   * added hotkey to interact with the closest gate. ALT+W by default, can be customized in Options->Shortcut settings.
   * fixed craft window not adding tabs for recipes opened through ingredient lookup
+  * fixed mine support radius not toggled by ALT+R
+  * added squirrel cache to container list, so they can be colored by fullness
+  * added full squirrel cache to radar
  
 $size[14]{$u{Update for 25.03.23:}
   * merged loftar's code
