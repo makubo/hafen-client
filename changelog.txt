@@ -4,6 +4,7 @@ $size[14]{$u{Update for 09.11.23:}
   * drying racks and tanning tubs empty highlight is governed by Display container fullness option
   * added bay shrimp to auto pickup list
   * fixed highlight of stacks with matching items
+  * fixed force hardware cursor option
  
 $size[14]{$u{Update for 08.11.23:}
   * merged loftar's code
