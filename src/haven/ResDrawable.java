@@ -91,6 +91,12 @@ public class ResDrawable extends Drawable implements EquipTarget {
 	    if(state == 17 || state == 33) { // this fire is actually hearth fire
 		extra = "hearth";
 	    }
+	} else if(name.endsWith("/squirrelcache")) {//squirrel cache
+	    if(state == 5 || state == 6) {
+		extra = "full";
+	    } else {
+		extra = "empty";
+	    }
 	}
 	return extra == null ? name : String.format("%s[%s]", name, extra);
     }
