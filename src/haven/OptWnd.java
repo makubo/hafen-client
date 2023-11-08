@@ -1091,7 +1091,10 @@ public class OptWnd extends WindowX {
     
 	y += STEP;
 	panel.add(new CFGBox("Display container fullness", CFG.SHOW_CONTAINER_FULLNESS, "Makes containers tint different colors when they are empty or full", true), x, y);
-    
+	
+	y += STEP;
+	panel.add(new CFGBox("Highlight finished objects", CFG.SHOW_PROGRESS_COLOR, "Highlights drying racks and tanning tubs green when they have only finished products inside", true), x, y);
+	
 	y += STEP;
 	tx = panel.add(new CFGBox("Draw paths", CFG.DISPLAY_GOB_PATHS, "Draws lines where objects are moving", true), x, y).sz.x;
 	panel.add(new IButton("gfx/hud/opt", "", "-d", "-h") {

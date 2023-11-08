@@ -26,6 +26,7 @@ public class CFG<T> {
     public static final CFG<Boolean> DISPLAY_FOD_CATEGORIES = new CFG<>("display.food_category", true);
     public static final CFG<Boolean> SHOW_GOB_RADIUS = new CFG<>("display.show_gob_radius", false);
     public static final CFG<Boolean> SHOW_CONTAINER_FULLNESS = new CFG<>("display.container_status", false);
+    public static final CFG<Boolean> SHOW_PROGRESS_COLOR = new CFG<>("display.progress_coloring", false);
     public static final CFG<Boolean> SIMPLE_CROPS = new CFG<>("display.simple_crops", false);
     public static final CFG<Integer> DISPLAY_SCALE_CUPBOARDS = new CFG<>("display.scale.cupboards", 100);
     public static final CFG<Integer> DISPLAY_SCALE_WALLS = new CFG<>("display.scale.walls", 100);

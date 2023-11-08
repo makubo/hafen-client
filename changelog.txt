@@ -1,5 +1,7 @@
 $size[14]{$u{Update for 09.11.23:}
-  * add progress coloring for tanning tubs
+  * added separate option to highlight finished objects (like drying racks), instead of relying on object info toggle
+  * added progress coloring for tanning tubs
+  * drying racks and tanning tubs empty highlight is governed by Display container fullness option
   * added bay shrimp to auto pickup list
   * fixed highlight of stacks with matching items
  

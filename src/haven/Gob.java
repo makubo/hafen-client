@@ -1422,20 +1422,16 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     
     private void updateColor() {
 	Color c = null;
-	if(CFG.DISPLAY_GOB_INFO.get()) {
-	    if(is(GobTag.DRACK) || is(GobTag.TANNING_TUB)) {
-		if(is(GobTag.EMPTY)) {
-		    c = COL_EMPTY;
-		} else if(is(GobTag.READY)) {
-		    c = COL_READY;
-		}
+	if(CFG.SHOW_PROGRESS_COLOR.get() && is(GobTag.PROGRESSING)) {
+	    if(is(GobTag.READY)) {
+		c = COL_READY;
 	    }
-	    if(CFG.SHOW_CONTAINER_FULLNESS.get() && is(GobTag.CONTAINER)) {
-		if(is(GobTag.EMPTY)) {
-		    c = COL_EMPTY;
-		} else if(is(GobTag.FULL)) {
-		    c = COL_FULL;
-		}
+	}
+	if(CFG.SHOW_CONTAINER_FULLNESS.get() && is(GobTag.CONTAINER)) {
+	    if(is(GobTag.EMPTY)) {
+		c = COL_EMPTY;
+	    } else if(is(GobTag.FULL)) {
+		c = COL_FULL;
 	    }
 	}
 	customColor.color(c);
