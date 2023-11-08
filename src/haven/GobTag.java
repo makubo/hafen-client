@@ -20,7 +20,7 @@ public enum GobTag {
     GEM,
     VEHICLE, PUSHED, //vehicle that is pushed (wheelbarrow, plow)
     
-    CONTAINER, DRACK, GATE,
+    CONTAINER, DRACK, GATE, TANNING_TUB,
     
     PLAYER, ME, FRIEND, FOE,
     KO, DEAD, EMPTY, READY, FULL,
@@ -136,6 +136,13 @@ public enum GobTag {
                 tags.add(DRACK);
                 boolean empty = ols.isEmpty();
                 boolean done = !empty && ols.stream().noneMatch(GobTag::isDrying);
+                if(empty) { tags.add(EMPTY); }
+                if(done) { tags.add(READY); }
+            } else if(name.endsWith("/ttub")) {
+                tags.add(TANNING_TUB);
+                //sdt bits: 0 - water, 1 - tannin, 2 - hide, 3 - leather
+                boolean empty = sdt < 4; //has no hide nor leather
+                boolean done = sdt >= 8; //has leather
                 if(empty) { tags.add(EMPTY); }
                 if(done) { tags.add(READY); }
             } else if(name.endsWith("/gems/gemstone")) {
