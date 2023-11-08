@@ -65,6 +65,23 @@ public class Radar {
 	return new LinkedList<>();
     }
     
+    enum Symbols {
+	$circle("gfx/hud/mmap/symbols/circle"),
+	$diamond("gfx/hud/mmap/symbols/diamond"),
+	$dot("gfx/hud/mmap/symbols/dot"),
+	$down("gfx/hud/mmap/symbols/down"),
+	$pentagon("gfx/hud/mmap/symbols/pentagon"),
+	$square("gfx/hud/mmap/symbols/square"),
+	$up("gfx/hud/mmap/symbols/up");
+
+	public final Tex tex;
+	public static final Symbols DEFAULT = $circle;
+
+	Symbols(String res) {
+	    tex = Resource.loadtex(res);
+	}
+    }
+    
     private static class RadarItemVO {
 	String match, icon;
 	boolean visible;
