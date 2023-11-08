@@ -368,7 +368,7 @@ public class ExtInventory extends Widget {
 	    this.name = name(w);
 	    this.resname = resname(w);
 	    this.quality = quality;
-	    this.matches = w.item.matches;
+	    this.matches = w.item.matches();
 	    this.color = w.olcol.get();
 	    this.mask = color == null ? null : new ColorMask(color);
 	    loading = name.startsWith("???");

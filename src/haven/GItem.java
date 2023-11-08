@@ -54,7 +54,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     private GSprite spr;
     private ItemInfo.Raw rawinfo;
     private List<ItemInfo> info = Collections.emptyList();
-    public boolean matches = false;
+    private boolean matches = false;
     public boolean sendttupdate = false;
     private long filtered = 0;
     private final List<Action0> matchListeners = new ArrayList<>();
@@ -255,6 +255,13 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 	String name = this.name.get(null);
 	if(name == null) {throw new Loading("item is not ready!");}
 	return name.contains(what) || contains.get().is(what);
+    }
+    
+    public boolean matches() {
+	return matches
+	    || contents != null && contents.children(WItem.class)
+	    .stream()
+	    .anyMatch(wItem -> wItem.item.matches());
     }
     
     public void testMatch() {

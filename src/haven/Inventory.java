@@ -231,7 +231,7 @@ public class Inventory extends Widget implements DTarget {
 	    if(wdg.visible && wdg instanceof WItem) {
 		WItem wItem = (WItem) wdg;
 		GItem child = wItem.item;
-		if(item.matches == child.matches && isSame(name, spr, child)) {
+		if(item.matches() == child.matches() && isSame(name, spr, child)) {
 		    items.add(wItem);
 		}
 	    }

@@ -271,7 +271,7 @@ public class WItem extends Widget implements DTarget2 {
 	    g.defstate();
 	    if(olcol.get() != null)
 		g.usestate(new ColorMask(olcol.get()));
-	    if(item.matches) {
+	    if(item.matches()) {
 		g.chcolor(MATCH_COLOR);
 		g.rect(Coord.z, sz);
 		g.chcolor();
@@ -526,7 +526,7 @@ public class WItem extends Widget implements DTarget2 {
 	    String name = this.name.get(null);
 	    if(name != null) {
 		checkDrop = false;
-		if((!item.matches || !CFG.AUTO_DROP_RESPECT_FILTER.get()) && ItemAutoDrop.needDrop(name)) {
+		if((!item.matches() || !CFG.AUTO_DROP_RESPECT_FILTER.get()) && ItemAutoDrop.needDrop(name)) {
 		    item.drop();
 		}
 	    }
