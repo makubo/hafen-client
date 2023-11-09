@@ -89,7 +89,8 @@ public class Window extends Widget implements DTarget {
     public boolean decohide = false;
     public boolean large = false;
     protected WidgetCfg cfg = null;
-    public boolean justclose = false;;
+    public boolean justclose = false;
+    public boolean skipInitPos = false;
     private String title;
     protected Text.Furnace rcf = cf;
 
@@ -135,7 +136,7 @@ public class Window extends Widget implements DTarget {
 
     protected void initCfg() {
 	if(cfg != null && cfg.c != null) {
-	    c = xlate(cfg.c, false);
+	    if(!skipInitPos) {c = xlate(cfg.c, false);}
 	} else {
 	    updateCfg();
 	}

@@ -1202,6 +1202,9 @@ public class OptWnd extends WindowX {
     
 	y += STEP;
 	panel.add(new CFGBox("Always show UI on start", CFG.DISABLE_UI_HIDING), x, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Enable container window spreading", CFG.UI_DISABLE_CONTAINER_POS, "If enabled container windows would be auto positioned next to other, if enabled then they will stack in same position."), x, y);
     
 	y += STEP;
 	panel.add(new CFGBox("Show F-key tool bar", CFG.SHOW_TOOLBELT_0), x, y);

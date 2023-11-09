@@ -444,7 +444,7 @@ public class MainFrame extends java.awt.Frame implements Console.Directory {
 	/* Set up the error handler as early as humanly possible. */
 	ThreadGroup g = new ThreadGroup("Haven main group");
 	String ed = Utils.getprop("haven.errorurl", "");;
-	if(ed.equals("stderr")) {
+	if(ed.equals("stderr")||true) {
 	    g = new haven.error.SimpleHandler("Haven main group", true);
 	} else {
 	    URL errordest = null;

@@ -9,6 +9,14 @@ public class WindowX extends Window {
 	super(sz, cap, lg, deco, false);
     }
     
+    @Override
+    protected void initCfg() {
+	if(CFG.UI_DISABLE_CONTAINER_POS.get() && getchild(ExtInventory.class) != null) {
+	    skipInitPos = true;
+	}
+	super.initCfg();
+    }
+    
     public WindowX(Coord sz, String cap, boolean lg) {
 	super(sz, cap, lg, null, true);
     }
