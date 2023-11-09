@@ -200,7 +200,7 @@ public class DecoX extends Window.DefaultDeco {
 	    Coord asz = isz;
 	    Coord csz = asz.add(mrgn.mul(2));
 	    
-	    decoX.cptl = Coord.of(0, capo + cm.sz().y);
+	    decoX.cptl = Coord.of(0, wbox.ctl.sz().y);
 	    Coord wsz = csz.add(wbox.bisz()).addy(cm.sz().y / 2).add(decoX.cptl);
 	    decoX.resize(wsz);
 	    
