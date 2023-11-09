@@ -565,7 +565,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 		if(parent != null)
 		    raise();
 	    } else if(nst == "wnd") {
-		chdeco(new DefaultDeco());
+		chdeco(new DecoX(false));
 		show();
 		z(0);
 		if(parent != null)

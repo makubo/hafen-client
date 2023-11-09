@@ -428,7 +428,7 @@ public class Window extends Widget implements DTarget {
 	return(ca().sz());
     }
 
-    private void resize2(Coord sz) {
+    protected void resize2(Coord sz) {
 	if(deco != null) {
 	    deco.iresize(sz);
 	    deco.c = deco.contarea().ul.inv();

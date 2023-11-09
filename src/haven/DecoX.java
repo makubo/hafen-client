@@ -147,7 +147,7 @@ public class DecoX extends Window.DefaultDeco {
 	}
 	
 	default void apply(WindowX wndX, DecoX decoX) {
-	    wndX.resize(wndX.contentsz());
+	    wndX.resize2(wndX.contentsz());
 	}
 	
 	void iresize(Coord isz, DecoX decoX);

@@ -838,7 +838,7 @@ public class MapWnd extends WindowX implements Console.Directory {
     }
 
     protected Deco makedeco() {
-	return(new DefaultDeco(true).dragsize(true));
+	return(new DecoX(true).dragsize(true));
     }
 
     public void markobj(long gobid, long oid, Indir<Resource> resid, String nm) {
