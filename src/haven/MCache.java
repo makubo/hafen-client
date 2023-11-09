@@ -795,6 +795,13 @@ public class MCache implements MapSource {
 
     public MCache(Session sess) {
 	this.sess = sess;
+	CFG.NO_TILE_TRANSITION.observe(this::resetMap);
+    }
+    
+    private void resetMap(CFG<Boolean> cfg) {
+	synchronized (MCache.this) {
+	    trimall();
+	}
     }
 
     public void ctick(double dt) {

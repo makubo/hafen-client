@@ -1078,6 +1078,9 @@ public class OptWnd extends WindowX {
 	panel.add(new CFGBox("Simple crops", CFG.SIMPLE_CROPS, "Requires area reload"), x, y);
 	
 	y += STEP;
+	panel.add(new CFGBox("Disable transition between tiles", CFG.NO_TILE_TRANSITION), x, y);
+	
+	y += STEP;
 	panel.add(new CFGBox("Always show kin names", CFG.DISPLAY_KINNAMES), x, y);
 	
 	y += STEP;
