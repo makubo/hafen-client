@@ -50,7 +50,7 @@ public class ExtInventory extends Widget {
 	chb_show
 	    .rclick(this::toggleInventory)
 	    .changed(this::setVisibility)
-	    .settip("LClick to toggle extra info\nRClick to hide inventory when info is visible\nTapping ALT toggles between displaying quality, name and info", true);
+	    .settip("LClick to toggle extra info\nRClick to hide inventory when info is visible", true);
     
 	Composer composer = new Composer(extension).hmrgn(margin).vmrgn(margin);
 	composer.add(0);
