@@ -17,7 +17,7 @@ public enum GobTag {
     PIG, SOW, HOG, PIGLET,
     SHEEP, EWE, RAM, LAMB,
     
-    GEM,
+    GEM, ARROW,
     VEHICLE, PUSHED, //vehicle that is pushed (wheelbarrow, plow)
     
     CONTAINER, PROGRESSING, GATE,
@@ -155,8 +155,11 @@ public enum GobTag {
             if(ofType(name, VEHICLES)) {
                 tags.add(VEHICLE);
             }
+            if(name.equals("gfx/terobjs/items/arrow")) {
+                tags.add(ARROW);
+            }
             
-            if(anyOf(tags, HERB, CRITTER, GEM)) {
+            if(anyOf(tags, HERB, CRITTER, GEM, ARROW)) {
                 tags.add(PICKUP);
             }
             
