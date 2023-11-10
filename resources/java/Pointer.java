@@ -48,7 +48,8 @@ public class Pointer extends Widget implements MiniMap.IPointer, DTarget {
 	if(marker instanceof PMarker) {
 	    col = new BaseColor(((PMarker) marker).color);
 	} else if(marker instanceof SMarker) {
-	    icon = ((SMarker) marker).res;
+	    Resource.Spec spec = ((SMarker) marker).res;
+	    icon = new Resource.Spec(spec.pool, spec.name, -1);
 	    col = colors[0];
 	} else if(marker instanceof MapWnd2.GobMarker) {
 	    MapWnd2.GobMarker gobMarker = (MapWnd2.GobMarker) marker;
