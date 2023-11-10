@@ -603,12 +603,26 @@ public class ExtInventory extends Widget {
 	}
     }
     
-    private class ItemGroupList extends Listbox<ItemsGroup> {
+    private class ItemGroupList extends Listbox<ItemsGroup> implements DTarget2{
 	private List<ItemsGroup> groups = Collections.emptyList();
 	private boolean needsUpdate = false;
 
 	public ItemGroupList(int w, int h, int itemh) {
 	    super(w, h, itemh);
+	}
+	
+	@Override
+	public boolean drop(WItem target, Coord cc, Coord ul) {
+	    return false;
+	}
+	
+	@Override
+	public boolean iteminteract(WItem target, Coord cc, Coord ul) {
+	    ItemsGroup item = itemat(cc);
+	    if(item == null) {return false;}
+	    if(item.items.isEmpty()) {return false;}
+	    item.items.get(0).iteminteract(target, cc, ul);
+	    return false;
 	}
 
 	@Override
