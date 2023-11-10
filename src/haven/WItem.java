@@ -523,7 +523,7 @@ public class WItem extends Widget implements DTarget2 {
     
     private void checkDrop() {
 	if(checkDrop) {
-	    String name = this.name.get(null);
+	    String name = ItemAutoDrop.name(this);
 	    if(name != null) {
 		checkDrop = false;
 		if((!item.matches() || !CFG.AUTO_DROP_RESPECT_FILTER.get()) && ItemAutoDrop.needDrop(name)) {
