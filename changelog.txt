@@ -1,6 +1,7 @@
 $size[14]{$u{Update for 12.11.23:}
   * fixed filtering by attribute not working on gilding
   * improved auto picker responsiveness
+  * added moles and lobsters to auto pickup list
  
 $size[14]{$u{Update for 11.11.23:}
   * added arrows to auto pickup list
