@@ -3,6 +3,7 @@ $size[14]{$u{Update for 11.11.23:}
   * List inventory: allow right-clicking items onto items in the list
   * made item auto drop work with stacks
   * fixed window resizing not working on Slim UI theme
+  * fixed crash on tracking some markers
  
 $size[14]{$u{Update for 10.11.23:}
   * added option to disable transition between tiles, so they all look like squares (Display -> Disable transition between tiles)
