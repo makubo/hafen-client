@@ -1,8 +1,8 @@
 $size[14]{$u{Update for 12.11.23:}
   * fixed filtering by attribute not working on gilding
   * improved auto picker responsiveness
-  * added moles and lobsters to auto pickup list
-  * fixed crash when trying to move resizable window (map) in Pretty theme
+  * added moles and lobsters to auto pickup list by making it use SHIFT+RClick to pickup items instead of RClick and waiting for menu
+  * fixed crash when trying to move resizable window (like Map) in Pretty theme
   * fixed quick action/craft/build windows close on attempt to drag them
  
 $size[14]{$u{Update for 11.11.23:}
