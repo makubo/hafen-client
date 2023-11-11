@@ -135,6 +135,10 @@ public class DecoX extends Window.DefaultDeco {
 	return super.checkhit(c);
     }
     
+    public boolean shitSizer(Coord c) {
+	return super.hitSizer(c);
+    }
+    
     public enum DecoThemeType {
 	Big, Small
     }
@@ -298,7 +302,7 @@ public class DecoX extends Window.DefaultDeco {
 	
 	@Override
 	public boolean hitSizer(Coord c, DecoX decoX) {
-	    return decoX.hitSizer(c);
+	    return decoX.shitSizer(c);
 	}
     }
 }
