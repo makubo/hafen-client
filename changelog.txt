@@ -3,6 +3,7 @@ $size[14]{$u{Update for 12.11.23:}
   * improved auto picker responsiveness
   * added moles and lobsters to auto pickup list
   * fixed crash when trying to move resizable window (map) in Pretty theme
+  * fixed quick action/craft/build windows close on attempt to drag them
  
 $size[14]{$u{Update for 11.11.23:}
   * added arrows to auto pickup list
