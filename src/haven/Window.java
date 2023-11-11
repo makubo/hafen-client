@@ -50,6 +50,7 @@ public class Window extends Widget implements DTarget {
     public static final Tex bm = Resource.loadtex("gfx/hud/wnd/lg/bm");
     public static final Tex br = Resource.loadtex("gfx/hud/wnd/lg/br");
     public static final Tex sizer = Resource.loadtex("gfx/hud/wnd/sizer");
+    public static final Coord sizer_sz =  sizer.sz();
     public static final Coord tlm = UI.scale(18, 30);
     public static final Coord brm = UI.scale(13, 22);
     public static final Coord cpo = UI.rscale(36, 12);
@@ -351,13 +352,17 @@ public class Window extends Widget implements DTarget {
 	public boolean mousedown(Coord c, int button) {
 	    if(dragsize) {
 		Coord cc = c.sub(ca.ul);
-		if((button == 1) && (c.x < ca.br.x) && (c.y < ca.br.y) && (c.y >= ca.br.y - UI.scale(25) + (ca.br.x - c.x))) {
+		if((button == 1) && hitSizer(c)) {
 		    szdrag = ui.grabmouse(this);
 		    szdragc = aa.sz().sub(c);
 		    return(true);
 		}
 	    }
 	    return(super.mousedown(c, button));
+	}
+	
+	protected boolean hitSizer(Coord c) {
+	    return (c.x < ca.br.x) && (c.y < ca.br.y) && (c.y >= ca.br.y - UI.scale(25) + (ca.br.x - c.x));
 	}
 
 	public void mousemove(Coord c) {

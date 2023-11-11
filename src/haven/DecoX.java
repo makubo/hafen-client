@@ -110,6 +110,14 @@ public class DecoX extends Window.DefaultDeco {
 	return theme.checkhit(c, this);
     }
     
+    @Override
+    protected boolean hitSizer(Coord c) {
+	if(theme == null) {
+	    return super.hitSizer(c);
+	}
+	
+	return theme.hitSizer(c, this);
+    }
     
     public void siresize(Coord isz) {
 	super.iresize(isz);
@@ -156,6 +164,8 @@ public class DecoX extends Window.DefaultDeco {
 	
 	void drawframe(GOut g, DecoX decoX);
 	boolean checkhit(Coord c, DecoX decoX);
+	
+	boolean hitSizer(Coord c, DecoX decoX);
     }
     
     private static class Slim implements DecoTheme {
@@ -227,10 +237,13 @@ public class DecoX extends Window.DefaultDeco {
 		decoX.cpsz = Coord.of(cl.sz().x + decoX.cmw + cr.sz().x, cm.sz.y);
 		decoX.cmw = decoX.cmw - (cl.sz().x) - UI.scale(5);
 	    }
-	    if(decoX.dragsize)
-		g.image(Window.sizer, decoX.ca.br.sub(Window.sizer.sz()));
 	    
 	    wbox.draw(g, decoX.cptl, decoX.sz.sub(decoX.cptl));
+	    
+	    if(decoX.dragsize) {
+		Coord sub = decoX.sz.sub(Window.sizer_sz);
+		g.image(Window.sizer, sub);
+	    }
 	    
 	    if(cap != null) {
 		int w = cap.sz().x;
@@ -246,6 +259,13 @@ public class DecoX extends Window.DefaultDeco {
 	public boolean checkhit(Coord c, DecoX decoX) {
 	    return c.isect(decoX.cptl, decoX.sz)
 		|| c.isect(decoX.cptl.addy(-cm.sz.y), decoX.cpsz);
+	}
+	
+	@Override
+	public boolean hitSizer(Coord c, DecoX decoX) {
+	    return c.x > decoX.sz.x - Window.sizer_sz.x 
+		&& c.y > decoX.sz.y - Window.sizer_sz.y;
+//	    return c.isect(decoX.sz.sub(Window.sizer_sz), Window.sizer_sz);
 	}
     }
     
@@ -274,6 +294,11 @@ public class DecoX extends Window.DefaultDeco {
 	@Override
 	public boolean checkhit(Coord c, DecoX decoX) {
 	    return decoX.scheckhit(c);
+	}
+	
+	@Override
+	public boolean hitSizer(Coord c, DecoX decoX) {
+	    return decoX.hitSizer(c);
 	}
     }
 }
