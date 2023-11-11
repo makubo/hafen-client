@@ -101,8 +101,7 @@ public class Bot implements Defer.Callable<Void> {
 	    .collect(Collectors.toList());
 	
 	start(new Bot(targets,
-	    Target::rclick,
-	    selectFlower("Pick"),
+	    Target::rclick_shift,
 	    target -> target.gob.waitRemoval()
 	), gui.ui);
     }
@@ -411,9 +410,17 @@ public class Bot implements Defer.Callable<Void> {
 	}
 	
 	public void rclick() {
+	   rclick(0);
+	}
+	
+	public void rclick_shift() {
+	    rclick(UI.MOD_SHIFT);
+	}
+    
+	public void rclick(int modflags) {
 	    if(!disposed()) {
-		if(gob != null) {gob.rclick();}
-		if(item != null) {item.rclick();}
+		if(gob != null) {gob.rclick(modflags);}
+		if(item != null) {item.rclick(modflags);}
 	    }
 	}
     

@@ -2209,9 +2209,13 @@ public class MapView extends PView implements DTarget, Console.Directory {
     }
     
     public void click(Gob gob, int button, Coord mouse) {
+	click(gob, button, mouse, ui.modflags());
+    }
+    
+    public void click(Gob gob, int button, Coord mouse, int modflags) {
 	if(button == 3) {FlowerMenu.lastGob(gob);}
 	Coord mc = gob.rc.floor(posres);
-	click(gob.rc, button, mouse, mc, button, ui.modflags(), 0, (int) gob.id, mc, 0, -1);
+	click(gob.rc, button, mouse, mc, button, modflags, 0, (int) gob.id, mc, 0, -1);
     }
     
     public void click(Coord2d mc, int button, Object... args) {

@@ -447,6 +447,10 @@ public class WItem extends Widget implements DTarget2 {
 	rclick(Coord.z, 0);
     }
     
+    public void rclick(int modflags) {
+	rclick(Coord.z, modflags);
+    }
+    
     
     public void rclick(Coord c, int flags) {
         FlowerMenu.lastGob(null);

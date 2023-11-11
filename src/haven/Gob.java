@@ -665,10 +665,10 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	damage = null;
     }
     
-    public void rclick() {
+    public void rclick(int modflags) {
 	try {
 	    MapView map = glob.sess.ui.gui.map;
-	    map.click(this, 3, Coord.z);
+	    map.click(this, 3, Coord.z, modflags);
 	} catch (Exception ignored) {}
     }
     
