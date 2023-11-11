@@ -586,7 +586,7 @@ public abstract class ItemInfo {
     @SuppressWarnings("unchecked")
     public static Map<Resource, Integer> getBonuses(List<ItemInfo> infos, Map<String, Glob.CAttr> attrs) {
 	List<ItemInfo> slotInfos = ItemInfo.findall("ISlots", infos);
-	List<ItemInfo> gilding = ItemInfo.findall("Slotted", infos);
+	List<ItemInfo> gilding = ItemInfo.findall(ItemData.INFO_CLASS_GILDING, infos);
 	Map<Resource, Integer> bonuses = new HashMap<>();
 	try {
 	    for (ItemInfo islots : slotInfos) {
