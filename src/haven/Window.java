@@ -109,7 +109,7 @@ public class Window extends Widget implements DTarget {
 	super(sz);
 	chcap(cap);
 	this.large = lg;
-	//setfocustab(true);
+	setfocusctl(true);
 	chdeco(defdeco ? makedeco() : deco);
     }
 
