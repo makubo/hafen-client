@@ -31,6 +31,8 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.function.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 
@@ -38,7 +40,6 @@ import static haven.ExtInventory.*;
 import static haven.PUtils.*;
 import haven.resutil.FoodInfo;
 import haven.resutil.Curiosity;
-import static haven.PUtils.*;
 
 /* XXX: There starts to seem to be reason to split the while character
  * sheet into some more modular structure, as it is growing quite
@@ -797,6 +798,8 @@ public class CharWnd extends WindowX {
 	public boolean has = false;
 	private String sortkey;
 	private Tex small;
+	
+	public final Pattern pat = Pattern.compile("(• [^•\\n}]*)+");
 
 	private Credo(String nm, Indir<Resource> res, boolean has) {
 	    this.nm = nm;
@@ -810,8 +813,19 @@ public class CharWnd extends WindowX {
 	    Resource res = this.res.get();
 	    buf.append("$img[" + res.name + "]\n\n");
 	    buf.append("$b{$font[serif,16]{" + res.flayer(Resource.tooltip).t + "}}\n\n\n");
-	    buf.append(res.flayer(Resource.pagina).text);
+	    buf.append(format(res.flayer(Resource.pagina).text));
 	    return(buf.toString());
+	}
+    
+	private String format(String text) {
+	    Matcher m = pat.matcher(text);
+	    if(m.find()) {
+		String[] g = m.group().split("\n");
+		g[0] = String.format("$col[64,255,64]{%s}", g[0].replace("•", "✓"));
+		String tmp = Matcher.quoteReplacement(String.join("\n", g));
+		text = m.replaceFirst(tmp);
+	    }
+	    return text;
 	}
 
 	private Text tooltip = null;
