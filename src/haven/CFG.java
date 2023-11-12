@@ -29,6 +29,7 @@ public class CFG<T> {
     public static final CFG<Boolean> SHOW_PROGRESS_COLOR = new CFG<>("display.progress_coloring", false);
     public static final CFG<Boolean> SIMPLE_CROPS = new CFG<>("display.simple_crops", false);
     public static final CFG<Boolean> NO_TILE_TRANSITION = new CFG<>("display.no_tile_transition", false);
+    public static final CFG<Boolean> FLAT_TERRAIN = new CFG<>("display.flat_terrain", false);
     public static final CFG<Integer> DISPLAY_SCALE_CUPBOARDS = new CFG<>("display.scale.cupboards", 100);
     public static final CFG<Integer> DISPLAY_SCALE_WALLS = new CFG<>("display.scale.walls", 100);
     public static final CFG<Boolean> STORE_MAP = new CFG<>("general.storemap", false);

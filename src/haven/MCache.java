@@ -796,6 +796,7 @@ public class MCache implements MapSource {
     public MCache(Session sess) {
 	this.sess = sess;
 	CFG.NO_TILE_TRANSITION.observe(this::resetMap);
+	CFG.FLAT_TERRAIN.observe(this::resetMap);
     }
     
     private void resetMap(CFG<Boolean> cfg) {
@@ -876,6 +877,10 @@ public class MCache implements MapSource {
     }
 
     public double getfz(Coord tc) {
+	return CFG.FLAT_TERRAIN.get() ? 0 : getfz2(tc);
+    }
+    
+    public double getfz2(Coord tc) {
 	Grid g = getgridt(tc);
 	return(g.getz(tc.sub(g.ul)));
     }
