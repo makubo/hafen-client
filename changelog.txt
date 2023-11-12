@@ -1,5 +1,6 @@
 $size[14]{$u{Update for 13.11.23:}
   * added option to flatten terrain (Display -> Make terrain flat)
+  * added option to darken deep ocean tiles (Display -> Darken deep ocean tiles)
   * display action cooldown numerically during combat
  
 $size[14]{$u{Update for 12.11.23:}

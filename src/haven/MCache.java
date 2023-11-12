@@ -797,6 +797,7 @@ public class MCache implements MapSource {
 	this.sess = sess;
 	CFG.NO_TILE_TRANSITION.observe(this::resetMap);
 	CFG.FLAT_TERRAIN.observe(this::resetMap);
+	CFG.COLORIZE_DEEP_WATER.observe(this::resetMap);
     }
     
     private void resetMap(CFG<Boolean> cfg) {
