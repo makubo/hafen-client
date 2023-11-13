@@ -808,26 +808,47 @@ public class CharWnd extends WindowX {
 	    this.sortkey = nm;
 	}
 
-	public String rendertext() {
+	public String rendertext(CredoGrid credoGrid) {
 	    StringBuilder buf = new StringBuilder();
 	    Resource res = this.res.get();
 	    buf.append("$img[" + res.name + "]\n\n");
 	    buf.append("$b{$font[serif,16]{" + res.flayer(Resource.tooltip).t + "}}\n\n\n");
-	    buf.append(format(res.flayer(Resource.pagina).text));
+	    buf.append(format(res.flayer(Resource.pagina).text, credoGrid));
 	    return(buf.toString());
 	}
-    
-	private String format(String text) {
-	    Matcher m = pat.matcher(text);
-	    if(m.find()) {
-		String[] g = m.group().split("\n");
-		g[0] = String.format("$col[64,255,64]{%s}", g[0].replace("•", "✓"));
-		String tmp = Matcher.quoteReplacement(String.join("\n", g));
-		text = m.replaceFirst(tmp);
+	
+	private String format(String text, CredoGrid credoGrid) {
+	    if(credoGrid.pcr == this) {
+		return format(text, credoGrid.pcl - 1);
 	    }
+	    
+	    if(credoGrid.ccr != null && credoGrid.ccr.contains(this)) {
+		return format(text, Integer.MAX_VALUE);
+	    }
+	    
 	    return text;
 	}
-
+	
+	private String format(String text, int level) {
+	    if(level < 1) {return text;}
+	    
+	    try {
+		Matcher m = pat.matcher(text);
+		while (level > 0 && m.find()) {
+		    String group = m.group(1);
+		    
+		    level--;
+		    text = text.replaceFirst(Pattern.quote(group), Matcher.quoteReplacement(markDone(group)));
+		}
+		
+	    } catch (Exception ignored) {}
+	    return text;
+	}
+	
+	private String markDone(String txt) {
+	    return String.format("$col[64,255,64]{%s}", txt.replace("•", "✓"));
+	}
+	
 	private Text tooltip = null;
 	public Text tooltip() {
 	    if(tooltip == null)
@@ -2063,7 +2084,7 @@ public class CharWnd extends WindowX {
                             CharWnd.this.skg.sel = null;
                             CharWnd.this.exps.sel = null;
                             if (cr != null)
-                                info.settext(cr::rendertext);
+                                info.settext(() -> cr.rendertext(this));
                             else if (p != null)
                                 info.settext("");
                         }
