@@ -601,10 +601,11 @@ public abstract class ItemInfo {
 	    }
 	    parseAttrMods(bonuses, ItemInfo.findall("haven.res.ui.tt.attrmod.AttrMod", infos));
 	} catch (Exception ignored) {}
-	Pair<Integer, Integer> wear = ItemInfo.getArmor(infos);
-	if (wear != null) {
-	    bonuses.put(armor_hard, wear.a);
-	    bonuses.put(armor_soft, wear.b);
+	Pair<Integer, Integer> wear = ItemInfo.getWear(infos);
+	Pair<Integer, Integer> armor = ItemInfo.getArmor(infos);
+	if (wear != null && armor != null && !Objects.equals(wear.a, wear.b)) {
+	    bonuses.put(armor_hard, armor.a);
+	    bonuses.put(armor_soft, armor.b);
 	}
 	if(attrs != null) {
 	    Glob.CAttr str = attrs.get("str");
