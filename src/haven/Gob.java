@@ -32,6 +32,7 @@ import java.util.function.*;
 import haven.render.*;
 import haven.res.gfx.fx.msrad.MSRad;
 import integrations.mapv4.MappingClient;
+import me.ender.gob.GobCombatInfo;
 import me.ender.minimap.AutoMarkers;
 
 import static haven.OCache.*;
@@ -495,6 +496,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	info = new GeneralGobInfo(this);
 	setattr(info);
 	updwait(this::drawableUpdated, waiting -> {});
+	GobCombatInfo.check(this);
     }
 
     public Gob(Glob glob, Coord2d c) {
@@ -663,6 +665,10 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     public void clearDmg() {
 	setattr(GobDamageInfo.class, null);
 	damage = null;
+    }
+    
+    public void addCombatInfo(Fightview.Relation rel) {
+	setattr(GobCombatInfo.class, new GobCombatInfo(this, rel));
     }
     
     public void rclick(int modflags) {
