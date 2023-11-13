@@ -42,14 +42,13 @@ import java.awt.image.WritableRaster;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static haven.Action.*;
 import static haven.Inventory.*;
 import static haven.ItemFilter.*;
-import static haven.KeyBinder.*;
 
 public class GameUI extends ConsoleHost implements Console.Directory, UI.MessageWidget {
     public static final Text.Foundry msgfoundry = RootWidget.msgfoundry;
     private static final int blpw = UI.scale(142), brpw = UI.scale(142);
+    public final List<Widget> EXT_INVENTORIES = new LinkedList<>();
     public final String chrid, genus;
     public final long plid;
     private final Hidepanel ulpanel, umpanel, urpanel, blpanel, mapmenupanel, brpanel, menupanel;
@@ -1897,6 +1896,24 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    }
 	}
 	wdgmsg("act", al);
+    }
+    
+    public void addInventory(Widget wdg) {
+	WindowX wnd = wdg.getparent(WindowX.class);
+	if(wnd == null) {return;}
+	String name = wnd.caption().toLowerCase();
+	if(name.contains("inventory")
+	    || name.contains("character sheet")
+	    || name.contains("belt")
+	    || name.contains("equipment")
+	    || name.contains("study")) {
+	    return;
+	}
+	EXT_INVENTORIES.add(wdg);
+    }
+    
+    public void remInventory(Widget wdg) {
+	EXT_INVENTORIES.remove(wdg);
     }
 
     public class FKeyBelt extends Belt implements DTarget, DropTarget {

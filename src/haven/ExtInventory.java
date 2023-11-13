@@ -24,7 +24,6 @@ public class ExtInventory extends Widget {
     private static final String CFG_SHOW = "ext.show";
     private static final String CFG_INV = "ext.inv";
     private static int curType = 0;
-    private static final List<Widget> INVENTORIES = new LinkedList<>();
     private static final Set<String> EXCLUDES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("Steelbox", "Pouch", "Frame", "Tub", "Fireplace", "Rack", "Pane mold", "Table", "Purse")));
     public final Inventory inv;
     private final ItemGroupList list;
@@ -127,7 +126,7 @@ public class ExtInventory extends Widget {
     
     @Override
     public void unlink() {
-	remInventory(this);
+	ui.gui.remInventory(this);
 	if(chb_show.parent != null) {
 	    chb_show.unlink();
 	}
@@ -139,7 +138,7 @@ public class ExtInventory extends Widget {
     
     @Override
     protected void added() {
-	addInventory(this);
+	ui.gui.addInventory(this);
 	wnd = null;//just in case
 	Window tmp;
 	//do not try to add if we are in the contents window
@@ -690,27 +689,6 @@ public class ExtInventory extends Widget {
 	    return null;
 	}
     }
-    public static void addInventory(Widget ext) {
-	WindowX wnd = ext.getparent(WindowX.class);
-	if(wnd == null) {return;}
-	String name = wnd.cfgName(wnd.caption()).toLowerCase();
-	if(name.contains("inventory")
-	    || name.contains("character sheet")
-	    || name.contains("equipment")
-	    || name.contains("study")) {
-	    return;
-	}
-	INVENTORIES.add(ext);
-    }
-    
-    public static void remInventory(Widget ext) {
-	for (int i = 0; i < INVENTORIES.size(); i++) {
-	    if(INVENTORIES.get(i) == ext) {
-		INVENTORIES.remove(i);
-		return;
-	    }
-	}
-    }
     
     //TODO: should we sort inventories based on z-order of windows?
     private Object[] getTransferTargets() {
@@ -718,14 +696,15 @@ public class ExtInventory extends Widget {
 	if(inv != ui.gui.maininv) {
 	    return null;
 	}
-	if(INVENTORIES.isEmpty()) {
+	List<Widget> inventories = ui.gui.EXT_INVENTORIES;
+	if(inventories.isEmpty()) {
 	    return null;
 	}
-	Object[] args = new Object[2 + INVENTORIES.size()];
+	Object[] args = new Object[2 + inventories.size()];
 	int i = 0;
 	args[i++] = 0; //flags
 	args[i++] = 1; //how many to transfer
-	for (Widget wdg : INVENTORIES) {
+	for (Widget wdg : inventories) {
 	    args[i++] = wdg.wdgid();
 	}
 	return args;
