@@ -597,7 +597,7 @@
 	"gfx/invobjs/fishwrap": "Sushi au poisson",
 	"gfx/invobjs/fishyeyeball": "Œil de poisson",
 	"gfx/invobjs/flaxfibre": "Fibre de lin",
-	"gfx/invobjs/flaxoil": "Huile de lin"
+	"gfx/invobjs/flaxoil": "Huile de lin",
 	"gfx/invobjs/flint": "Silex",
 	"gfx/invobjs/flintsteel": "Allume-feu et silex",
 	"gfx/invobjs/flour": "Farine",
@@ -697,7 +697,7 @@
 	"gfx/invobjs/harmonica": "Harmonica",
 	"gfx/invobjs/hartshorn": "Extrait de bois de cerf",
 	"gfx/invobjs/hartshornsalve": "Baume de bois de cerf",
-	"gfx/invobjs/hazelnut": "Noisette"
+	"gfx/invobjs/hazelnut": "Noisette",
 	"gfx/invobjs/hedgehog": "Hérisson",
 	"gfx/invobjs/hedgehog-carcass": "Carcasse de hérisson",
 	"gfx/invobjs/hedgehog-clean": "Carcasse de hérisson éviscérée",
@@ -797,7 +797,7 @@
 	"gfx/invobjs/hpatch-fox": "Morceau de peau de renard",
 	"gfx/invobjs/hpatch-horse": "Morceau de peau de cheval",
 	"gfx/invobjs/hpatch-lynx": "Morceau de peau de lynx",
-	"gfx/invobjs/hpatch-mammoth": "Morceau de peau de mammouth"
+	"gfx/invobjs/hpatch-mammoth": "Morceau de peau de mammouth",
 	"gfx/invobjs/hpatch-moose": "Morceau de peau d'orignal",
 	"gfx/invobjs/hpatch-mouflon": "Morceau de peau de mouflon",
 	"gfx/invobjs/hpatch-otter": "Morceau de peau de loutre",
@@ -1070,7 +1070,7 @@
 	"gfx/invobjs/pancake-sacrebleu": "Crêpe Sacrébleu",
 	"gfx/invobjs/parchment": "Parchemin",
 	"gfx/invobjs/parchment-cmb": "Guide de combat",
-	"gfx/invobjs/parchment-p": "Affiche "Recherché"",
+	"gfx/invobjs/parchment-p": "Affiche Recherche",
 	"gfx/invobjs/parchment-w": "Parchemin inscrit",
 	"gfx/invobjs/patternbroid": "Brodé multicolore",
 	"gfx/invobjs/peapie": "Tourte aux petits pois",
