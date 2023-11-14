@@ -953,6 +953,9 @@ public class OptWnd extends WindowX {
     
 	y += STEP;
 	panel.add(new CFGBox("Item drop protection", CFG.ITEM_DROP_PROTECTION, "Drop items on cursor only when CTRL is pressed"), new Coord(x, y));
+	
+	y += STEP;
+	panel.add(new CFGBox("Container decal pickup protection", CFG.DECAL_SHIFT_PICKUP, "Require holding CTRL or SHIFT to pickup decals placed on containers."), new Coord(x, y));
     
 	y += STEP;
 	panel.add(new CFGBox("Enable path queueing", CFG.QUEUE_PATHS, "ALT+LClick will queue movement"), x, y);

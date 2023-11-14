@@ -860,13 +860,20 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 
 	public Object[] clickargs(ClickData cd) {
 	    Object[] ret = {0, (int)gob.id, gob.rc.floor(OCache.posres), 0, -1};
+	    boolean simpleClick = false;
 	    for(Object node : cd.array()) {
 		if(node instanceof Gob.Overlay) {
+		    if(gob.simplifyClick((Overlay) node)) {simpleClick = true;}
 		    ret[0] = 1;
 		    ret[3] = ((Gob.Overlay)node).id;
 		}
 		if(node instanceof FastMesh.ResourceMesh)
 		    ret[4] = ((FastMesh.ResourceMesh)node).id;
+	    }
+	    if(simpleClick) {
+		ret[0] = 0;
+		ret[3] = 0;
+		ret[4] = -1;
 	    }
 	    return(ret);
 	}
@@ -877,6 +884,20 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     }
 
     protected void obstate(Pipe buf) {
+    }
+    
+    private boolean simplifyClick(Gob.Overlay overlay) {
+	if(!is(GobTag.CONTAINER) || !CFG.DECAL_SHIFT_PICKUP.get()) {return false;}
+	
+	UI ui = context(UI.class);
+	if(ui == null) {return false;}
+	
+	String name = overlay.name();
+	if("gfx/terobjs/items/parchment-decal".equals(name)) {
+	    return !ui.modctrl && !ui.modshift;
+	}
+	
+	return false;
     }
 
     private class GobState implements Pipe.Op {
@@ -1029,6 +1050,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     private static final ClassResolver<Gob> ctxr = new ClassResolver<Gob>()
 	.add(Gob.class, g -> g)
 	.add(Glob.class, g -> g.glob)
+	.add(UI.class, g -> g.glob.sess.ui)
 	.add(GameUI.class, g -> (g.glob.sess.ui != null) ? g.glob.sess.ui.gui : null)
 	.add(MapWnd2.class, g -> (g.glob.sess.ui != null && g.glob.sess.ui.gui != null) ? g.glob.sess.ui.gui.mapfile : null)
 	.add(Session.class, g -> g.glob.sess);
