@@ -1142,6 +1142,9 @@ public class OptWnd extends WindowX {
 	y += STEP;
 	y = addSlider(CFG.DISPLAY_SCALE_WALLS, "Wall scale", "Scale palisade and brick wall vertically, changes are applied on zone reload.", panel, x, y, STEP);
 	
+	y += STEP;
+	panel.add(new CFGBox("Cupboard decals on top", CFG.DISPLAY_DECALS_ON_TOP, "Show decals put on cupboard on its top instead of a door. (Requires zone reload or re-applying decal)", true), x, y);
+    
 	my = Math.max(my, y);
 	
 	panel.add(new PButton(UI.scale(200), "Back", 27, main), new Coord(0, my + UI.scale(35)));

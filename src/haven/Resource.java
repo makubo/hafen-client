@@ -26,6 +26,8 @@
 
 package haven;
 
+import me.ender.CustomizeResLayer;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.annotation.*;
@@ -1883,6 +1885,9 @@ public class Resource implements Serializable {
     }
 
     public <I, L extends IDLayer<I>> L layer(Class<L> cl, I id) {
+	if(CustomizeResLayer.needReturnNull(this, cl, id)) {
+	    return null;
+	}
 	used = true;
 	for(Layer l : layers) {
 	    if(cl.isInstance(l)) {

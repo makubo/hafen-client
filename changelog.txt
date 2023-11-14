@@ -2,6 +2,7 @@ $size[14]{$u{Update for 14.11.23:}
   * made Credo description show which parts of the bonus you already got
   * added option to show initiative and openings over gobs during combat (Combat -> Show combat info)
   * do not include armor from broken items in the equipment bonuses 
+  * added option to show decals on top of cupboards instead of on the door (Display -> Cupboard decals on top)
  
 $size[14]{$u{Update for 13.11.23:}
   * added option to flatten terrain (Display -> Make terrain flat)

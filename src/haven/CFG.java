@@ -33,6 +33,7 @@ public class CFG<T> {
     public static final CFG<Boolean> COLORIZE_DEEP_WATER = new CFG<>("display.colored_deep_water", false);
     public static final CFG<Integer> DISPLAY_SCALE_CUPBOARDS = new CFG<>("display.scale.cupboards", 100);
     public static final CFG<Integer> DISPLAY_SCALE_WALLS = new CFG<>("display.scale.walls", 100);
+    public static final CFG<Boolean> DISPLAY_DECALS_ON_TOP = new CFG<>("display.decals_on_top", false);
     public static final CFG<Boolean> STORE_MAP = new CFG<>("general.storemap", false);
     public static final CFG<Boolean> SHOW_TOOLBELT_0 = new CFG<>("general.toolbelt0", true);
     public static final CFG<Boolean> SHOW_TOOLBELT_1 = new CFG<>("general.toolbelt1", false);
