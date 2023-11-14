@@ -4,6 +4,7 @@ $size[14]{$u{Update for 14.11.23:}
   * do not include armor from broken items in the equipment bonuses 
   * added option to show decals on top of cupboards instead of on the door (Display -> Cupboard decals on top)
   * added option to pickup decals from containers only when CTRL or SHIFT is held (General -> Container decal pickup protection)
+  * added option to improve weapon damage tooltip (UI -> Improve weapon damage tooltip)
  
 $size[14]{$u{Update for 13.11.23:}
   * added option to flatten terrain (Display -> Make terrain flat)

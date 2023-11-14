@@ -75,6 +75,7 @@ public class CFG<T> {
     public static final CFG<Boolean> SHOW_CURIO_LPH = new CFG<>("ui.show_curio_lph", false);
     public static final CFG<Boolean> SHOW_CURIO_REMAINING_TT = new CFG<>("ui.show_curio_remaining_tt", true);
     public static final CFG<Boolean> SHOW_CURIO_REMAINING_METER = new CFG<>("ui.show_curio_remaining_meter", false);
+    public static final CFG<Boolean> IMPROVE_DAMAGE_TIP = new CFG<>("ui.improve_damage_tip", false);
     public static final CFG<Boolean> SHOW_ITEM_DURABILITY = new CFG<>("ui.item_durability", false);
     public static final CFG<Boolean> SHOW_ITEM_WEAR_BAR = new CFG<>("ui.item_wear_bar", true);
     public static final CFG<Boolean> SHOW_ITEM_ARMOR = new CFG<>("ui.item_armor", false);

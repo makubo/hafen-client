@@ -26,6 +26,7 @@
 
 package haven;
 
+import me.ender.DamageTip;
 import me.ender.Reflect;
 
 import java.awt.*;
@@ -512,6 +513,7 @@ public abstract class ItemInfo {
 		throw(new ClassCastException("Unexpected object type " + o.getClass() + " in item info array."));
 	    }
 	}
+	DamageTip.process(ret);
 	return(ret);
     }
 
