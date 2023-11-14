@@ -10,8 +10,8 @@ public class CustomizeStaticSprite {
     public static void added(StaticSprite sprite, RenderTree.Slot slot) {
 	try {
 	    if (CFG.DISPLAY_DECALS_ON_TOP.get() 
-		&& sprite.res.name.equals("gfx/terobjs/items/parchment-decal") 
-		&& sprite.owner.getres().name.equals("gfx/terobjs/cupboard"))
+		&& sprite.res.name.equals(ResName.DECAL) 
+		&& sprite.owner.getres().name.equals(ResName.CUPBOARD))
 	    {
 		slot.cstate(Location.xlate(new Coord3f(-5,-5,17.5f)));
 	    }

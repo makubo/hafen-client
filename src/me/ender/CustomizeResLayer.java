@@ -12,7 +12,7 @@ public class CustomizeResLayer {
 	//skip 'decal' bone offset for cupboards so decals would be positioned statically at (0,0,0) and not moving on the door
 	if(CFG.DISPLAY_DECALS_ON_TOP.get() 
 	    && cl == Skeleton.BoneOffset.class
-	    && res.name.equals("gfx/terobjs/cupboard") 
+	    && res.name.equals(ResName.CUPBOARD) 
 	    && Objects.equals(id, "decal")) {
 	    return true;
 	}

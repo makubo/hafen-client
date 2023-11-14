@@ -2,6 +2,7 @@ package haven;
 
 import haven.render.Location;
 import haven.render.Pipe;
+import me.ender.ResName;
 
 public class GobCustomScale implements Gob.SetupMod {
     
@@ -15,7 +16,7 @@ public class GobCustomScale implements Gob.SetupMod {
 	    return;
 	}
 	
-	if(res.equals("gfx/terobjs/cupboard")) {
+	if(res.equals(ResName.CUPBOARD)) {
 	    update(CFG.DISPLAY_SCALE_CUPBOARDS.get());
 	} else if(res.startsWith("gfx/terobjs/arch/palisade") 
 	    || res.startsWith("gfx/terobjs/arch/brickwall")) {

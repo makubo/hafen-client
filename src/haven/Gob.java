@@ -32,6 +32,7 @@ import java.util.function.*;
 import haven.render.*;
 import haven.res.gfx.fx.msrad.MSRad;
 import integrations.mapv4.MappingClient;
+import me.ender.ResName;
 import me.ender.gob.GobCombatInfo;
 import me.ender.minimap.AutoMarkers;
 
@@ -893,7 +894,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	if(ui == null) {return false;}
 	
 	String name = overlay.name();
-	if("gfx/terobjs/items/parchment-decal".equals(name)) {
+	if(ResName.DECAL.equals(name)) {
 	    return !ui.modctrl && !ui.modshift;
 	}
 	
