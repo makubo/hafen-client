@@ -231,4 +231,9 @@
     <delete dir="resources/compiled" />
     <delete file="build/client-res.jar" />
   </target>
+
+  <target name="clean-builtin-assets">
+    <delete file="bin/hafen-res.jar" />
+    <delete file="bin/builtin-res.jar" />
+  </target>
 </project>
