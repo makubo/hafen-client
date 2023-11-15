@@ -78,6 +78,7 @@ public class CFG<T> {
     public static final CFG<Boolean> IMPROVE_DAMAGE_TIP = new CFG<>("ui.improve_damage_tip", false);
     public static final CFG<Boolean> SHOW_ITEM_DURABILITY = new CFG<>("ui.item_durability", false);
     public static final CFG<Boolean> SHOW_ITEM_WEAR_BAR = new CFG<>("ui.item_wear_bar", true);
+    public static final CFG<Boolean> HIGHLIGHT_BROKEN_ITEMS = new CFG<>("ui.highlight_broken_items", true);
     public static final CFG<Boolean> SHOW_ITEM_ARMOR = new CFG<>("ui.item_armor", false);
     public static final CFG<Boolean> SWAP_NUM_AND_Q = new CFG<>("ui.swap_num_and_q", false);
     public static final CFG<Boolean> PROGRESS_NUMBER = new CFG<>("ui.progress_number", false);

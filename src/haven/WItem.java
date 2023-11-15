@@ -275,6 +275,10 @@ public class WItem extends Widget implements DTarget2 {
 		g.chcolor(MATCH_COLOR);
 		g.rect(Coord.z, sz);
 		g.chcolor();
+	    } else if(CFG.HIGHLIGHT_BROKEN_ITEMS.get() && wear.get() != null && wear.get().a <= 0) {
+		g.chcolor(Color.RED);
+		g.rect(Coord.z, sz);
+		g.chcolor();
 	    }
 	    drawmain(g, spr);
 	    g.defstate();
