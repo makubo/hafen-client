@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 15.11.23:}
+  * merged loftar's changes
+  * merged pull request with FR translation from Fr-Dae
+ 
 $size[14]{$u{Update for 14.11.23:}
   * made Credo description show which parts of the bonus you already got
   * added option to show initiative and openings over gobs during combat (Combat -> Show combat info)
