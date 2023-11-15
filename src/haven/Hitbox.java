@@ -40,7 +40,7 @@ public class Hitbox extends SlottedNode implements Rendered {
     @Override
     public void added(RenderTree.Slot slot) {
 	super.added(slot);
-	slot.ostate(state);
+	slot.ostate(state(state));
 	updateState();
     }
     
@@ -64,8 +64,9 @@ public class Hitbox extends SlottedNode implements Rendered {
 	    }catch (Loading ignored) {}
 	    if(newState != state) {
 		state = newState;
+		newState = state(state);
 		for (RenderTree.Slot slot : slots) {
-		    slot.ostate(state);
+		    slot.ostate(newState);
 		}
 	    }
 	}
@@ -177,6 +178,21 @@ public class Hitbox extends SlottedNode implements Rendered {
 	    }
 	}
 	return res;
+    }
+    
+    private Pipe.Op state(Pipe.Op state) {
+	float scale = gob.scale();
+	if(scale <= 0 || scale >= 1) {return state;}
+	return Pipe.Op.compose(state, scale(scale));
+    }
+    
+    private static Pipe.Op scale(float scale) {
+	scale = 1 / scale;
+	return new Location(new Matrix4f(
+	    scale, 0, 0, 0,
+	    0, scale, 0, 0,
+	    0, 0, scale, 0,
+	    0, 0, 0, 1));
     }
     
     public static void toggle(GameUI gui) {

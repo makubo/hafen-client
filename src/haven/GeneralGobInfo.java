@@ -24,6 +24,7 @@ public class GeneralGobInfo extends GobInfo {
 	}
     };
     private GobHealth health;
+    private int scalePercent = -1;
     int q;
 
     protected GeneralGobInfo(Gob owner) {
@@ -84,6 +85,7 @@ public class GeneralGobInfo extends GobInfo {
 
     private BufferedImage growth() {
 	Text.Line line = null;
+	scalePercent = -1;
  
 	if(isSpriteKind(gob, "GrowingPlant", "TrellisPlant")) {
 	    int maxStage = 0;
@@ -103,8 +105,9 @@ public class GeneralGobInfo extends GobInfo {
 	    Message data = getDrawableData(gob);
 	    if(data != null && !data.eom()) {
 		data.skip(1);
-		int growth = data.eom() ? -1 : data.uint8();
-		if(growth < 100 && growth >= 0) {
+		scalePercent = data.eom() ? -1 : data.uint8();
+		if(scalePercent < 100 && scalePercent >= 0) {
+		    int growth = scalePercent;
 		    if(gob.is(GobTag.TREE)) {
 			growth = (int) (TREE_MULT * (growth - TREE_START));
 		    } else if(gob.is(GobTag.BUSH)) {
@@ -120,6 +123,13 @@ public class GeneralGobInfo extends GobInfo {
 	    return line.img;
 	}
 	return null;
+    }
+    
+    public float growthScale() {
+	int percent = scalePercent;
+	return percent > 0
+	    ? percent / 100f
+	    : 1;
     }
 
     private BufferedImage barrel() {
