@@ -1045,7 +1045,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     }
     
     public String inspect() {
-	return resid();
+	return String.format("%s [%d]",resid(), sdt());
     }
     
     private static final ClassResolver<Gob> ctxr = new ClassResolver<Gob>()
