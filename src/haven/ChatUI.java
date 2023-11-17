@@ -26,6 +26,8 @@
 
 package haven;
 
+import me.ender.Reflect;
+
 import java.io.*;
 import java.util.*;
 import java.awt.Color;
@@ -160,7 +162,12 @@ public class ChatUI extends Widget {
 	    public boolean mouseup(Channel chan, CharPos pos, Coord c, int btn) {return(false);}
 	    public boolean clicked(Channel chan, CharPos pos, Coord c, int btn) {return(false);}
 	    
-	    public abstract String message();
+	    public String message() {
+		if(Reflect.is(this, "haven.res.ui.rchan.RealmChannel$PNamedMessage")) {
+		    return Utils.timestamp(String.format("%s: %s", Reflect.getFieldValueString(this, "cn"), Reflect.getFieldValueString(this, "text")));
+		}
+		return null;
+	    }
 	}
 
 	private RenderedMessage soldest = null, snewest = null;
@@ -334,8 +341,10 @@ public class ChatUI extends Widget {
 	    }
 	    if(log != null) {
 		String text = msg.message();
-		log.println(text);
-		log.flush();
+		if(text != null) {
+		    log.println(text);
+		    log.flush();
+		}
 	    }
 	}
 	
