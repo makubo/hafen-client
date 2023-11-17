@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 17.11.23:}
+  * fixed crash on receiving a message in realm chat with store chat logs turned on
+  * tweaked layout of animal inspect window
+ 
 $size[14]{$u{Update for 16.11.23:}
   * added option to highlight broken items (UI -> Highlight broken items, defaults to ON)
   * fixed hitbox size on growing trees/bushes
