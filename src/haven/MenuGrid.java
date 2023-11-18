@@ -794,7 +794,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
     }
 
     public boolean isCrafting(Pagina p) {
-	return (p != null) && (isCrafting(p.res()) || isCrafting(getParent(p)));
+	return (p != null) && (Pagina.name(p).startsWith("paginae/craft/") || isCrafting(p.res()) || isCrafting(getParent(p)));
     }
 
     public boolean isCrafting(Resource res){
@@ -829,6 +829,11 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
     public KeyBinding getbinding(Coord cc) {
 	PagButton h = bhit(cc);
 	return((h == null) ? null : h.bind);
+    }
+    
+    public Pagina findPagina(Indir<Resource> res) {
+	if(res == null) {return null;}
+	return pmap.get(res);
     }
     
     public Pagina findPagina(String name) {
