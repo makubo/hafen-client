@@ -148,6 +148,12 @@ public enum GobTag {
                 boolean done = sdt >= 8; //has leather
                 if(empty) { tags.add(EMPTY); }
                 if(done) { tags.add(READY); }
+            } else if(name.endsWith("/beehive")) {
+                tags.add(PROGRESSING);
+                //sdt bits: 0 - honey, 1 - bees?, 2 - wax
+                //boolean noHoney = (sdt & 1) == 0; //has no honey
+                boolean hasWax = (sdt & 4) != 0; //has wax
+                if(hasWax) {tags.add(READY);}
             } else if(name.endsWith("/gems/gemstone")) {
                 tags.add(GEM);
             } else if(name.endsWith("/wheelbarrow") || name.endsWith("/plow")) {
