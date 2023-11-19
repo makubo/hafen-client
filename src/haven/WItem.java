@@ -36,10 +36,12 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import haven.ItemInfo.AttrCache;
+import me.ender.WindowDetector;
 import rx.functions.Action0;
 import rx.functions.Action3;
 
 import static haven.Inventory.sqsz;
+import static me.ender.WindowDetector.*;
 
 public class WItem extends Widget implements DTarget2 {
     public static final Resource missing = Resource.local().loadwait("gfx/invobjs/missing");
@@ -327,6 +329,9 @@ public class WItem extends Widget implements DTarget2 {
     private Tex cachedStudyTex = null;
     
     private Tex getStudyTime() {
+	if(!WindowDetector.isWindowType(this, WND_STUDY, WND_CHARACTER_SHEET)) {
+	    return null;
+	}
 	Pair<String, String> data = study.get();
 	String value = data == null ? null : data.a;
 	String tip = data == null ? null : data.b;

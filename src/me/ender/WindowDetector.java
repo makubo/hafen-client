@@ -5,9 +5,13 @@ import haven.rx.CharterBook;
 import haven.rx.Reactor;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class WindowDetector {
+    public static final String WND_STUDY = "Study";
+    public static final String WND_CHARACTER_SHEET = "Character Sheet";
+    
     private static final Object lock = new Object();
     private static final Set<Window> toDetect = new HashSet<>();
     private static final Set<Window> detected = new HashSet<>();
@@ -81,6 +85,24 @@ public class WindowDetector {
 	    return new ProspectingWnd(sz, title);
 	}
 	return (new WindowX(sz, title, lg));
+    }
+    
+    public static boolean isWindowType(Widget wdg, String... types) {
+	Window wnd;
+	if(types == null || types.length == 0) {return false;}
+	if(wdg == null) {return false;}
+	if(wdg instanceof Window) {
+	    wnd = (Window) wdg;
+	} else {
+	    wnd = wdg.getparent(Window.class);
+	}
+	if(wnd == null) {return false;}
+	
+	for (String type : types) {
+	    if(Objects.equals(type, wnd.caption())) {return true;}
+	}
+	
+	return false;
     }
     
     public static boolean isPortal(String title) {
