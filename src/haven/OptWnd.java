@@ -1081,6 +1081,9 @@ public class OptWnd extends WindowX {
 	panel.add(new CFGBox("Simple crops", CFG.SIMPLE_CROPS, "Requires area reload"), x, y);
 	
 	y += STEP;
+	panel.add(new CFGBox("Don't hide trees that are visible on radar", CFG.SKIP_HIDING_RADAR_TREES), x, y);
+	
+	y += STEP;
 	panel.add(new CFGBox("Disable transition between tiles", CFG.NO_TILE_TRANSITION), x, y);
     
 	y += STEP;

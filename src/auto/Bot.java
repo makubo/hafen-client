@@ -341,15 +341,8 @@ public class Bot implements Defer.Callable<Void> {
     
     private static boolean isOnRadar(Gob gob) {
 	if(!CFG.AUTO_PICK_ONLY_RADAR.get()) {return true;}
-	GobIcon icon = gob.getattr(GobIcon.class);
-	GameUI gui = gob.glob.sess.ui.gui;
-	if(icon != null && gui != null) {
-	    try {
-		GobIcon.Setting s = gui.iconconf.get(icon.res.get());
-		return s.show;
-	    } catch (Loading ignored) {}
-	}
-	return true;
+	Boolean onRadar = gob.isOnRadar();
+	return onRadar == null || onRadar;
     }
     
     private static double distanceToPlayer(Gob gob) {
