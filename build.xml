@@ -189,7 +189,7 @@
     <copy file="local-config.properties" tofile="build/haven-config.properties" failonerror="false" quiet="true" />
   </target>
 
-  <target name="bin" depends="jar, extlib/jogl, extlib/lwjgl-gl, res-jar">
+  <target name="bin" depends="jar, extlib/jogl, extlib/lwjgl-gl, res-jar, resources">
     <mkdir dir="bin" />
     <copy todir="bin">
       <fileset dir="build">

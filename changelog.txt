@@ -1,3 +1,8 @@
+$size[14]{$u{Update for 20.11.23:}
+  * do not show progress as time for curios that are not in the study
+  * highlight bee hives with wax as READY
+  * fixed crafting window not showing tab for actions opened from toolbar
+ 
 $size[14]{$u{Update for 17.11.23:}
   * fixed crash on receiving a message in realm chat with store chat logs turned on
   * tweaked layout of animal inspect window
