@@ -113,6 +113,7 @@ public class Bot implements Defer.Callable<Void> {
     public static void openGate(GameUI gui) {
 	List<Target> targets = gui.ui.sess.glob.oc.stream()
 	    .filter(has(GobTag.GATE))
+	    .filter(gob -> !gob.isVisitorGate())
 	    .filter(gob -> distanceToPlayer(gob) <= 35)
 	    .sorted(byDistance)
 	    .limit(1)

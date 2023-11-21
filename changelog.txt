@@ -1,5 +1,6 @@
 $size[14]{$u{Update for 21.11.23:}
   * added option to not hide trees that have icons visible on radar (Display -> Don't hide trees that are visible on radar) 
+  * made hotkey interact with the closest gate ignore visitor gates
  
 $size[14]{$u{Update for 20.11.23:}
   * do not show progress as time for curios that are not in the study

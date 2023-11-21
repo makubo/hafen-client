@@ -32,6 +32,7 @@ import java.util.function.*;
 import haven.render.*;
 import haven.res.gfx.fx.msrad.MSRad;
 import integrations.mapv4.MappingClient;
+import me.ender.Reflect;
 import me.ender.ResName;
 import me.ender.gob.GobCombatInfo;
 import me.ender.minimap.AutoMarkers;
@@ -753,6 +754,17 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    return s.show;
 	} catch (Loading ignored) {}
 	return null;
+    }
+    
+    public boolean isVisitorGate() {
+	for (Overlay ol : ols) {
+	    if(!Reflect.is(ol.spr, "haven.res.gfx.fx.eq.Equed")) {continue;}
+	    AnimSprite espr = Reflect.getFieldValue(ol.spr, "espr", AnimSprite.class);
+	    if(espr != null && "gfx/terobjs/arch/visflag".equals(espr.res.name)) {
+		return true;
+	    }
+	}
+	return false;
     }
 
     public Placer placer() {
