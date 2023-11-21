@@ -531,7 +531,11 @@ public class WItem extends Widget implements DTarget2 {
     }
     
     public void tryDrop() {
-	checkDrop = true;
+	if(item.contents == null) {
+	    checkDrop = true;
+	} else {
+	    item.contents.children(WItem.class).forEach(WItem::tryDrop);
+	}
     }
     
     private void checkDrop() {
