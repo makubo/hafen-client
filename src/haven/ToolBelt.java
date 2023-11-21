@@ -305,9 +305,14 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	    if(ttip != null) {ttip.dispose();}
 	    ttip = null;
 	    try {
-		MenuGrid.Pagina p = ui.gui.menu.paginafor(item.res);
+		MenuGrid.Pagina p = ui.gui.menu.findPagina(item.res);
 		if(p != null) {
 		    ttip = ItemData.longtip(p, ui.sess);
+		} else {
+		    Resource.Tooltip tt = item.getres().layer(Resource.tooltip);
+		    if(tt != null) {
+			ttip = Text.render(tt.t).tex();
+		    }
 		}
 		last = item;
 	    } catch (Loading ignored) {}
