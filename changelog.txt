@@ -1,5 +1,8 @@
 $size[14]{$u{Update for 22.11.23:}
   * improved auto-drop handling of stacks
+  * fixed crash when clicking on item placed on custom toolbar
+  * added action to refill waterskins/flasks/jugs with water from nearby water tile - unmapped by default, can be changed in Global Shortcuts.
+  * added drink refill to menu grid (Xtended -> autoMation -> Refill drinks)
  
 $size[14]{$u{Update for 21.11.23:}
   * added option to not hide trees that have icons visible on radar (Display -> Don't hide trees that are visible on radar) 
