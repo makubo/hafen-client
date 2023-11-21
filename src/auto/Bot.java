@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static auto.InvHelper.*;
 
@@ -24,6 +25,10 @@ public class Bot implements Defer.Callable<Void> {
     public Bot(List<Target> targets, BotAction... actions) {
 	this.targets = targets;
 	this.actions = actions;
+    }
+    
+    public Bot(BotAction... actions) {
+	this(Collections.singletonList(Target.EMPTY), actions);
     }
     
     @Override
@@ -125,6 +130,58 @@ public class Bot implements Defer.Callable<Void> {
 	start(new Bot(targets, Target::rclick), gui.ui, true);
     }
     
+    public static void refillDrinks(GameUI gui) {
+	if(gui.hand() != null || gui.cursor != null) {
+	    gui.error("You must have empty cursor to refill drinks!");
+	    return;
+	}
+	
+	Coord2d waterTile;
+	boolean needWalk = false;
+	Gob player = gui.map.player();
+	
+	if(MapHelper.isPlayerOnFreshWaterTile(gui)) {
+	    waterTile = player.rc;
+	} else {
+	    needWalk = true;
+	    waterTile = MapHelper.nearbyWaterTile(gui);
+	}
+	
+	//TODO: add other sources, like wellspring
+	if(waterTile == null) {
+	    gui.error("You must be near fresh water tile to refill drinks!");
+	    return;
+	}
+	
+	final Coord2d tile = waterTile;
+	
+	List<Target> targets = Stream.of(INVENTORY_CONTAINED(gui), BELT_CONTAINED(gui))
+	    .flatMap(x -> x.get().stream())
+	    .filter(InvHelper::isDrinkContainer)
+	    //TODO: skip full containers?
+	    .map(Target::new)
+	    .collect(Collectors.toList());
+	
+	Bot refillBot = new Bot(targets,
+	    Target::take,
+	    t -> waitHeldChanged(gui),
+	    t -> gui.map.wdgmsg("itemact", Coord.z, tile.floor(OCache.posres), 0),
+	    doWait(70),
+	    Target::putBack,
+	    t -> waitHeldChanged(gui)
+	);
+	if(needWalk) {
+	    start(new Bot(
+		t -> gui.map.click(tile, 1, Coord.z, tile.floor(OCache.posres), 1, 0),
+		waitGobPose(player, 1500,"/walking", "/running"),
+		waitGobNoPose(player, 1500,"/walking", "/running"),
+		t -> start(refillBot, gui.ui, true)
+	    ), gui.ui, true);
+	} else {
+	    start(refillBot, gui.ui, true);
+	}
+    }
+    
     public static void selectFlower(GameUI gui, long gobid, String option) {
 	List<Target> targets = gui.ui.sess.glob.oc.stream()
 	    .filter(gob -> gob.id == gobid)
@@ -205,6 +262,26 @@ public class Bot implements Defer.Callable<Void> {
 	};
     }
     
+    private static BotAction waitGobNoPose(Gob gob, long timeout, String... poses) {
+	return (t) -> {
+	    final long started = System.currentTimeMillis();
+	    while (System.currentTimeMillis() - started < timeout
+		&& gob != null && !gob.disposed() && gob.hasPose(poses)) {
+		pause(100);
+	    }
+	};
+    }
+    
+    private static BotAction waitGobPose(Gob gob, long timeout, String... poses) {
+	return (t) -> {
+	    final long started = System.currentTimeMillis();
+	    while (System.currentTimeMillis() - started < timeout
+		&& gob != null && !gob.disposed() && !gob.hasPose(poses)) {
+		pause(100);
+	    }
+	};
+    }
+    
     private static boolean isHeld(GameUI gui, String what) throws Loading {
 	GameUI.DraggedItem drag = gui.hand();
 	if(drag == null && what == null) {
@@ -250,6 +327,10 @@ public class Bot implements Defer.Callable<Void> {
 	    }
 	}
 	return result;
+    }
+    
+    private static BotAction doWait(long ms) {
+	return (gui) -> pause(ms);
     }
     
     private static void pause(long ms) {
@@ -319,22 +400,40 @@ public class Bot implements Defer.Callable<Void> {
 	return gob -> gob.is(tag);
     }
     
-    private interface BotAction {
+    public interface BotAction {
 	void call(Target target) throws InterruptedException;
     }
     
+    //TODO: rework with inheritance?
     public static class Target {
+	public static final Target EMPTY = new Target();
+	
 	public final Gob gob;
 	public final WItem item;
+	public final ContainedItem contained;
+	
+	private Target() {
+	    this.gob = null;
+	    this.item = null;
+	    this.contained = null;
+	}
 	
 	public Target(Gob gob) {
 	    this.gob = gob;
 	    this.item = null;
+	    this.contained = null;
 	}
 	
 	public Target(WItem item) {
 	    this.item = item;
 	    this.gob = null;
+	    this.contained = null;
+	}
+	
+	private Target(ContainedItem contained) {
+	    this.item = null;
+	    this.gob = null;
+	    this.contained = contained;
 	}
 	
 	public void rclick() {
@@ -349,6 +448,7 @@ public class Bot implements Defer.Callable<Void> {
 	    if(!disposed()) {
 		if(gob != null) {gob.rclick(modflags);}
 		if(item != null) {item.rclick(modflags);}
+		if(contained != null) {contained.item.rclick(modflags);}
 	    }
 	}
     
@@ -364,10 +464,22 @@ public class Bot implements Defer.Callable<Void> {
 		if(gob != null) {gob.highlight();}
 	    }
 	}
+	
+	public void take() {
+	    if(contained != null && !contained.itemDisposed()) {
+		contained.take();
+	    }
+	}
+	
+	public void putBack() {
+	    if(contained != null && !contained.containerDisposed()) {
+		contained.putBack();
+	    }
+	}
     
 	public boolean hasMenu() {
 	    if(gob != null) {return gob.is(GobTag.MENU);}
-	    return item != null;
+	    return item != null || contained != null;
 	}
     
 	public boolean disposed() {

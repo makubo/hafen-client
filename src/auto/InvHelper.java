@@ -1,13 +1,11 @@
 package auto;
 
-import haven.Equipory;
-import haven.GameUI;
-import haven.WItem;
-import haven.Widget;
+import haven.*;
 
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class InvHelper {
     
@@ -38,6 +36,15 @@ public class InvHelper {
 	    .reduce(0f, Float::sum);
     }
     
+    static boolean isDrinkContainer(ContainedItem item) {
+	return isDrinkContainer(item.item);
+    }
+    
+    static boolean isDrinkContainer(WItem item) {
+	String resname = item.item.resname();
+	return resname.endsWith("/waterskin") || resname.endsWith("/waterflask") || resname.endsWith("/glassjug");
+    }
+    
     static Optional<WItem> findFirstItem(String what, Supplier<List<WItem>> where) {
 	return where.get().stream()
 	    .filter(wItem -> wItem.is(what))
@@ -48,6 +55,10 @@ public class InvHelper {
 	return () -> items(gui.maininv);
     }
     
+    static Supplier<List<ContainedItem>> INVENTORY_CONTAINED(GameUI gui) {
+	return () -> items(gui.maininv).stream().map(w -> new InventoryItem(w, gui.maininv)).collect(Collectors.toList());
+    }
+    
     static Supplier<List<WItem>> BELT(GameUI gui) {
 	return () -> {
 	    Equipory e = gui.equipory;
@@ -55,6 +66,19 @@ public class InvHelper {
 		WItem w = e.slots[Equipory.SLOTS.BELT.idx];
 		if(w != null) {
 		    return items(w.item.contents);
+		}
+	    }
+	    return new LinkedList<>();
+	};
+    }
+    
+    static Supplier<List<ContainedItem>> BELT_CONTAINED(GameUI gui) {
+	return () -> {
+	    Equipory e = gui.equipory;
+	    if(e != null) {
+		WItem w = e.slots[Equipory.SLOTS.BELT.idx];
+		if(w != null) {
+		    return items(w.item.contents).stream().map(i -> new BeltItem(i, w)).collect(Collectors.toList());
 		}
 	    }
 	    return new LinkedList<>();
@@ -76,5 +100,71 @@ public class InvHelper {
 	    }
 	    return items;
 	};
+    }
+    
+    public static abstract class ContainedItem {
+	final WItem item;
+	
+	ContainedItem(WItem item) {this.item = item;}
+	
+	public boolean itemDisposed() {return item.disposed();}
+	
+	public abstract boolean containerDisposed();
+	
+	public abstract void take();
+	
+	public abstract void putBack();
+    }
+    
+    private static class InventoryItem extends ContainedItem {
+	
+	private final Widget parent;
+	private final Coord c;
+	
+	InventoryItem(WItem item, Widget parent) {
+	    super(item);
+	    this.parent = parent;
+	    this.c = item.c.sub(1, 1).div(Inventory.sqsz);
+	}
+	
+	@Override
+	public boolean containerDisposed() {
+	    return parent.disposed();
+	}
+	
+	@Override
+	public void take() {
+	    item.item.wdgmsg("take", Coord.z);
+	}
+	
+	@Override
+	public void putBack() {
+	    parent.wdgmsg("drop", c);
+	}
+    }
+    
+    private static class BeltItem extends ContainedItem {
+	
+	private final WItem belt;
+	
+	BeltItem(WItem item, WItem belt) {
+	    super(item);
+	    this.belt = belt;
+	}
+	
+	@Override
+	public boolean containerDisposed() {
+	    return belt.disposed();
+	}
+	
+	@Override
+	public void take() {
+	    item.item.wdgmsg("take", Coord.z);
+	}
+	
+	@Override
+	public void putBack() {
+	    belt.item.wdgmsg("itemact", 0);
+	}
     }
 }

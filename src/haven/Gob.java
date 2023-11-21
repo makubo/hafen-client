@@ -743,6 +743,15 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	}
 	return isMe;
     }
+    
+    public boolean hasPose(String... poses) {
+	Drawable d = drawable;
+	if(d == null) {return false;}
+	for (String pose : poses) {
+	    if(d.hasPose(pose)) {return true;}
+	}
+	return false;
+    }
 
     /**returns whether icon for this gob is visible on radar, if there's no icon in config returns null*/
     public Boolean isOnRadar() {
