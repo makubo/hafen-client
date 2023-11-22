@@ -760,7 +760,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	if(icon == null || gui == null) {return null;}
 	try {
 	    GobIcon.Setting s = gui.iconconf.get(icon.res.get());
-	    return s.show;
+	    return s == null ? null : s.show;
 	} catch (Loading ignored) {}
 	return null;
     }
