@@ -4,6 +4,10 @@
       name: "Tarpit",
       res: "radar/tarpit"
     },
+    "gfx/terobjs/wonders/wellspring": {
+      name: "Wellspring",
+      res: "radar/wellspring"
+    },
     "gfx/terobjs/map/amberwash": {
       name: "Amber Wash",
       res: "radar/amberwash"
