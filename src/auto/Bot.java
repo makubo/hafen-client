@@ -136,24 +136,37 @@ public class Bot implements Defer.Callable<Void> {
 	    return;
 	}
 	
-	Coord2d waterTile;
+	Coord2d waterTile = null;
+	Gob barrel = null;
 	boolean needWalk = false;
 	Gob player = gui.map.player();
+	BotAction interact;
 	
 	if(MapHelper.isPlayerOnFreshWaterTile(gui)) {
 	    waterTile = player.rc;
 	} else {
 	    needWalk = true;
-	    waterTile = MapHelper.nearbyWaterTile(gui);
+	    List<Target> objs = getNearestTargets(gui, GobTag.HAS_WATER, 1, 32);
+	    if(!objs.isEmpty()) {
+		barrel = objs.get(0).gob;
+	    }
+	    if(barrel == null) {
+		waterTile = MapHelper.nearbyWaterTile(gui);
+	    } 
 	}
 	
-	//TODO: add other sources, like wellspring
-	if(waterTile == null) {
-	    gui.error("You must be near fresh water tile to refill drinks!");
+	final Coord2d tile = barrel != null ? barrel.rc : waterTile;
+	
+	if(waterTile != null) {
+	    interact = t -> gui.map.wdgmsg("itemact", Coord.z, tile.floor(OCache.posres), 0);
+	} else if(barrel != null) {
+	    final Gob gob = barrel;
+	    interact = t -> gui.map.wdgmsg("itemact", Coord.z, Coord.z, UI.MOD_META, 0, (int) gob.id, gob.rc.floor(OCache.posres), 0, -1);
+	    
+	} else {
+	    gui.error("You must be near tile or barrel with fresh water to refill drinks!");
 	    return;
 	}
-	
-	final Coord2d tile = waterTile;
 	
 	List<Target> targets = Stream.of(INVENTORY_CONTAINED(gui), BELT_CONTAINED(gui))
 	    .flatMap(x -> x.get().stream())
@@ -170,7 +183,7 @@ public class Bot implements Defer.Callable<Void> {
 	Bot refillBot = new Bot(targets,
 	    Target::take,
 	    t -> waitHeldChanged(gui),
-	    t -> gui.map.wdgmsg("itemact", Coord.z, tile.floor(OCache.posres), 0),
+	    interact,
 	    doWait(70),
 	    Target::putBack,
 	    t -> waitHeldChanged(gui)
@@ -221,17 +234,27 @@ public class Bot implements Defer.Callable<Void> {
     }
     
     public static void fuelGob(GameUI gui, String name, String fuel, int count) {
-	List<Target> targets = getNearestTargets(gui, name, 1);
+	List<Target> targets = getNearestTargets(gui, name, 1, 33);
 	
 	if(!targets.isEmpty()) {
 	    start(new Bot(targets, fuelWith(gui, fuel, count)), gui.ui);
 	}
     }
     
-    private static List<Target> getNearestTargets(GameUI gui, String name, int limit) {
+    private static List<Target> getNearestTargets(GameUI gui, String name, int limit, double distance) {
 	return gui.ui.sess.glob.oc.stream()
 	    .filter(gobIs(name))
-	    .filter(gob -> distanceToPlayer(gob) <= CFG.AUTO_PICK_RADIUS.get())
+	    .filter(gob -> distanceToPlayer(gob) <= distance)
+	    .sorted(byDistance)
+	    .limit(limit)
+	    .map(Target::new)
+	    .collect(Collectors.toList());
+    }
+    
+    private static List<Target> getNearestTargets(GameUI gui, GobTag tag, int limit, double distance) {
+	return gui.ui.sess.glob.oc.stream()
+	    .filter(gobIs(tag))
+	    .filter(gob -> distanceToPlayer(gob) <= distance)
 	    .sorted(byDistance)
 	    .limit(limit)
 	    .map(Target::new)
@@ -357,6 +380,13 @@ public class Bot implements Defer.Callable<Void> {
 	    String id = g.resid();
 	    if(id == null) {return false;}
 	    return id.contains(what);
+	};
+    }
+    
+    private static Predicate<Gob> gobIs(GobTag what) {
+	return g -> {
+	    if(g == null) { return false; }
+	    return g.is(what);
 	};
     }
     

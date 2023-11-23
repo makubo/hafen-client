@@ -1506,6 +1506,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     
     public float scale() {return info.growthScale();}
     
+    public String contents() {return info.contents();}
+    
     private static class StatusUpdates {
 	private final Set<StatusType> updated = new HashSet<>();
 	

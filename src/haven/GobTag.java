@@ -22,6 +22,8 @@ public enum GobTag {
     
     CONTAINER, PROGRESSING, GATE,
     
+    HAS_WATER,
+    
     PLAYER, ME, FRIEND, FOE,
     KO, DEAD, EMPTY, READY, FULL,
     
@@ -164,6 +166,10 @@ public enum GobTag {
             }
             if(name.equals("gfx/terobjs/items/arrow")) {
                 tags.add(ARROW);
+            }
+            
+            if("Water".equals(gob.contents())) {
+                tags.add(HAS_WATER);
             }
             
             if(anyOf(tags, HERB, CRITTER, GEM, ARROW)) {

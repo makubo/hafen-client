@@ -2,10 +2,8 @@ package haven;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 public class GeneralGobInfo extends GobInfo {
@@ -25,6 +23,7 @@ public class GeneralGobInfo extends GobInfo {
     };
     private GobHealth health;
     private int scalePercent = -1;
+    private String contents = null;
     int q;
 
     protected GeneralGobInfo(Gob owner) {
@@ -131,20 +130,29 @@ public class GeneralGobInfo extends GobInfo {
 	    ? percent / 100f
 	    : 1;
     }
+    
+    public String contents() {
+	return contents;
+    }
 
     private BufferedImage barrel() {
+	this.contents = null;
 	String res = gob.resid();
 	if(res == null || !res.startsWith("gfx/terobjs/barrel")) {
 	    return null;
 	}
-	return gob.ols.stream()
+	Optional<String> contents = gob.ols.stream()
 	    .map(Gob.Overlay::name)
 	    .filter(name -> name.startsWith("gfx/terobjs/barrel-"))
 	    .map(name -> name.substring(name.lastIndexOf("-") + 1))
 	    .map(Utils::prettyResName)
-	    .findAny()
-	    .map(name -> Text.std.renderstroked(name, BARREL_COL, Color.black).img)
-	    .orElse(null);
+	    .findAny();
+	
+	if(contents.isPresent()) {
+	    this.contents = contents.get();
+	    return Text.std.renderstroked(this.contents, BARREL_COL, Color.black).img;
+	}
+	return null;
     }
     
     private static Message getDrawableData(Gob gob) {
