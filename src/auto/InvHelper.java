@@ -45,6 +45,15 @@ public class InvHelper {
 	return resname.endsWith("/waterskin") || resname.endsWith("/waterflask") || resname.endsWith("/glassjug");
     }
     
+    static boolean isNotFull(ContainedItem item) {
+	return isNotFull(item.item);
+    }
+    
+    static boolean isNotFull(WItem item) {
+	Pair<Double, Double> fullness = item.fullness.get();
+	return fullness == null || !Objects.equals(fullness.a, fullness.b);
+    }
+    
     static Optional<WItem> findFirstItem(String what, Supplier<List<WItem>> where) {
 	return where.get().stream()
 	    .filter(wItem -> wItem.is(what))

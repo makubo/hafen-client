@@ -167,6 +167,23 @@ public class WItem extends Widget implements DTarget2 {
 	    GItem.InfoOverlay<?>[] ret = buf.toArray(new GItem.InfoOverlay<?>[0]);
 	    return(() -> ret);
 	});
+    
+    public final AttrCache<Pair<Double, Double>> fullness = new AttrCache<>(this::info, info -> {
+	Pair<Double, Double> result = null;
+	GItem.InfoOverlay<?>[] ols = itemols.get();
+	for (GItem.InfoOverlay<?> ol : ols) {
+	    if(Reflect.is(ol.inf, "haven.res.ui.tt.level.Level")) {
+		result = new Pair<>(
+		    Reflect.getFieldValueDouble(ol.inf, "cur"),
+		    Reflect.getFieldValueDouble(ol.inf, "max")
+		);
+		break;
+	    }
+	}
+	final Pair<Double, Double> t = result;
+	return () -> t;
+    });
+    
     public final AttrCache<Double> itemmeter = new AttrCache<Double>(this::info, AttrCache.map1(GItem.MeterInfo.class, minf -> minf::meter));
     
     public final AttrCache<ItemInfo.Contents.Content> contains;

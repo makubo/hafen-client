@@ -158,9 +158,14 @@ public class Bot implements Defer.Callable<Void> {
 	List<Target> targets = Stream.of(INVENTORY_CONTAINED(gui), BELT_CONTAINED(gui))
 	    .flatMap(x -> x.get().stream())
 	    .filter(InvHelper::isDrinkContainer)
-	    //TODO: skip full containers?
+	    .filter(InvHelper::isNotFull)
 	    .map(Target::new)
 	    .collect(Collectors.toList());
+	
+	if(targets.isEmpty()) {
+	    gui.error("No non-full drink containers to refill!");
+	    return;
+	}
 	
 	Bot refillBot = new Bot(targets,
 	    Target::take,
