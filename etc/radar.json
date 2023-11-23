@@ -24,6 +24,7 @@
   {"match": "gfx/terobjs/vehicle/cart", "icon": "paginae/bld/cart", "visible": true},
   {"match": "gfx/terobjs/vehicle/wheelbarrow", "icon": "radar/wheelbarrow", "visible": true},
   {"match": "gfx/terobjs/vehicle/rowboat", "icon": "radar/rowboat", "visible": true},
+  {"match": "gfx/terobjs/vehicle/skis-wilderness", "icon": "paginae/craft/wskisitem", "visible": true},
   {"match": "gfx/terobjs/vehicle/snekkja", "icon": "radar/snekkja", "visible": true},
   {"match": "gfx/terobjs/vehicle/knarr", "icon": "radar/knarr", "visible": true},
   {"match": "gfx/terobjs/vehicle/dugout", "icon": "radar/dugout", "visible": true},
