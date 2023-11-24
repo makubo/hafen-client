@@ -66,7 +66,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     private Boolean isMe = null;
     private final GeneralGobInfo info;
     private GobWarning warning = null;
-    public StatusUpdates status = new StatusUpdates();
+    private StatusUpdates status = new StatusUpdates();
     private final CustomColor customColor = new CustomColor();
     private final GobCustomScale customScale = new GobCustomScale();
     private final Set<GobTag> tags = new HashSet<>();
@@ -674,9 +674,13 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     }
     
     public void rclick(int modflags) {
+	click(3, modflags);
+    }
+    
+    public void click(int button, int modflags) {
 	try {
 	    MapView map = glob.sess.ui.gui.map;
-	    map.click(this, 3, Coord.z, modflags);
+	    map.click(this, button, Coord.z, modflags);
 	} catch (Exception ignored) {}
     }
     
@@ -1089,6 +1093,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	.add(MapWnd2.class, g -> (g.glob.sess.ui != null && g.glob.sess.ui.gui != null) ? g.glob.sess.ui.gui.mapfile : null)
 	.add(Session.class, g -> g.glob.sess);
     public <T> T context(Class<T> cl) {return(ctxr.context(cl, this));}
+    public <T> Optional<T> contextopt(Class<T> cl) {return Optional.ofNullable(context(cl));}
 
     /* Because generic functions are too nice a thing for Java. */
     public double getv() {
