@@ -8,7 +8,7 @@ public enum Action {
     ACT_HAND_1(gui -> gui.eqproxy.activate(Equipory.SLOTS.HAND_RIGHT,1), "Right hand", "Left click on right hand slot."),
     ACT_BELT(gui -> gui.eqproxy.activate(Equipory.SLOTS.BELT, 3), "Belt", "Right click on belt slot."),
     ACT_DRINK(Bot::drink, "Drink", "Drinks water."),
-    ACT_REFILL_DRINKS(Bot::refillDrinks, "Refill drinks", "Refills all water skins, flasks and jugs from nearby water tile."),
+    ACT_REFILL_DRINKS(Bot::refillDrinks, "Refill drinks", "Refills all water skins, flasks and jugs from nearby barrel or water tile."),
     OPEN_QUICK_CRAFT(GameUI::toggleCraftList, "Open craft list", "Opens list of items you can craft. Start typing to narrow the list. Press Enter or double-click to select recipe."),
     OPEN_QUICK_BUILD(GameUI::toggleBuildList, "Open building list", "Opens list of objects you can build. Start typing to narrow the list. Press Enter or double-click to select building."),
     OPEN_QUICK_ACTION(GameUI::toggleActList, "Open actions list", "Opens list of actions you can perform. Start typing to narrow the list. Press Enter or double-click to perform action."),
