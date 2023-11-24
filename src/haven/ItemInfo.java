@@ -513,7 +513,7 @@ public abstract class ItemInfo {
 		throw(new ClassCastException("Unexpected object type " + o.getClass() + " in item info array."));
 	    }
 	}
-	DamageTip.process(ret);
+	DamageTip.process(ret, owner);
 	return(ret);
     }
 

@@ -7,15 +7,15 @@ import java.util.List;
 
 public class DamageTip {
     
-    public static void process(List<ItemInfo> tips) {
-	if(!CFG.IMPROVE_DAMAGE_TIP.get()) {return;}
+    public static void process(List<ItemInfo> tips, ItemInfo.Owner owner) {
+	if(!CFG.IMPROVE_DAMAGE_TIP.get() || !(owner instanceof WItem)) {return;}
 	ItemInfo tip = tips.stream().filter(inf -> Reflect.is(inf, "Damage")).findFirst().orElse(null);
 	if(tip == null) {return;}
 	
 	tips.remove(tip);
 	int dmg = Reflect.getFieldValueInt(tip, "dmg");
-	tips.add(new Base(tip.owner, dmg));
-	tips.add(new Real(tip.owner, dmg));
+	tips.add(new Base(owner, dmg));
+	tips.add(new Real(owner, dmg));
     }
     
     private static class Base extends WeaponInfo {
