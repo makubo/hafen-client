@@ -77,19 +77,18 @@ public class Hitbox extends SlottedNode implements Rendered {
 	    String name = gob.resid();
 	    ResDrawable rd = (gob.drawable instanceof ResDrawable) ? (ResDrawable) gob.drawable : null;
 	    
-	    if(rd != null) {
-		int state = gob.sdt();
-		if(name.endsWith("gate") && name.startsWith("gfx/terobjs/arch")) {//gates
-		    if(state == 1) { // gate is open
-			return true;
-		    }
-		} else if(name.endsWith("/dng/antdoor")) {
-		    return state == 1 || state == 13;
-		} else if(name.endsWith("/pow[hearth]")) {//hearth fire
-		    return true;
-		} else if(name.equals("gfx/terobjs/arch/cellardoor") || name.equals("gfx/terobjs/fishingnet")) {
-		    return true;
-		}
+	    if(rd == null) {return false;}
+	    int state = gob.sdt();
+	    if(gob.is(GobTag.GATE)) {//gates
+		if(state != 1) {return false;}// gate is not open 
+		return !gob.isVisitorGate() // not visitor gate or not in combat 
+		    || !gob.contextopt(GameUI.class).map(GameUI::isInCombat).orElse(false);
+	    } else if(name.endsWith("/dng/antdoor")) {
+		return state == 1 || state == 13;
+	    } else if(name.endsWith("/pow[hearth]")) {//hearth fire
+		return true;
+	    } else if(name.equals("gfx/terobjs/arch/cellardoor") || name.equals("gfx/terobjs/fishingnet")) {
+		return true;
 	    }
 	} catch (Loading ignored) {}
 	return false;

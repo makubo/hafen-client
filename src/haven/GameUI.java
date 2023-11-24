@@ -1876,6 +1876,10 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public boolean isTracked(Marker marker) {
 	return trackedMarkers.containsKey(marker);
     }
+    
+    public boolean isInCombat() {
+	return fv != null && !fv.lsrel.isEmpty();
+    }
 
     public void act(String... args) {
 	wdgmsg("act", (Object[])args);

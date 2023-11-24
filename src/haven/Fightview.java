@@ -324,6 +324,7 @@ public class Fightview extends Widget {
 
     public void uimsg(String msg, Object... args) {
         if(msg == "new") {
+	    if(lsrel.isEmpty()) {combatStateChanged();}
             Relation rel = new Relation(uint32((Integer)args[0]));
 	    rel.give((Integer)args[1]);
 	    rel.ip = (Integer)args[2];
@@ -343,6 +344,7 @@ public class Fightview extends Widget {
 	    if(rel == current)
 		setcur(null);
 	    updrel();
+	    if(lsrel.isEmpty()) {combatStateChanged();}
             return;
         } else if(msg == "upd") {
             Relation rel = getrel(uint32((Integer)args[0]));
@@ -384,5 +386,9 @@ public class Fightview extends Widget {
 	    return;
 	}
         super.uimsg(msg, args);
+    }
+    
+    private void combatStateChanged() {
+	ui.sess.glob.oc.gobAction(Gob::combatUpdated);
     }
 }

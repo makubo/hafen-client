@@ -1428,6 +1428,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     public void kinUpdated() {status.update(StatusType.kin);}
     
     public void hitboxUpdated() {status.update(StatusType.hitbox);}
+    public void combatUpdated() {status.update(StatusType.combat);}
     
     public void visibilityUpdated() {status.update(StatusType.visibility);}
     
@@ -1463,7 +1464,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    }
 	}
     
-	if(status.updated(StatusType.drawable, StatusType.hitbox, StatusType.visibility)) {
+	if(status.updated(StatusType.drawable, StatusType.hitbox, StatusType.visibility, StatusType.combat)) {
 	    updateHitbox();
 	}
 	
@@ -1537,7 +1538,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     }
     
     private enum StatusType {
-	drawable, overlay, tags, pose, id, info, kin, hitbox, icon, visibility, marker
+	drawable, overlay, tags, pose, id, info, kin, hitbox, icon, visibility, marker, combat
     }
     
     private void updateMovingInfo(GAttrib a, GAttrib prev) {
