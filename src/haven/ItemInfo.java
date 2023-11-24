@@ -336,7 +336,7 @@ public abstract class ItemInfo {
 		} catch (Exception ignored) {}
 		return new Content(m.group(3), m.group(2), count, q);
 	    }
-	    return Content.EMPTY;
+	    return new Content(name, "", 1, q);
 	} 
     
 	public static class Content {
@@ -556,9 +556,21 @@ public abstract class ItemInfo {
     
     public static Contents.Content getContent(List<ItemInfo> infos) {
 	for (ItemInfo info : infos) {
-	    if(info instanceof Contents) {
-		return ((Contents) info).content();
-	    }
+	    Contents.Content content = getContent(info);
+	    if(!content.empty()) {return content;}
+	}
+	return Contents.Content.EMPTY;
+    }
+    
+    public static Contents.Content getContent(ItemInfo info) {
+	if(info instanceof Contents) {
+	    return ((Contents) info).content();
+	} else if(Reflect.is(info, "NamedContents")) {
+	    //noinspection unchecked
+	    List<ItemInfo> sub = (List<ItemInfo>) Reflect.getFieldValue(info, "sub");
+	    Text.Line ch = Reflect.getFieldValue(info, "ch", Text.Line.class);
+	    if(ch == null || sub == null) {return Contents.Content.EMPTY;}
+	    return Contents.content(ch.text, QualityList.make(sub));
 	}
 	return Contents.Content.EMPTY;
     }
