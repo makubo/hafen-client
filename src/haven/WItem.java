@@ -49,6 +49,7 @@ public class WItem extends Widget implements DTarget2 {
     public static final Color DURABILITY_COLOR = new Color(214, 253, 255);
     public static final Color ARMOR_COLOR = new Color(255, 227, 191);
     public static final Color MATCH_COLOR = new Color(255, 32, 255, 255);
+    private static final ItemFilter WELL_MINED = new ItemFilter.Text("Well mined", true);
     public Coord lsz = new Coord(1, 1);
     public final GItem item;
     private Resource cspr = null;
@@ -346,12 +347,21 @@ public class WItem extends Widget implements DTarget2 {
     private Tex cachedStudyTex = null;
     
     private Tex getStudyTime() {
-	if(!WindowDetector.isWindowType(this, WND_STUDY, WND_CHARACTER_SHEET)) {
-	    return null;
+	String value = null;
+	String tip = null;
+	double meter = meter();
+	
+	if(WindowDetector.isWindowType(this, WND_STUDY, WND_CHARACTER_SHEET)) {
+	    Pair<String, String> data = study.get();
+	    value = data == null ? null : data.a;
+	    tip = data == null ? null : data.b;
+	} else if(WindowDetector.isWindowType(this, WND_SMELTER) && meter > 0) {
+	    double remaining = WELL_MINED.matches(info()) ? 41.25d : 55d; //ore smelting time in minutes
+	    remaining *= 60 * (1d - meter); //remaining seconds
+	    remaining -= (System.currentTimeMillis() - item.meterUpdated) / 1000d; //adjust for time passed since last update
+	    value = Utils.formatTimeShort((int) remaining);
 	}
-	Pair<String, String> data = study.get();
-	String value = data == null ? null : data.a;
-	String tip = data == null ? null : data.b;
+	
 	if(!Objects.equals(tip, cachedTipValue)) {
 	    cachedTipValue = tip;
 	    longtip = null;

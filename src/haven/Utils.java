@@ -2465,6 +2465,41 @@ public class Utils {
 	    .map(Optional::get)
 	    .findFirst();
     }
+    
+    static String[] units = {"s", "m", "h", "d"};
+    static int[] div = {60, 60, 24};
+    
+    public static String formatTimeLong(int time) {
+	int[] vals = new int[units.length];
+	vals[0] = time;
+	for (int i = 0; i < div.length; i++) {
+	    vals[i + 1] = vals[i] / div[i];
+	    vals[i] = vals[i] % div[i];
+	}
+	StringBuilder buf = new StringBuilder();
+	for (int i = units.length - 1; i >= 0; i--) {
+	    if(vals[i] > 0) {
+		if(buf.length() > 0) {
+		    buf.append(String.format(" %02d", vals[i]));
+		} else {
+		    buf.append(vals[i]);
+		}
+		buf.append(units[i]);
+	    }
+	}
+	return (buf.toString());
+    }
+    
+    public static String formatTimeShort(int time) {
+	if(time >= 60) {
+	    if(time > 3600) {
+		time = time / 60;
+	    }
+	    return String.format("%d:%02d", time / 60, time % 60);
+	} else {
+	    return String.format("%02d", time);
+	}
+    }
 
     static {
 	Console.setscmd("die", new Console.Command() {

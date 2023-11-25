@@ -11,6 +11,7 @@ import java.util.Set;
 public class WindowDetector {
     public static final String WND_STUDY = "Study";
     public static final String WND_CHARACTER_SHEET = "Character Sheet";
+    public static final String WND_SMELTER = "Ore Smelter";
     
     private static final Object lock = new Object();
     private static final Set<Window> toDetect = new HashSet<>();
