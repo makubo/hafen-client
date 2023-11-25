@@ -1,5 +1,7 @@
 package haven;
 
+import me.ender.gob.GobTimerData;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
@@ -25,10 +27,13 @@ public class GeneralGobInfo extends GobInfo {
     private int scalePercent = -1;
     private String contents = null;
     int q;
+    
+    public final GobTimerData timer;
 
     protected GeneralGobInfo(Gob owner) {
 	super(owner);
 	q = gobQ.getOrDefault(gob.id, 0);
+	timer = GobTimerData.from(gob);
     }
     
     
@@ -51,6 +56,7 @@ public class GeneralGobInfo extends GobInfo {
 	    health(),
 	    barrel(),
 	    quality(),
+	    timer.img(),
 	};
 	
 	for (BufferedImage part : parts) {
@@ -58,6 +64,12 @@ public class GeneralGobInfo extends GobInfo {
 	    return new TexI(ItemInfo.catimgsh(UI.scale(3), 0, BG, parts));
 	}
 	return null;
+    }
+    
+    @Override
+    public void ctick(double dt) {
+	if(enabled() && timer.update()) {dirty();}
+	super.ctick(dt);
     }
     
     @Override

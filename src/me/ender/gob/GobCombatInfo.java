@@ -74,7 +74,7 @@ public class GobCombatInfo extends GAttrib implements RenderTree.Node, PView.Ren
 	
 	this.openings = new RichUText<String>(fndOpen, new Color(0, 0, 0, 84)) {
 	    @Override
-	    protected String value() {
+	    public String value() {
 		return getOpeningText();
 	    }
 	};

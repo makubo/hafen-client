@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 
 public abstract class RichUText<T> implements Indir<Tex> {
     public final RichText.Foundry fnd;
-    private Tex cur = null;
+    private TexI cur = null;
     private final Color bg;
     private T cv = null;
     
@@ -18,8 +18,9 @@ public abstract class RichUText<T> implements Indir<Tex> {
     
     public RichUText(RichText.Foundry fnd) {this(fnd, null);}
     
-    protected Tex render(String text) {
+    protected TexI render(String text) {
 	BufferedImage img = fnd.render(text).img;
+	img = process(img);
 	if(bg == null) {
 	    return new TexI(img);
 	}
@@ -32,14 +33,18 @@ public abstract class RichUText<T> implements Indir<Tex> {
 	g.dispose();
 	return new TexI(ret);
     }
-    protected String text(T value) {return(String.valueOf(value));}
-    protected abstract T value();
     
-    public Tex get() {
+    protected BufferedImage process(BufferedImage img) {return img;}
+    
+    protected String text(T value) {return(String.valueOf(value));}
+    public abstract T value();
+    
+    public TexI get() {
 	T value = value();
 	if(!Utils.eq(value, cv)) {
 	    if(cur != null) {cur.dispose();}
-	    cur = render(text(cv = value));
+	    String text = text(cv = value);
+	    cur = text != null ? render(text) : null;
 	}
 	return(cur);
     }

@@ -64,7 +64,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     public Drawable drawable;
     public Moving moving;
     private Boolean isMe = null;
-    private final GeneralGobInfo info;
+    public final GeneralGobInfo info;
     private GobWarning warning = null;
     private StatusUpdates status = new StatusUpdates();
     private final CustomColor customColor = new CustomColor();
