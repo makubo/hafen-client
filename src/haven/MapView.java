@@ -42,6 +42,7 @@ import haven.render.*;
 import haven.MCache.OverlayInfo;
 import haven.render.sl.Uniform;
 import haven.render.sl.Type;
+import haven.rx.Reactor;
 
 public class MapView extends PView implements DTarget, Console.Directory {
     public static final Resource.Named inspectCursor = Resource.local().loadwait("gfx/hud/curs/studyx").indir();
@@ -2172,6 +2173,9 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		if(gob != null) {
 		    if(ui.isCursor("gfx/hud/curs/study")) {
 		        ui.gui.setDetectGob(gob);
+		    }
+		    if(clickb == 3) {
+			Reactor.GOB_INTERACT.onNext(gob);
 		    }
 		    if(ui.gui.mapfile.domark) {
 			ui.gui.mapfile.addMarker(gob);
