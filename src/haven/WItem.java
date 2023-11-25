@@ -319,7 +319,7 @@ public class WItem extends Widget implements DTarget2 {
     private void drawmeter(GOut g, Coord sz) {
 	double meter = meter();
 	if(meter > 0) {
-	    Tex studyTime = getStudyTime();
+	    Tex studyTime = getMeterTime();
 	    if(studyTime == null && CFG.PROGRESS_NUMBER.get()) {
 		Tex tex = Text.renderstroked(String.format("%d%%", Math.round(100 * meter))).tex();
 		g.aimage(tex, sz.div(2), 0.5, 0.5);
@@ -346,20 +346,17 @@ public class WItem extends Widget implements DTarget2 {
     private String cachedTipValue = null;
     private Tex cachedStudyTex = null;
     
-    private Tex getStudyTime() {
+    private Tex getMeterTime() {
 	String value = null;
 	String tip = null;
-	double meter = meter();
 	
 	if(WindowDetector.isWindowType(this, WND_STUDY, WND_CHARACTER_SHEET)) {
 	    Pair<String, String> data = study.get();
 	    value = data == null ? null : data.a;
 	    tip = data == null ? null : data.b;
-	} else if(WindowDetector.isWindowType(this, WND_SMELTER) && meter > 0) {
-	    double remaining = WELL_MINED.matches(info()) ? 41.25d : 55d; //ore smelting time in minutes
-	    remaining *= 60 * (1d - meter); //remaining seconds
-	    remaining -= (System.currentTimeMillis() - item.meterUpdated) / 1000d; //adjust for time passed since last update
-	    value = Utils.formatTimeShort((int) remaining);
+	} else {
+	    int remaining = remainingSeconds();
+	    if(remaining >= 0) {value = Utils.formatTimeShort(remaining);}
 	}
 	
 	if(!Objects.equals(tip, cachedTipValue)) {
@@ -495,6 +492,20 @@ public class WItem extends Widget implements DTarget2 {
     
     public boolean is(String what) {
 	return item.is(what);
+    }
+    
+    public int remainingSeconds() {
+	double meter = meter();
+	if(meter <= 0) {return -1;}
+	
+	if(WindowDetector.isWindowType(this, WND_SMELTER)) {
+	    double remaining = WELL_MINED.matches(info()) ? 41.25d : 55d; //ore smelting time in minutes
+	    remaining *= 60 * (1d - meter); //remaining seconds
+	    remaining -= (System.currentTimeMillis() - item.meterUpdated) / 1000d; //adjust for time passed since last update
+	    return (int) remaining;
+	}
+	
+	return -1;
     }
 
     private boolean checkXfer(int button) {
