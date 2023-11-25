@@ -68,7 +68,8 @@ public class GeneralGobInfo extends GobInfo {
 
     private BufferedImage quality() {
 	if(q != 0) {
-	    return Text.std.renderstroked(String.format("Q: %d", q), Q_COL, Color.BLACK).img;
+	    String text = String.format("$img[gfx/hud/gob/quality,c]%s", RichText.color(String.valueOf(q), Q_COL));
+	    return Utils.outline2(RichText.stdf.render(text).img, Color.BLACK);
 	}
 	return null;
     }
