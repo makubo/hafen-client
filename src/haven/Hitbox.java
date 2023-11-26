@@ -83,8 +83,8 @@ public class Hitbox extends SlottedNode implements Rendered {
 		if(state != 1) {return false;}// gate is not open 
 		return !gob.isVisitorGate() // not visitor gate or not in combat 
 		    || !gob.contextopt(GameUI.class).map(GameUI::isInCombat).orElse(false);
-	    } else if(name.endsWith("/dng/antdoor")) {
-		return state == 1 || state == 13;
+	    } else if(name.contains("/dng/") && (name.endsWith("door") || name.endsWith("gate"))) {
+		return (state & 1) != 0;
 	    } else if(name.endsWith("/pow[hearth]")) {//hearth fire
 		return true;
 	    } else if(name.equals("gfx/terobjs/arch/cellardoor") || name.equals("gfx/terobjs/fishingnet")) {
