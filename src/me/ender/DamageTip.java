@@ -8,7 +8,7 @@ import java.util.List;
 public class DamageTip {
     
     public static void process(List<ItemInfo> tips, ItemInfo.Owner owner) {
-	if(!CFG.IMPROVE_DAMAGE_TIP.get() || !(owner instanceof WItem)) {return;}
+	if(!CFG.IMPROVE_DAMAGE_TIP.get() || !(owner instanceof GItem)) {return;}
 	ItemInfo tip = tips.stream().filter(inf -> Reflect.is(inf, "Damage")).findFirst().orElse(null);
 	boolean isMelee = tips.stream().anyMatch(inf -> Reflect.is(inf, "Range"));
 	if(tip == null || !isMelee) {return;}
