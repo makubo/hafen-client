@@ -1,3 +1,9 @@
+$size[14]{$u{Update for 26.11.23:}
+  * improved handling of dungeon door hitboxes
+  * fixed damage tooltip enhancement not working
+  * made damage tooltip enhancement work for sling and bows
+  * fixed refuel smelter/oven actions wonky behavior with stacked fuel
+ 
 $size[14]{$u{Update for 25.11.23:}
   * made visitor gate show hitbox as impassable if you are in combat
   * fixed some types of contents (namely trees in planter pots) not working properly with quality display and filtering
