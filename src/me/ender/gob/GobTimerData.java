@@ -49,7 +49,7 @@ public class GobTimerData {
 	
 	@Override
 	protected BufferedImage process(BufferedImage img) {
-	    return Utils.outline2(img, Color.BLACK, false);
+	    return Utils.outline2(img, Color.BLACK, true);
 	}
 	
 	public Integer value() {
