@@ -931,7 +931,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	if(ui == null) {return false;}
 	
 	String name = overlay.name();
-	if(ResName.DECAL.equals(name)) {
+	if(ResName.DECALS.contains(name)) {
 	    return !ui.modctrl && !ui.modshift;
 	}
 	
