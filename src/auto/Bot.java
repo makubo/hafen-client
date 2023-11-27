@@ -263,7 +263,7 @@ public class Bot implements Defer.Callable<Void> {
     
     private static BotAction fuelWith(GameUI gui, String fuel, int count) {
 	return target -> {
-	    Supplier<List<WItem>> inventory = INVENTORY(gui);
+	    Supplier<List<WItem>> inventory = unstacked(INVENTORY(gui));
 	    float has = countItems(fuel, inventory);
 	    if(has >= count) {
 		for (int i = 0; i < count; i++) {

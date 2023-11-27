@@ -54,6 +54,22 @@ public class InvHelper {
 	return fullness == null || !Objects.equals(fullness.a, fullness.b);
     }
     
+    static Collection<WItem> unstacked(WItem stack) {
+	Widget contents = stack.item.contents;
+	if(contents != null) {
+	    return contents.children(WItem.class);
+	}
+	return Collections.emptySet();
+    }
+    
+    static Supplier<List<WItem>> unstacked(Supplier<List<WItem>> where) {
+	return () -> where.get().stream()
+	    .map(InvHelper::unstacked)
+	    .flatMap(Collection::stream)
+	    .collect(Collectors.toList());
+    }
+    
+    
     static Optional<WItem> findFirstItem(String what, Supplier<List<WItem>> where) {
 	return where.get().stream()
 	    .filter(wItem -> wItem.is(what))
