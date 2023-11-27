@@ -2198,7 +2198,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		ui.gui.mapfile.addMarker(mc.floor(tilesz));
 		return;
 	    }
-	    if(clickb == 1) {Bot.cancel();}
+	    if(clickb == 1) {Bot.cancelCurrent();}
 	    
 	    click(mc, clickb, args);
 	}

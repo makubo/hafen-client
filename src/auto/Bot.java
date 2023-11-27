@@ -2,7 +2,7 @@ package auto;
 
 import haven.*;
 import haven.rx.Reactor;
-import rx.functions.Action1;
+import rx.functions.Action2;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -20,6 +20,7 @@ public class Bot implements Defer.Callable<Void> {
     private final BotAction[] actions;
     private Defer.Future<Void> task;
     private boolean cancelled = false;
+    private String message = null;
     private static final Object waiter = new Object();
     
     public Bot(List<Target> targets, BotAction... actions) {
@@ -37,7 +38,7 @@ public class Bot implements Defer.Callable<Void> {
 	for (Target target : targets) {
 	    for (BotAction action : actions) {
 		if(target.disposed()) {break;}
-		action.call(target);
+		action.call(target, this);
 		checkCancelled();
 	    }
 	}
@@ -47,9 +48,9 @@ public class Bot implements Defer.Callable<Void> {
 	return null;
     }
     
-    private void run(Action1<String> callback) {
+    private void run(Action2<Boolean, String> callback) {
 	task = Defer.later(this);
-	task.callback(() -> callback.call(task.cancelled() ? "cancelled" : "complete"));
+	task.callback(() -> callback.call(task.cancelled(),  message));
     }
     
     private void checkCancelled() throws InterruptedException {
@@ -63,12 +64,24 @@ public class Bot implements Defer.Callable<Void> {
 	task.cancel();
     }
     
-    public static void cancel() {
+    public void cancel(String message) {
+	this.message = message;
+	markCancelled();
+    }
+    
+    public void cancel() {
+	cancel(null);
+    }
+    
+    public static void cancelCurrent() {
+	setCurrent(null);
+    }
+    private static void setCurrent(Bot bot) {
 	synchronized (lock) {
 	    if(current != null) {
-		current.markCancelled();
-		current = null;
+		current.cancel();
 	    }
+	    current = bot;
 	}
     }
     
@@ -77,11 +90,18 @@ public class Bot implements Defer.Callable<Void> {
     }
     
     private static void start(Bot bot, UI ui, boolean silent) {
-	cancel();
-	synchronized (lock) { current = bot; }
-	bot.run((result) -> {
-	    if (!silent && CFG.SHOW_BOT_MESSAGES.get())
-	    	ui.message(String.format("Task is %s.", result), GameUI.MsgType.INFO);
+	setCurrent(bot);
+	bot.run((error, message) -> {
+	    if(!silent && CFG.SHOW_BOT_MESSAGES.get() || error) {
+		GameUI.MsgType type = error ? GameUI.MsgType.ERROR : GameUI.MsgType.INFO;
+		if(message == null) {
+		    message = error
+			? "Task is cancelled."
+			: "Task is completed.";
+		    type = GameUI.MsgType.INFO;
+		}
+		ui.message(message, type);
+	    }
 	});
     }
     
@@ -109,7 +129,7 @@ public class Bot implements Defer.Callable<Void> {
 	
 	start(new Bot(targets,
 	    Target::rclick_shift,
-	    target -> target.gob.waitRemoval()
+	    (target, bot) -> target.gob.waitRemoval()
 	), gui.ui);
     }
     
@@ -158,10 +178,10 @@ public class Bot implements Defer.Callable<Void> {
 	final Coord2d tile = barrel != null ? barrel.rc : waterTile;
 	
 	if(waterTile != null) {
-	    interact = t -> gui.map.wdgmsg("itemact", Coord.z, tile.floor(OCache.posres), 0);
+	    interact = (t, b) -> gui.map.wdgmsg("itemact", Coord.z, tile.floor(OCache.posres), 0);
 	} else if(barrel != null) {
 	    final Gob gob = barrel;
-	    interact = t -> gui.map.wdgmsg("itemact", Coord.z, Coord.z, UI.MOD_META, 0, (int) gob.id, gob.rc.floor(OCache.posres), 0, -1);
+	    interact = (t, b) -> gui.map.wdgmsg("itemact", Coord.z, Coord.z, UI.MOD_META, 0, (int) gob.id, gob.rc.floor(OCache.posres), 0, -1);
 	    
 	} else {
 	    gui.error("You must be near tile or barrel with fresh water to refill drinks!");
@@ -182,18 +202,18 @@ public class Bot implements Defer.Callable<Void> {
 	
 	Bot refillBot = new Bot(targets,
 	    Target::take,
-	    t -> waitHeldChanged(gui),
+	    (t, b) -> waitHeldChanged(gui),
 	    interact,
 	    doWait(70),
 	    Target::putBack,
-	    t -> waitHeldChanged(gui)
+	    (t, b) -> waitHeldChanged(gui)
 	);
 	if(needWalk) {
 	    start(new Bot(
-		t -> gui.map.click(tile, 1, Coord.z, tile.floor(OCache.posres), 1, 0),
+		(t, b) -> gui.map.click(tile, 1, Coord.z, tile.floor(OCache.posres), 1, 0),
 		waitGobPose(player, 1500,"/walking", "/running"),
 		waitGobNoPose(player, 1500,"/walking", "/running"),
-		t -> start(refillBot, gui.ui, true)
+		(t, b) -> start(refillBot, gui.ui, true)
 	    ), gui.ui, true);
 	} else {
 	    start(refillBot, gui.ui, true);
@@ -238,6 +258,8 @@ public class Bot implements Defer.Callable<Void> {
 	
 	if(!targets.isEmpty()) {
 	    start(new Bot(targets, fuelWith(gui, fuel, count)), gui.ui);
+	} else {
+	    gui.error("Cannot find target to add fuel to");
 	}
     }
     
@@ -262,36 +284,35 @@ public class Bot implements Defer.Callable<Void> {
     }
     
     private static BotAction fuelWith(GameUI gui, String fuel, int count) {
-	return target -> {
+	return (target, bot) -> {
 	    Supplier<List<WItem>> inventory = unstacked(INVENTORY(gui));
 	    float has = countItems(fuel, inventory);
-	    if(has >= count) {
-		for (int i = 0; i < count; i++) {
-		    Optional<WItem> w = findFirstItem(fuel, inventory);
-		    if(w.isPresent()) {
-			w.get().take();
-			if(!waitHeld(gui, fuel)) {
-			    cancel();
-			    return;
-			}
-			target.interact();
-			if(!waitHeld(gui, null)) {
-			    cancel();
-			    return;
-			}
-		    } else {
-			cancel();
-			return;
-		    }
+	    if(has < count) {
+		bot.cancel(String.format("Not enough '%s' in inventory: found %d, need: %d", fuel, (int) has, count));
+		return;
+	    }
+	    for (int i = 0; i < count; i++) {
+		Optional<WItem> w = findFirstItem(fuel, inventory);
+		if(!w.isPresent()) {
+		    bot.cancel("no fuel in inventory");
+		    return;
 		}
-	    } else {
-		cancel();
+		w.get().take();
+		if(!waitHeld(gui, fuel)) {
+		    bot.cancel("no fuel on cursor");
+		    return;
+		}
+		target.interact();
+		if(!waitHeld(gui, null)) {
+		    bot.cancel("cursor is not empty");
+		    return;
+		}
 	    }
 	};
     }
     
     private static BotAction waitGobNoPose(Gob gob, long timeout, String... poses) {
-	return (t) -> {
+	return (t, b) -> {
 	    final long started = System.currentTimeMillis();
 	    while (System.currentTimeMillis() - started < timeout
 		&& gob != null && !gob.disposed() && gob.hasPose(poses)) {
@@ -301,7 +322,7 @@ public class Bot implements Defer.Callable<Void> {
     }
     
     private static BotAction waitGobPose(Gob gob, long timeout, String... poses) {
-	return (t) -> {
+	return (t, b) -> {
 	    final long started = System.currentTimeMillis();
 	    while (System.currentTimeMillis() - started < timeout
 		&& gob != null && !gob.disposed() && !gob.hasPose(poses)) {
@@ -358,7 +379,7 @@ public class Bot implements Defer.Callable<Void> {
     }
     
     private static BotAction doWait(long ms) {
-	return (gui) -> pause(ms);
+	return (t, b) -> pause(ms);
     }
     
     private static void pause(long ms) {
@@ -410,7 +431,7 @@ public class Bot implements Defer.Callable<Void> {
     };
     
     private static BotAction selectFlower(String... options) {
-	return target -> {
+	return (target, bot) -> {
 	    if(target.hasMenu()) {
 		FlowerMenu.lastTarget(target);
 		Reactor.FLOWER.first().subscribe(flowerMenu -> {
@@ -436,7 +457,7 @@ public class Bot implements Defer.Callable<Void> {
     }
     
     public interface BotAction {
-	void call(Target target) throws InterruptedException;
+	void call(Target target, Bot bot) throws InterruptedException;
     }
     
     //TODO: rework with inheritance?
@@ -471,9 +492,13 @@ public class Bot implements Defer.Callable<Void> {
 	    this.contained = contained;
 	}
 	
+	public void rclick(Bot b) {rclick();}
+	
 	public void rclick() {
-	   rclick(0);
+	    rclick(0);
 	}
+	
+	public void rclick_shift(Bot b) {rclick_shift();}
 	
 	public void rclick_shift() {
 	    rclick(UI.MOD_SHIFT);
@@ -500,11 +525,15 @@ public class Bot implements Defer.Callable<Void> {
 	    }
 	}
 	
+	public void take(Bot b) {take();}
+	
 	public void take() {
 	    if(contained != null && !contained.itemDisposed()) {
 		contained.take();
 	    }
 	}
+	
+	public void putBack(Bot b) {putBack();}
 	
 	public void putBack() {
 	    if(contained != null && !contained.containerDisposed()) {
