@@ -2406,6 +2406,29 @@ public class Utils {
     private static final Map<String, String> customNames = new HashMap<>();
     private static boolean customNamesInit = false;
     
+    public static String prettyResName(Indir<Resource> res) {
+	if(res == null) {return "???";}
+	try {
+	    return prettyResName(res.get());
+	} catch (Resource.Loading ignore) {
+	    
+	}
+	if(res instanceof Resource.Named) {
+	    return prettyResName(((Resource.Named) res).name);
+	}
+	return "???";
+    }
+    
+    public static String prettyResName(Resource res) {
+	if(res == null) {return "???";}
+	Resource.Tooltip tt = res.layer(Resource.tooltip);
+	if(tt != null) {
+	    return tt.t;
+	} else {
+	    return prettyResName(res.name);
+	}
+    }
+    
     public static String prettyResName(String resname) {
 	tryInitCustomNames();
 	if(customNames.containsKey(resname)) {
