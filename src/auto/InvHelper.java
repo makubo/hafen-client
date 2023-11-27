@@ -59,7 +59,7 @@ public class InvHelper {
 	if(contents != null) {
 	    return contents.children(WItem.class);
 	}
-	return Collections.emptySet();
+	return Collections.singleton(stack);
     }
     
     static Supplier<List<WItem>> unstacked(Supplier<List<WItem>> where) {
