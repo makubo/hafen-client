@@ -88,19 +88,23 @@ public class WindowDetector {
 	return (new WindowX(sz, title, lg));
     }
     
-    public static boolean isWindowType(Widget wdg, String... types) {
+    public static String getWindowName(Widget wdg) {
 	Window wnd;
-	if(types == null || types.length == 0) {return false;}
-	if(wdg == null) {return false;}
+	if(wdg == null) {return null;}
 	if(wdg instanceof Window) {
 	    wnd = (Window) wdg;
 	} else {
 	    wnd = wdg.getparent(Window.class);
 	}
+	return wnd == null ? null : wnd.caption();
+    }
+    
+    public static boolean isWindowType(Widget wdg, String... types) {
+	if(types == null || types.length == 0) {return false;}
+	String wnd = getWindowName(wdg);
 	if(wnd == null) {return false;}
-	
 	for (String type : types) {
-	    if(Objects.equals(type, wnd.caption())) {return true;}
+	    if(Objects.equals(type, wnd)) {return true;}
 	}
 	
 	return false;
