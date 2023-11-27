@@ -9,22 +9,27 @@ public class DamageTip {
     
     public static void process(List<ItemInfo> tips, ItemInfo.Owner owner) {
 	if(!CFG.IMPROVE_DAMAGE_TIP.get() || !(owner instanceof GItem)) {return;}
+	GItem item = (GItem) owner;
+	String name = item.resname();
 	ItemInfo tip = tips.stream().filter(inf -> Reflect.is(inf, "Damage")).findFirst().orElse(null);
 	boolean isMelee = tips.stream().anyMatch(inf -> Reflect.is(inf, "Range"));
-	if(tip == null || !isMelee) {return;}
+	boolean isRanged = name.endsWith("/sling") || name.endsWith("/huntersbow") || name.endsWith("/rangersbow"); 
+	if(tip == null || (!isMelee && !isRanged)) {return;}
 	
 	tips.remove(tip);
 	int dmg = Reflect.getFieldValueInt(tip, "dmg");
-	tips.add(new Base(owner, dmg));
-	tips.add(new Real(owner, dmg));
+	tips.add(new Base(item, dmg));
+	tips.add(new Real(item, dmg, isMelee ? "str" : "ranged"));
     }
     
     private static class Base extends WeaponInfo {
 	private final int dmg;
+	private final GItem item;
 	
 	
-	public Base(Owner owner, int dmg) {
+	public Base(GItem owner, int dmg) {
 	    super(owner);
+	    this.item = owner;
 	    this.dmg = dmg;
 	}
 	
@@ -36,7 +41,6 @@ public class DamageTip {
 	public int damage() {
 	    if(!(owner instanceof GItem)) {return dmg;}
 	    
-	    GItem item = (GItem) owner;
 	    QualityList qlist = item.itemq.get();
 	    if(qlist.isEmpty()) {return dmg;}
 	    QualityList.Quality q = qlist.single();
@@ -51,12 +55,16 @@ public class DamageTip {
     }
     
     private static class Real extends WeaponInfo {
+	private final GItem item;
 	private final int dmg;
+	private final String aname;
 	
 	
-	public Real(Owner owner, int dmg) {
+	public Real(GItem owner, int dmg, String attr) {
 	    super(owner);
+	    this.item = owner;
 	    this.dmg = dmg;
+	    this.aname = attr;
 	}
 	
 	@Override
@@ -67,12 +75,11 @@ public class DamageTip {
 	public int damage() {
 	    if(!(owner instanceof GItem)) {return dmg;}
 	    
-	    GItem item = (GItem) owner;
 	    QualityList q = item.itemq.get();
 	    if(q.isEmpty()) {return dmg;}
 	    
 	    CharWnd charWdg = owner.context(Session.class).ui.gui.chrwdg;
-	    Glob.CAttr attr = charWdg.findattr("str");
+	    Glob.CAttr attr = charWdg.findattr(aname);
 	    if(attr == null) {return dmg;}
 	    double value = q.single().value;
 	    if(value <= 0) {return dmg;}
