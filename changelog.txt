@@ -1,3 +1,8 @@
+$size[14]{$u{Update for 28.11.23:}
+  * added wound treatment info
+  * another fix for smelter/oven refuelling not working with stacked fuel
+  * fixed container decal pickup protection not working on chests
+ 
 $size[14]{$u{Update for 26.11.23:}
   * improved handling of dungeon door hitboxes
   * fixed damage tooltip enhancement not working
