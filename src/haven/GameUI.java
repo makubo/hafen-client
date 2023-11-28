@@ -30,6 +30,7 @@ import haven.Equipory.SLOTS;
 import haven.rx.BuffToggles;
 import haven.rx.Reactor;
 import integrations.mapv4.MappingClient;
+import me.ender.QuestHelper;
 import me.ender.minimap.*;
 import me.ender.timer.Timer;
 
@@ -56,6 +57,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public MenuGrid menu;
     public MapView map;
     public PathQueue pathQueue;
+    public QuestHelper questHelper;
     public GobIcon.Settings iconconf;
     public MiniMap mmap;
     public Fightview fv;
@@ -318,6 +320,8 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	opts.hide();
 	zerg = add(new Zergwnd(), Utils.getprefc("wndc-zerg", UI.scale(new Coord(187, 50))));
 	zerg.hide();
+	questHelper = add(new QuestHelper(), UI.scale(new Coord(187, 50)));
+	questHelper.hide();
 	placemmap();
     }
 
@@ -841,6 +845,10 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	}
 	updhand();
 	handHidden = !handHidden;
+    }
+    
+    public void toggleQuestHelper() {
+	questHelper.toggle();
     }
     
     public DraggedItem hand() {

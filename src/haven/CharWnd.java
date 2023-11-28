@@ -1165,6 +1165,10 @@ public class CharWnd extends WindowX {
 	    }
 
 	    private CharWnd cw = null;
+	    private CharWnd cw() {
+		if(cw == null) {cw = getparent(CharWnd.class);}
+		return cw;
+	    }
 	    public int done() {
 		if(cw == null)
 		    cw = getparent(CharWnd.class);
@@ -1229,6 +1233,9 @@ public class CharWnd extends WindowX {
 			ncond.add(cond);
 		    }
 		    this.cond = ncond.toArray(new Condition[0]);
+		    CharWnd cw = cw();
+		    boolean isCredo = cw != null && cw.credos.pqid == questid();
+		    this.ui.gui.questHelper.processQuest(ncond, questid(), isCredo);
 		    refresh();
 		    if(cqv != null)
 			cqv.update();
@@ -2468,6 +2475,7 @@ public class CharWnd extends WindowX {
 		    dqst.remove(id);
 		}
 	    }
+	    ui.gui.questHelper.refresh();
 	} else {
 	    super.uimsg(nm, args);
 	}
