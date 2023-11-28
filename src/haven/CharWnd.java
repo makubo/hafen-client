@@ -38,8 +38,10 @@ import java.util.stream.IntStream;
 
 import static haven.ExtInventory.*;
 import static haven.PUtils.*;
+
 import haven.resutil.FoodInfo;
 import haven.resutil.Curiosity;
+import me.ender.WoundTreatment;
 
 /* XXX: There starts to seem to be reason to split the while character
  * sheet into some more modular structure, as it is growing quite
@@ -974,6 +976,7 @@ public class CharWnd extends WindowX {
 		buf.append("$img[" + res.name + "]\n\n");
 		buf.append("$b{$font[serif,16]{" + res.flayer(Resource.tooltip).t + "}}\n\n\n");
 		buf.append(res.flayer(Resource.pagina).text);
+		buf.append(WoundTreatment.treatment(res));
 		return(buf.toString());
 	    }
 
