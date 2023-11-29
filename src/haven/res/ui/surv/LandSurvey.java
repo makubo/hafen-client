@@ -111,10 +111,11 @@ public class LandSurvey extends Window {
 	    ByteBuffer buf = ret.push();
 	    Coord c = new Coord();
 	    float tz = LandSurvey.this.tz / gran;
+	    float tz2 = CFG.FLAT_TERRAIN.get() ? 0 : tz;
 	    for(c.y = ul.y; c.y <= br.y; c.y++) {
 		for(c.x = ul.x; c.x <= br.x; c.x++) {
-		    float z = (float)map.getfz(c);
-		    buf.putFloat((c.x - ul.x) * (float)tilesz.x).putFloat(-(c.y - ul.y) * (float)tilesz.y).putFloat(tz);
+		    float z = (float)map.getfz2(c);
+		    buf.putFloat((c.x - ul.x) * (float)tilesz.x).putFloat(-(c.y - ul.y) * (float)tilesz.y).putFloat(tz2);
 		    if(Math.abs(tz - z) < E) {
 			buf.put((byte)0).put((byte)255).put((byte)0).put((byte)255);
 		    } else if(tz < z) {
@@ -151,7 +152,7 @@ public class LandSurvey extends Window {
 	Coord c = new Coord();
 	for(c.y = ul.y; c.y <= br.y; c.y++) {
 	    for(c.x = ul.x; c.x <= br.x; c.x++) {
-		zs += map.getfz(c);
+		zs += map.getfz2(c);
 		nv++;
 	    }
 	}
@@ -166,7 +167,7 @@ public class LandSurvey extends Window {
 	int sd = 0, hn = 0;
 	for(c.y = ul.y; c.y <= br.y; c.y++) {
 	    for(c.x = ul.x; c.x <= br.x; c.x++) {
-		int z = (int)Math.round(map.getfz(c) * gran);
+		int z = (int)Math.round(map.getfz2(c) * gran);
 		min = Math.min(min, z); max = Math.max(max, z);
 		sd += tz - z;
 		if(z > tz)
@@ -209,7 +210,8 @@ public class LandSurvey extends Window {
 		s_ol = mv.drawadd(ol);
 	    }
 	    if(s_ol != null) {
-		s_ol.cstate(Pipe.Op.compose(olmat, Location.xlate(new Coord3f(ul.x * (float)tilesz.x, -ul.y * (float)tilesz.y, tz))));
+		float tz2 = CFG.FLAT_TERRAIN.get() ? 0 : tz;
+		s_ol.cstate(Pipe.Op.compose(olmat, Location.xlate(new Coord3f(ul.x * (float)tilesz.x, -ul.y * (float)tilesz.y, tz2))));
 	    }
 	}
 	if((sendtz != 0) && (Utils.rtime() > sendtz)) {
