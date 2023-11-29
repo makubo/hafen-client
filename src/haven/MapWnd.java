@@ -1065,6 +1065,16 @@ public class MapWnd extends WindowX implements Console.Directory {
 	return null;
     }
     
+    public SMarker findMarker(String name) {
+	for (Map.Entry<Long, SMarker> e : file.smarkers.entrySet()) {
+	    SMarker m = e.getValue();
+	    if(Objects.equals(m.nm, name)) {
+		return m;
+	    }
+	}
+	return null;
+    }
+    
     public long playerSegmentId() {
 	Location sessloc = view.sessloc;
 	if(sessloc == null) {return 0;}

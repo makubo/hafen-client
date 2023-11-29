@@ -263,6 +263,10 @@ public class Pointer extends Widget implements MiniMap.IPointer, DTarget {
 	}
     }
     
+    public String name() {
+	return tip;
+    }
+    
     public Object tooltip(Coord c, Widget prev) {
 	if((lc != null) && (lc.dist(c) < 20))
 	    return tooltip();

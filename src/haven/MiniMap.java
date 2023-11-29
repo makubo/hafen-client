@@ -1180,6 +1180,7 @@ public class MiniMap extends Widget {
 	Coord sc(Coord c, Coord sz);
 	
 	Object tooltip();
+	String name();
 	
 	long seg();
 	

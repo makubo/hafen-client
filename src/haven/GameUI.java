@@ -1885,6 +1885,16 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	return trackedMarkers.containsKey(marker);
     }
     
+    public Optional<MiniMap.IPointer> findPointer(String name) {
+	final long curSeg = mapfile.playerSegmentId();
+	return ui.gui.children().stream()
+	    .filter(widget -> widget instanceof MiniMap.IPointer)
+	    .map(widget -> (MiniMap.IPointer) widget)
+	    .filter(p -> p.tc(curSeg) != null)
+	    .filter(p -> Objects.equals(name, p.name()))
+	    .findFirst();
+    }
+    
     public boolean isInCombat() {
 	return fv != null && !fv.lsrel.isEmpty();
     }
