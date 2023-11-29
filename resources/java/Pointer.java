@@ -317,6 +317,10 @@ public class Pointer extends Widget implements MiniMap.IPointer, DTarget {
 		firstLine = line;
 	    } else if(curseg == firsSegment) {
 		mc = Utils.intersect(firstLine, line).orElse(mc);
+		//do not stop triangulation if calculated point diverges too far off from server one
+		if(mc != null && Math.abs(player.rc.angle(mc) - player.rc.angle(b)) > PI / 3) {
+		    mc = null;
+		}
 		triangulating = mc == null;
 	    } else {
 	        firstLine = null;
