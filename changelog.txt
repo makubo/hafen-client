@@ -1,6 +1,9 @@
 $size[14]{$u{Update for 29.11.23:}
   * added quest helper to menu grid (Xtended -> Quest helper) - it shows all uncompleted tasks from all currently active quests. Can also be bound to a key in the Global Shortcuts.
   * fixed typo in punch sore treatment config that caused it to not show any treatments
+  * fixed land survey not working properly when flat terrain is on
+  * hopefully fixed quest pointers jumping behind you sometimes
+  * fixed crash that can happen on startup
  
 $size[14]{$u{Update for 28.11.23:}
   * added wound treatment info
