@@ -1817,24 +1817,22 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     }
 
     private double lastmsgsfx = 0;
+    private final Map<String, Double> lastsfx = new HashMap<>();
     public void msg(String msg) {
 	msg(msg, MsgType.INFO);
-	double now = Utils.rtime();
-	if(now - lastmsgsfx > 0.1) {
-	    ui.sfx(RootWidget.msgsfx);
-	    lastmsgsfx = now;
-	}
     }
     
     public void msg(String msg, MsgType type) {
 	msg(msg, type.color, type.logcol);
-	if(type.sfx != null) {
-	    Audio.play(type.sfx);
+	double now = Utils.rtime();
+	if(type.sfx != null && now - lastsfx.getOrDefault(type.sfx.name, 0d) > 0.1) {
+	    ui.sfx(type.sfx);
+	    lastsfx.put(type.sfx.name, now);
 	}
     }
 
     public enum MsgType {
-	INFO(Color.WHITE), GOOD(Color.GREEN), BAD(Color.RED),
+	INFO(Color.WHITE, RootWidget.msgsfx), GOOD(Color.GREEN), BAD(Color.RED),
 	ERROR(new Color(192, 0, 0), new Color(255, 0, 0), "sfx/error");
 
 	public final Color color, logcol;
@@ -1848,6 +1846,12 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    this.logcol = logcol;
 	    this.color = color;
 	    this.sfx = (sfx != null) ? Resource.local().loadwait(sfx) : null;
+	}
+	
+	MsgType(Color color, Resource sfx) {
+	    this.logcol = color;
+	    this.color = color;
+	    this.sfx = sfx;
 	}
     }
     
