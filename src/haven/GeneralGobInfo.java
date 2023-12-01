@@ -1,5 +1,6 @@
 package haven;
 
+import me.ender.GobInfoOpts;
 import me.ender.gob.GobTimerData;
 
 import java.awt.*;
@@ -88,6 +89,7 @@ public class GeneralGobInfo extends GobInfo {
     }
 
     private BufferedImage quality() {
+	if(CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.get().contains(GobInfoOpts.InfoPart.QUALITY)) {return null;}
 	if(q != 0) {
 	    String text = String.format("$img[gfx/hud/gob/quality,c]%s", RichText.color(String.valueOf(q), Q_COL));
 	    return Utils.outline2(RichText.stdf.render(text).img, Color.BLACK);
@@ -96,6 +98,7 @@ public class GeneralGobInfo extends GobInfo {
     }
     
     private BufferedImage health() {
+	if(CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.get().contains(GobInfoOpts.InfoPart.HEALTH)) {return null;}
 	health = gob.getattr(GobHealth.class);
 	if(health != null) {
 	    return health.text();
@@ -109,6 +112,7 @@ public class GeneralGobInfo extends GobInfo {
 	scalePercent = -1;
  
 	if(isSpriteKind(gob, "GrowingPlant", "TrellisPlant")) {
+	    if(CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.get().contains(GobInfoOpts.InfoPart.PLANT_GROWTH)) {return null;}
 	    int maxStage = 0;
 	    for (FastMesh.MeshRes layer : gob.getres().layers(FastMesh.MeshRes.class)) {
 		if(layer.id / 10 > maxStage) {
@@ -123,6 +127,7 @@ public class GeneralGobInfo extends GobInfo {
 		line = Text.std.renderstroked(String.format("%d/%d", stage, maxStage), c, Color.BLACK);
 	    }
 	} else if(isSpriteKind(gob, "Tree")) {
+	    if(CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.get().contains(GobInfoOpts.InfoPart.TREE_GROWTH)) {return null;}
 	    Message data = getDrawableData(gob);
 	    if(data != null && !data.eom()) {
 		data.skip(1);
@@ -164,6 +169,7 @@ public class GeneralGobInfo extends GobInfo {
 	Optional<String> contents = Optional.empty();
 	
 	if(res.startsWith("gfx/terobjs/barrel")) {
+	    if(CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.get().contains(GobInfoOpts.InfoPart.BARREL)) {return null;}
 	    contents = gob.ols.stream()
 		.map(Gob.Overlay::name)
 		.filter(name -> name.startsWith("gfx/terobjs/barrel-"))
@@ -172,6 +178,7 @@ public class GeneralGobInfo extends GobInfo {
 		.findAny();
 	    
 	} else if(res.startsWith("gfx/terobjs/iconsign")) {
+	    if(CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.get().contains(GobInfoOpts.InfoPart.DISPLAY_SIGN)) {return null;}
 	    Message sdt = gob.sdtm();
 	    if(!sdt.eom()) {
 		int resid = sdt.uint16();

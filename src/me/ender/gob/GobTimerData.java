@@ -3,6 +3,7 @@ package me.ender.gob;
 import haven.Window;
 import haven.*;
 import haven.rx.Reactor;
+import me.ender.GobInfoOpts;
 import me.ender.RichUText;
 import me.ender.WindowDetector;
 
@@ -97,6 +98,7 @@ public class GobTimerData {
     }
     
     public BufferedImage img() {
+	if(CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.get().contains(GobInfoOpts.InfoPart.TIMER)) {return null;}
 	return Optional.ofNullable(text.get()).map(t -> t.back).orElse(null);
     }
     

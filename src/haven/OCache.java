@@ -79,6 +79,7 @@ public class OCache implements Iterable<Gob> {
 	CFG.HIDE_TREES.observe(cfg -> gobAction(Gob::visibilityUpdated));
 	CFG.SKIP_HIDING_RADAR_TREES.observe(cfg -> gobAction(Gob::visibilityUpdated));
 	CFG.DISPLAY_GOB_INFO.observe(cfg -> gobAction(Gob::infoUpdated));
+	CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.observe(cfg -> gobAction(Gob::infoUpdated));
 	CFG.SHOW_CONTAINER_FULLNESS.observe(cfg -> gobAction(Gob::infoUpdated));
 	CFG.SHOW_PROGRESS_COLOR.observe(cfg -> gobAction(Gob::infoUpdated));
     }
