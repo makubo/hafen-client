@@ -177,7 +177,17 @@ public class GeneralGobInfo extends GobInfo {
 	
 	if(contents.isPresent()) {
 	    this.contents = contents.get();
-	    return Text.std.renderstroked(this.contents, BARREL_COL, Color.black).img;
+	    BufferedImage img = Text.std.renderstroked(this.contents, BARREL_COL, Color.black).img;
+	    if(img.getWidth() <= UI.scale(60)) {
+		return img;
+	    }
+	    
+	    String[] parts = this.contents.split(" ");
+	    if(parts.length <= 1) {return img;}
+	    
+	    return ItemInfo.catimgs(0, ItemInfo.CENTER, Arrays.stream(parts)
+		.map(p -> Text.std.renderstroked(p, BARREL_COL, Color.black).img)
+		.toArray(BufferedImage[]::new));
 	}
 	return null;
     }

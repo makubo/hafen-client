@@ -40,6 +40,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public abstract class ItemInfo {
+    public static final int LEFT = 0;
+    public static final int CENTER = 1;
+    public static final int RIGHT = 2;
     public static final Resource armor_hard = Resource.local().loadwait("gfx/hud/chr/custom/ahard");
     public static final Resource armor_soft = Resource.local().loadwait("gfx/hud/chr/custom/asoft");
     public static final Resource detection = Resource.local().loadwait("gfx/hud/chr/custom/detect");
@@ -377,10 +380,15 @@ public abstract class ItemInfo {
     }
 
     public static BufferedImage catimgs(int margin, BufferedImage... imgs) {
-	return catimgs(margin, false, imgs);
+	return catimgs(margin, LEFT, imgs);
     }
 
     public static BufferedImage catimgs(int margin, boolean right, BufferedImage... imgs) {
+	return catimgs(margin, right ? RIGHT : LEFT, imgs);
+	
+    }
+    
+    public static BufferedImage catimgs(int margin, int align, BufferedImage... imgs) {
 	int w = 0, h = -margin;
 	for(BufferedImage img : imgs) {
 	    if(img == null)
@@ -395,7 +403,13 @@ public abstract class ItemInfo {
 	for(BufferedImage img : imgs) {
 	    if(img == null)
 		continue;
-	    g.drawImage(img, right ? w - img.getWidth() : 0, y, null);
+	    int x = 0;
+	    if(align == RIGHT) {
+		x = w - img.getWidth();
+	    } else if(align == CENTER) {
+		x = (w - img.getWidth()) / 2;
+	    }
+	    g.drawImage(img, x, y, null);
 	    y += img.getHeight() + margin;
 	}
 	g.dispose();
