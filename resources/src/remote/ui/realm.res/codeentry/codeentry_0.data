@@ -4,7 +4,7 @@
 #String key[0]
 wdg
 #String value[0]
-Realm
+haven.res.ui.realm.Realm
 #start of requirements
 #int32 length
 1
