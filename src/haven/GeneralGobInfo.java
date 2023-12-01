@@ -243,7 +243,7 @@ public class GeneralGobInfo extends GobInfo {
     }
     
     private static String shorten(String text) {
-	return text.replaceAll(" Hide|Dried |Bar of ", "");
+	return text.replaceAll(" Hide|Dried |Bar of | Leaf| Leaves", "");
     }
 
     @Override
