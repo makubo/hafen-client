@@ -21,8 +21,8 @@ public class Realm extends Polity {
 
     public Realm(String name) {
 	super("Realm", name);
-	Widget prev = add(new Img(CharWnd.catf.render("Realm").tex()), 0, 0);
-	prev = add(new Label(name, nmf), prev.pos("bl").adds(0, 5));
+	Widget prev = add(new Img(CharWnd.catf.i10n_label("Realm").tex()), 0, 0);
+	prev = add(new Label.Untranslated(name, nmf), prev.pos("bl").adds(0, 5));
 	prev = add(new AuthMeter(new Coord(width, UI.scale(20))), prev.pos("bl").adds(0, 2));
 	prev = add(new Authobj("t"), prev.pos("bl").adds(0, 5));
 	prev = add(new Button(width - UI.scale(20), "Realm Blessings") {
