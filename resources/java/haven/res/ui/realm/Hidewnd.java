@@ -14,11 +14,11 @@ public class Hidewnd extends Window {
     Hidewnd(Coord sz, String cap, boolean lg) {
 	super(sz, cap, lg);
     }
-    
+
     Hidewnd(Coord sz, String cap) {
 	super(sz, cap);
     }
-    
+
     public void wdgmsg(Widget sender, String msg, Object... args) {
 	if((sender == this) && msg.equals("close")) {
 	    this.hide();
@@ -26,7 +26,7 @@ public class Hidewnd extends Window {
 	}
 	super.wdgmsg(sender, msg, args);
     }
-    
+
     public void show() {
 	if(c.x < 0)
 	    c.x = 0;
@@ -38,7 +38,7 @@ public class Hidewnd extends Window {
 	    c.y = parent.sz.y - sz.y;
 	super.show();
     }
-    
+
     public void cdestroy(Widget w) {
 	reqdestroy();
     }

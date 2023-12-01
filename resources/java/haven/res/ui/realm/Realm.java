@@ -1,4 +1,7 @@
+/* Preprocessed source code */
 /* $use: ui/polity */
+
+package haven.res.ui.realm;
 
 import haven.*;
 import java.util.*;
@@ -6,11 +9,10 @@ import haven.res.ui.polity.*;
 import static haven.BuddyWnd.width;
 
 /* >wdg: Realm */
+@FromResource(name = "ui/realm", version = 30)
 public class Realm extends Polity {
     public static final Map<String, Resource.Image> authimg = Utils.<String, Resource.Image>map().
-	put("c", Loading.waitfor(Resource.classres(Realm.class).pool.load("gfx/terobjs/mm/bordercairn", 1)).layer(Resource.imgc)).
-	put("s", Loading.waitfor(Resource.classres(Realm.class).pool.load("gfx/terobjs/mm/seamark", 1)).layer(Resource.imgc)).
-	put("f", Loading.waitfor(Resource.classres(Realm.class).pool.load("gfx/terobjs/mm/fealtystone", 1)).layer(Resource.imgc)).
+	put("t", Loading.waitfor(Resource.classres(Realm.class).pool.load("gfx/terobjs/mm/thingwall", 1)).layer(Resource.imgc)).
 	map();
     final BuddyWnd.GroupSelector gsel;
     public final Map<String, Integer> authn = new HashMap<>();
@@ -19,20 +21,19 @@ public class Realm extends Polity {
 
     public Realm(String name) {
 	super("Realm", name);
-	Composer lay = new Composer(this).vmrgn(UI.scale(5));
-	lay.add(new Img(CharWnd.catf.i10n_label("Realm").tex()));
-	lay.add(new Label.Untranslated(name, nmf));
-	lay.add(new AuthMeter(new Coord(width, UI.scale(20))));
-	lay.addar(width, new Authobj("c"), new Authobj("s"), new Authobj("f"));
-	lay.add(new Button(width - UI.scale(20), "Realm Blessings") {
+	Widget prev = add(new Img(CharWnd.catf.render("Realm").tex()), 0, 0);
+	prev = add(new Label(name, nmf), prev.pos("bl").adds(0, 5));
+	prev = add(new AuthMeter(new Coord(width, UI.scale(20))), prev.pos("bl").adds(0, 2));
+	prev = add(new Authobj("t"), prev.pos("bl").adds(0, 5));
+	prev = add(new Button(width - UI.scale(20), "Realm Blessings") {
 		public void click() {
 		    if((actwnd != null) && actwnd.show(!actwnd.visible)) {
 			actwnd.raise();
 		    }
 		}
-	    }, 10);
-	lay.vmrgn(UI.scale(2)).add(new Label("Groups:"));
-	gsel = lay.vmrgn(UI.scale(5)).add(new BuddyWnd.GroupSelector(-1) {
+	    }, prev.pos("bl").adds(0, 5).xs(10));
+	prev = add(new Label("Groups:"), prev.pos("bl").adds(0, 10).x(0));
+	gsel = add(new BuddyWnd.GroupSelector(-1) {
 		public void tick(double dt) {
 		    if(mw instanceof GroupWidget)
 			update(((GroupWidget)mw).id);
@@ -43,11 +44,11 @@ public class Realm extends Polity {
 		public void select(int group) {
 		    Realm.this.wdgmsg("gsel", group);
 		}
-	    });
-	lay.vmrgn(UI.scale(2)).add(new Label("Members:"));
-	lay.vmrgn(UI.scale(5)).add(Frame.with(new MemberList(width, 7), true));
+	    }, prev.pos("bl").adds(0, 2));
+	prev = add(new Label("Members:"), gsel.pos("bl").adds(0, 5));
+	prev = add(Frame.with(new MemberList(width, 7), true), prev.pos("bl").adds(0, 2));
 	pack();
-	this.my = lay.y();
+	this.my = prev.pos("bl").adds(0, 5).y;
     }
 
     public class Authobj extends Widget {
@@ -57,7 +58,7 @@ public class Realm extends Polity {
 	private int cn;
 
 	public Authobj(String t) {
-	    super(authimg.get(t).sz.add(UI.scale(25, 0)));
+	    super(authimg.get(t).ssz.add(UI.scale(25, 0)));
 	    this.t = t;
 	    this.img = authimg.get(t);
 	}
@@ -73,7 +74,7 @@ public class Realm extends Polity {
 	    g.image(img, Coord.z);
 	    if((rend == null) || (n != cn))
 		rend = Text.render(Integer.toString(n));
-	    g.aimage(rend.tex(), new Coord(img.sz.x + UI.scale(5), img.sz.y / 2), 0, 0.5);
+	    g.aimage(rend.tex(), new Coord(img.ssz.x + UI.scale(5), img.ssz.y / 2), 0, 0.5);
 	}
 
 	public Object tooltip(Coord c, Widget prev) {
@@ -118,4 +119,3 @@ public class Realm extends Polity {
 	}
     }
 }
-
