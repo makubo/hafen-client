@@ -193,12 +193,16 @@ public class GeneralGobInfo extends GobInfo {
 	
 	if(contents.isPresent()) {
 	    this.contents = contents.get();
-	    BufferedImage img = Text.std.renderstroked(this.contents, BARREL_COL, Color.black).img;
+	    String text = this.contents;
+	    if(CFG.DISPLAY_GOB_INFO_SHORT.get()) {
+		text = shorten(text);
+	    }
+	    BufferedImage img = Text.std.renderstroked(text, BARREL_COL, Color.black).img;
 	    if(img.getWidth() <= UI.scale(60)) {
 		return img;
 	    }
 	    
-	    String[] parts = this.contents.split(" ");
+	    String[] parts = text.split(" ");
 	    if(parts.length <= 1) {return img;}
 	    
 	    return ItemInfo.catimgs(0, ItemInfo.CENTER, Arrays.stream(parts)
@@ -236,6 +240,10 @@ public class GeneralGobInfo extends GobInfo {
 	    }
 	}
 	return result;
+    }
+    
+    private static String shorten(String text) {
+	return text.replaceAll(" Hide|Dried |Bar of ", "");
     }
 
     @Override

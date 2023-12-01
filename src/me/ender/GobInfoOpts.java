@@ -13,7 +13,7 @@ public class GobInfoOpts extends WindowX {
 	TREE_GROWTH("Tree growth"),
 	HEALTH("Object health"),
 	BARREL("Barrel contents"),
-	DISPLAY_SIGN("Display sign icon"),
+	DISPLAY_SIGN("Display sign contents"),
 	QUALITY("Quality"),
 	TIMER("Timer");
 	
@@ -46,6 +46,10 @@ public class GobInfoOpts extends WindowX {
 		}
 	    });
 	}
+	composer.y(0).hpad(UI.scale(150));
+	composer.add(new Label("Options:"));
+	composer.hpad(composer.hpad() + 2 * PAD);
+	composer.add(new OptWnd.CFGBox("Shorten text of the object contents", CFG.DISPLAY_GOB_INFO_SHORT, "Will remove some not very relevant parts of the contents name", true));
 	pack();
     }
     

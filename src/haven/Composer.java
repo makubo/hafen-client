@@ -50,6 +50,8 @@ public class Composer {
         hpad = value;
         return this;
     }
+    
+    public int hpad() {return hpad;}
 
     public Composer vpad(int value) {
         vpad = value;
@@ -62,6 +64,11 @@ public class Composer {
 
     public int y() {
         return y;
+    }
+    
+    public Composer y(int v) {
+        this.y = v;
+        return this;
     }
 
     public void add(int height) {
