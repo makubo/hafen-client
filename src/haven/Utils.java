@@ -2430,6 +2430,7 @@ public class Utils {
     }
     
     public static String prettyResName(String resname) {
+	if(resname == null) {return "???";}
 	tryInitCustomNames();
 	if(customNames.containsKey(resname)) {
 	    return customNames.get(resname);

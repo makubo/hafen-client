@@ -75,6 +75,7 @@ public class Hitbox extends SlottedNode implements Rendered {
     private boolean passable() {
 	try {
 	    String name = gob.resid();
+	    if(name == null) {return false;}
 	    ResDrawable rd = (gob.drawable instanceof ResDrawable) ? (ResDrawable) gob.drawable : null;
 	    
 	    if(rd == null) {return false;}
