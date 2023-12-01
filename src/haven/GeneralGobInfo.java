@@ -54,7 +54,7 @@ public class GeneralGobInfo extends GobInfo {
 	BufferedImage[] parts = new BufferedImage[]{
 	    growth(),
 	    health(),
-	    barrel(),
+	    content(),
 	    quality(),
 	    timer.img(),
 	};
@@ -148,18 +148,32 @@ public class GeneralGobInfo extends GobInfo {
 	return contents;
     }
 
-    private BufferedImage barrel() {
+    private BufferedImage content() {
 	this.contents = null;
 	String res = gob.resid();
-	if(res == null || !res.startsWith("gfx/terobjs/barrel")) {
-	    return null;
+	if(res == null) {return null;}
+	Optional<String> contents = Optional.empty();
+	
+	if(res.startsWith("gfx/terobjs/barrel")) {
+	    contents = gob.ols.stream()
+		.map(Gob.Overlay::name)
+		.filter(name -> name.startsWith("gfx/terobjs/barrel-"))
+		.map(name -> name.substring(name.lastIndexOf("-") + 1))
+		.map(Utils::prettyResName)
+		.findAny();
+	    
+	} else if(res.startsWith("gfx/terobjs/iconsign")) {
+	    Message sdt = gob.sdtm();
+	    if(!sdt.eom()) {
+		int resid = sdt.uint16();
+		if((resid & 0x8000) != 0) {
+		    resid &= ~0x8000;
+		}
+		
+		Session session = gob.context(Session.class);
+		contents = Optional.of(Utils.prettyResName(session.getres(resid)));
+	    }
 	}
-	Optional<String> contents = gob.ols.stream()
-	    .map(Gob.Overlay::name)
-	    .filter(name -> name.startsWith("gfx/terobjs/barrel-"))
-	    .map(name -> name.substring(name.lastIndexOf("-") + 1))
-	    .map(Utils::prettyResName)
-	    .findAny();
 	
 	if(contents.isPresent()) {
 	    this.contents = contents.get();

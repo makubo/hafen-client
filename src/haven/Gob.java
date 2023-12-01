@@ -1412,6 +1412,15 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	return 0;
     }
     
+    public Message sdtm() {
+	Drawable d = drawable;
+	if(d instanceof ResDrawable) {
+	    ResDrawable dw = (ResDrawable) d;
+	    return dw.sdt.clone();
+	}
+	return null;
+    }
+    
     public void setQuality(int q) {
         info.setQ(q);
         status.update(StatusType.info);
