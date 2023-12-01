@@ -27,13 +27,21 @@ public class GeneralGobInfo extends GobInfo {
     private int scalePercent = -1;
     private String contents = null;
     int q;
+    private static final Map<String, Integer> POS = new HashMap<>();
     
     public final GobTimerData timer;
+    
+    static {
+	POS.put("gfx/terobjs/smelter", 5);
+	POS.put("gfx/terobjs/barrel", 6);
+	POS.put("gfx/terobjs/iconsign", 5);
+    }
 
     protected GeneralGobInfo(Gob owner) {
 	super(owner);
 	q = gobQ.getOrDefault(gob.id, 0);
 	timer = GobTimerData.from(gob);
+	center = new Pair<>(0.5, 1.0);
     }
     
     
@@ -51,6 +59,7 @@ public class GeneralGobInfo extends GobInfo {
     protected Tex render() {
 	if(gob == null || gob.getres() == null) {return null;}
 	
+	up(POS.getOrDefault(gob.resid(), 1));
 	BufferedImage[] parts = new BufferedImage[]{
 	    growth(),
 	    health(),
