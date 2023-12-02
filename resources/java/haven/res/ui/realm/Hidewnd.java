@@ -10,7 +10,7 @@ import static haven.BuddyWnd.width;
 
 /* >wdg: Realm */
 @FromResource(name = "ui/realm", version = 30)
-public class Hidewnd extends Window {
+public class Hidewnd extends WindowX {
     Hidewnd(Coord sz, String cap, boolean lg) {
 	super(sz, cap, lg);
     }
