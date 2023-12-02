@@ -250,7 +250,7 @@ public class Bot implements Defer.Callable<Void> {
     }
     
     public static void drink(WItem item) {
-	start(new Bot(Collections.singletonList(new Target(item)), Target::rclick, selectFlower("Drink")), item.ui);
+	start(new Bot(Collections.singletonList(new Target(item)), Target::rclick, selectFlower("Drink")), item.ui, true);
     }
     
     public static void fuelGob(GameUI gui, String name, String fuel, int count) {
