@@ -50,7 +50,7 @@ public class Composite extends Drawable implements EquipTarget {
     private float tptime;
     private WrapMode tpmode;
     private List<MD> nmod2;
-    boolean changed = false;
+    boolean changed = true;
     private String resId = null;
     private List<String> poses = new LinkedList<>();
     
@@ -60,6 +60,7 @@ public class Composite extends Drawable implements EquipTarget {
 	this.baseres = base.get();
 	comp = new Composited(baseres.layer(Skeleton.Res.class).s);
 	comp.eqowner = gob;
+	processResId();
     }
     
     public void added(RenderTree.Slot slot) {
@@ -329,12 +330,11 @@ public class Composite extends Drawable implements EquipTarget {
     public String resId() { return resId; }
     
     private String makeResId() {
-	if(nmod2 == null) {return resId;}
+	String name = baseres.name;
+	if(nmod2 == null) {return name;}
 	
 	Set<String> res = new HashSet<>();
-	String name;
 	try {
-	    name = base.get().name;
 	    if("gfx/borka/body".equals(name)) {
 		for (MD mod : nmod2) {
 		    if(mod.mod.get().name.contains("gfx/terobjs/mannequin")) {
