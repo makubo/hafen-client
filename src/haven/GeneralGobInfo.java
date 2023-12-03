@@ -2,6 +2,7 @@ package haven;
 
 import me.ender.GobInfoOpts;
 import me.ender.GobInfoOpts.InfoPart;
+import me.ender.Reflect;
 import me.ender.gob.GobTimerData;
 
 import java.awt.*;
@@ -37,6 +38,7 @@ public class GeneralGobInfo extends GobInfo {
 	POS.put("gfx/terobjs/smelter", 5);
 	POS.put("gfx/terobjs/barrel", 6);
 	POS.put("gfx/terobjs/iconsign", 5);
+	POS.put("gfx/terobjs/cheeserack", 17);
     }
 
     protected GeneralGobInfo(Gob owner) {
@@ -70,11 +72,39 @@ public class GeneralGobInfo extends GobInfo {
 	    timer.img(),
 	};
 	
+	renderEquippedOverlays();
+	
 	for (BufferedImage part : parts) {
 	    if(part == null) {continue;}
 	    return new TexI(ItemInfo.catimgsh(UI.scale(3), 0, BG, parts));
 	}
 	return null;
+    }
+    
+    private void renderEquippedOverlays() {
+	String res = gob.resid();
+	if(res == null) {return;}
+	
+	for (Gob.Overlay ol : gob.ols) {
+	    if(!ol.name().startsWith("gfx/fx/eq")) {continue;}
+	    Sprite spr = Reflect.getFieldValue(ol.spr, "espr", Sprite.class);
+	    if(spr == null) {continue;}
+	    String name = spr.res.name;
+	    String text = null;
+	    
+	    if(GobInfoOpts.enabled(InfoPart.CHEESE_RACK) && res.startsWith("gfx/terobjs/cheeserack")) {
+		if(name.startsWith("gfx/terobjs/items/cheesetray-")) {
+		    name = name.substring(name.lastIndexOf("-") + 1);
+		    text = Utils.prettyResName(name);
+		}
+	    }
+	    
+	    if(text != null) {
+		spr.setTex2d(new TexI(ItemInfo.catimgsh(0, 0, BG, Text.std.renderstroked(text, BARREL_COL, Color.black).img)));
+	    } else {
+		spr.setTex2d(null);
+	    }
+	}
     }
     
     @Override

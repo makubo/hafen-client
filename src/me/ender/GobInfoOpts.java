@@ -14,6 +14,7 @@ public class GobInfoOpts extends WindowX {
 	HEALTH("Object health"),
 	BARREL("Barrel contents"),
 	DISPLAY_SIGN("Display sign contents"),
+	CHEESE_RACK("Cheese rack contents"),
 	QUALITY("Quality"),
 	TIMER("Timer");
 	
