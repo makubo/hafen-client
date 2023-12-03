@@ -151,6 +151,7 @@ public abstract class Sprite implements RenderTree.Node, PView.Render2D {
 	if(tex2d == null) {return;} //quick check, since most sprites don't have 2d textures
 	synchronized (texLock) {
 	    if(tex2d == null) {return;}
+	    if(owner instanceof Gob && !((Gob) owner).info.enabled()) {return;}
 	    Coord3f c3d = Homo3D.obj2view2(pos2d, state, Area.sized(g.sz()));
 	    if(c3d == null) {return;}
 	    Coord sc = c3d.round2();
