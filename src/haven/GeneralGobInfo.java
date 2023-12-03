@@ -20,6 +20,8 @@ public class GeneralGobInfo extends GobInfo {
     private static final Color BARREL_COL = new Color(252, 235, 255, 255);
     private static final Color BG = new Color(0, 0, 0, 84);
     private static final Map<Pair<Color, String>, Text.Line> TEXT_CACHE = new HashMap<>();
+    public static final int MARGIN = UI.scale(3);
+    public static final int PAD = 0;
     public static Pattern GOB_Q = Pattern.compile("Quality: (\\d+)");
     private static final Map<Long, Integer> gobQ = new LinkedHashMap<Long, Integer>() {
 	@Override
@@ -77,7 +79,7 @@ public class GeneralGobInfo extends GobInfo {
 	
 	for (BufferedImage part : parts) {
 	    if(part == null) {continue;}
-	    return new TexI(ItemInfo.catimgsh(UI.scale(3), 0, BG, parts));
+	    return combine(parts);
 	}
 	return null;
     }
@@ -101,7 +103,7 @@ public class GeneralGobInfo extends GobInfo {
 	    }
 	    
 	    if(text != null) {
-		spr.setTex2d(new TexI(ItemInfo.catimgsh(0, 0, BG, text(text, BARREL_COL).img)));
+		spr.setTex2d(combine(text(text, BARREL_COL).img));
 	    } else {
 		spr.setTex2d(null);
 	    }
@@ -262,6 +264,10 @@ public class GeneralGobInfo extends GobInfo {
 	    TEXT_CACHE.put(key, line);
 	    return line;
 	}
+    }
+    
+    private static Tex combine(BufferedImage... parts) {
+	return new TexI(ItemInfo.catimgsh(MARGIN, PAD, BG, parts));
     }
     
     private static boolean isSpriteKind(Gob gob, String... kind) {
