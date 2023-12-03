@@ -19,6 +19,7 @@ public class GeneralGobInfo extends GobInfo {
     private static final Color Q_COL = new Color(235, 252, 255, 255);
     private static final Color BARREL_COL = new Color(252, 235, 255, 255);
     private static final Color BG = new Color(0, 0, 0, 84);
+    private static final Map<Pair<Color, String>, Text.Line> TEXT_CACHE = new HashMap<>();
     public static Pattern GOB_Q = Pattern.compile("Quality: (\\d+)");
     private static final Map<Long, Integer> gobQ = new LinkedHashMap<Long, Integer>() {
 	@Override
@@ -100,7 +101,7 @@ public class GeneralGobInfo extends GobInfo {
 	    }
 	    
 	    if(text != null) {
-		spr.setTex2d(new TexI(ItemInfo.catimgsh(0, 0, BG, Text.std.renderstroked(text, BARREL_COL, Color.black).img)));
+		spr.setTex2d(new TexI(ItemInfo.catimgsh(0, 0, BG, text(text, BARREL_COL).img)));
 	    } else {
 		spr.setTex2d(null);
 	    }
@@ -155,7 +156,7 @@ public class GeneralGobInfo extends GobInfo {
 		int stage = data.uint8();
 		if(stage > maxStage) {stage = maxStage;}
 		Color c = Utils.blendcol((double) stage / maxStage, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN);
-		line = Text.std.renderstroked(String.format("%d/%d", stage, maxStage), c, Color.BLACK);
+		line = text(String.format("%d/%d", stage, maxStage), c);
 	    }
 	} else if(isSpriteKind(gob, "Tree")) {
 	    if(GobInfoOpts.disabled(InfoPart.TREE_GROWTH)) {return null;}
@@ -171,7 +172,7 @@ public class GeneralGobInfo extends GobInfo {
 			growth = (int) (BUSH_MULT * (growth - BUSH_START));
 		    }
 		    Color c = Utils.blendcol(growth / 100.0, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN);
-		    line = Text.std.renderstroked(String.format("%d%%", growth), c, Color.BLACK);
+		    line = text(String.format("%d%%", growth), c);
 		}
 	    }
 	}
@@ -228,7 +229,7 @@ public class GeneralGobInfo extends GobInfo {
 	    if(CFG.DISPLAY_GOB_INFO_SHORT.get()) {
 		text = shorten(text);
 	    }
-	    BufferedImage img = Text.std.renderstroked(text, BARREL_COL, Color.black).img;
+	    BufferedImage img = text(text, BARREL_COL).img;
 	    if(img.getWidth() <= UI.scale(60)) {
 		return img;
 	    }
@@ -237,7 +238,7 @@ public class GeneralGobInfo extends GobInfo {
 	    if(parts.length <= 1) {return img;}
 	    
 	    return ItemInfo.catimgs(0, ItemInfo.CENTER, Arrays.stream(parts)
-		.map(p -> Text.std.renderstroked(p, BARREL_COL, Color.black).img)
+		.map(p -> text(p, BARREL_COL).img)
 		.toArray(BufferedImage[]::new));
 	}
 	return null;
@@ -250,6 +251,17 @@ public class GeneralGobInfo extends GobInfo {
 	    return d.sdt.clone();
 	else
 	    return null;
+    }
+    
+    private static Text.Line text(String text, Color col) {
+	Pair<Color, String> key = new Pair<>(col, text);
+	if(TEXT_CACHE.containsKey(key)) {
+	    return TEXT_CACHE.get(key);
+	} else {
+	    Text.Line line = Text.std.renderstroked(text, col, Color.black);
+	    TEXT_CACHE.put(key, line);
+	    return line;
+	}
     }
     
     private static boolean isSpriteKind(Gob gob, String... kind) {
