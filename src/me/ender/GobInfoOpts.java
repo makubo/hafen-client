@@ -69,4 +69,8 @@ public class GobInfoOpts extends WindowX {
 	super.destroy();
 	instance = null;
     }
+    
+    public static boolean enabled(InfoPart part) {return !CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.get().contains(part);}
+    
+    public static boolean disabled(InfoPart part) {return CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.get().contains(part);}
 }
