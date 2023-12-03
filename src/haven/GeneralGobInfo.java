@@ -221,7 +221,10 @@ public class GeneralGobInfo extends GobInfo {
 		}
 		
 		Session session = gob.context(Session.class);
-		contents = Optional.of(Utils.prettyResName(session.getres(resid)));
+		Indir<Resource> cres = session.getres2(resid);
+		if(cres != null) {
+		    contents = Optional.of(Utils.prettyResName(cres));
+		}
 	    }
 	}
 	
