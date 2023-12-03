@@ -2410,9 +2410,7 @@ public class Utils {
 	if(res == null) {return "???";}
 	try {
 	    return prettyResName(res.get());
-	} catch (Resource.Loading ignore) {
-	    
-	}
+	} catch (Loading ignore) {}
 	if(res instanceof Resource.Named) {
 	    return prettyResName(((Resource.Named) res).name);
 	}
