@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 22.12.23:}
+  * merged loftar's code
+  * fixed crash when tracking some objects
+ 
 $size[14]{$u{Update for 05.12.23:}
   * fixed gob info disabled parts not working on restart
   * fixed mannequins triggering player warning
