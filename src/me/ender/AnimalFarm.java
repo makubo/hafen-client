@@ -70,6 +70,7 @@ public class AnimalFarm {
 	HORSE(new String[]{"Stallion", "Mare"}, Highlight, Shoo, Slaughter, Ride),
 	SHEEP(new String[]{"Ram", "Ewe"}, Highlight, Shoo, Slaughter, Shear),
 	PIG(new String[]{"Hog", "Sow"}, Highlight, Shoo, Slaughter),
+	REINDEER(new String[]{"Reindeer Buck", "Reindeer Doe"}, Highlight, Shoo, Slaughter),
 	GOAT(new String[]{"Billy", "Nanny"}, Highlight, Shoo, Slaughter);
 	
 	private final Set<String> names;
