@@ -30,7 +30,9 @@ public class AnimalFarm {
 	    labels.sort(POSITIONAL_COMPARATOR);
 	    
 	    if(edit != null) {
-		labels.get(0).c.y -= UI.scale(10);
+		Label label = labels.get(0);
+		//parents line is top most and has non-zero x coord if present. If it is absent then top one is brand info which has x as 0.
+		if(label.c.x > 0) {label.c.y = UI.scale(77);}
 		edit.c.y = 0;
 		edit.sz.x = BUTTONS_ON_LINE * BTN_W + (BUTTONS_ON_LINE - 1) * PAD;
 		Coord c = new Coord(edit.c.x, edit.c.y + edit.sz.y + PAD);
