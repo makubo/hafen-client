@@ -1,3 +1,9 @@
+$size[14]{$u{Update for 12.02.24:}
+  * merged loftar's code
+  * fixed position of parent text of animal inspect window
+  * added Reindeer support to animal inspect window extension
+  * fixed simple crops not working
+ 
 $size[14]{$u{Update for 22.12.23:}
   * merged loftar's code
   * fixed crash when tracking some objects
