@@ -59,9 +59,9 @@ public class SAttrWnd extends Widget {
 	    this.rnm = attrf.render(res.flayer(Resource.tooltip).t);
 	    this.attr = glob.getcattr(attr);
 	    this.bg = bg;
-	    add = adda(new IButton("gfx/hud/buttons/add", "u", "d", "h").action(() -> adj(1)),
+	    add = adda(new IButton("gfx/hud/buttons/add", "u", "d", "h").action(() -> {if(ui.modshift){adj(5);}else if(ui.modctrl){adj(10);}else{adj(1);}}),
 		       sz.x - UI.scale(5), sz.y / 2, 1, 0.5);
-	    sub = adda(new IButton("gfx/hud/buttons/sub", "u", "d", "h").action(() -> adj(-1)),
+	    sub = adda(new IButton("gfx/hud/buttons/sub", "u", "d", "h").action(() -> {if(ui.modshift){adj(-5);}else if(ui.modctrl){adj(-10);}else{adj(-1);}}),
 		       add.c.x - UI.scale(5), sz.y / 2, 1, 0.5);
 	}
 
