@@ -142,11 +142,13 @@ public class SAttrWnd extends Widget {
 
     public static class StudyInfo extends Widget {
 	public final Widget study;
+	public final Inventory inv;
 	public int texp, tw, tenc;
 
 	private StudyInfo(Coord sz, Widget study) {
 	    super(sz);
 	    this.study = study;
+	    this.inv = inventory(study);
 	    Widget plbl, pval;
 	    plbl = add(new Label("Attention:"), UI.scale(2, 2));
 	    pval = adda(new RLabel<Pair<Integer, Integer>>(() -> new Pair<>(tw, (ui == null) ? 0 : ui.sess.glob.getcattr("int").comp),
@@ -159,6 +161,15 @@ public class SAttrWnd extends Widget {
 	    pval = adda(new RLabel<Integer>(() -> texp, Utils::thformat, new Color(192, 192, 255, 255)),
 			pos("cbr").subs(2, 2), 1.0, 1.0);
 	    plbl = adda(new Label("Learning points:"), pval.pos("ul").subs(0, 2).xs(2), 0.0, 1.0);
+	    this.inv.locked = CFG.LOCK_STUDY.get();
+	    add(new OptWnd.CFGBox("Lock study", CFG.LOCK_STUDY) {
+		@Override
+		public void set(boolean a) {
+		    super.set(a);
+		    StudyInfo.this.inv.locked = a;
+		}
+	    }, pval.pos("bl").adds(0, 5).xs(2));
+	    pack();
 	}
 
 	private void upd() {
