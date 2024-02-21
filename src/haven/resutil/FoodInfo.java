@@ -33,7 +33,7 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
 
-import static haven.CharWnd.Constipations.*;
+import static haven.BAttrWnd.Constipations.*;
 import static haven.PUtils.*;
 import static haven.QualityList.SingleType.*;
 

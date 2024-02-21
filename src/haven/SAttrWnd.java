@@ -44,6 +44,7 @@ public class SAttrWnd extends Widget {
 	public final Glob.CAttr attr;
 	public final Tex img;
 	public final Color bg;
+	public final Resource res;
 	public int tbv, cost;
 	private final IButton add, sub;
 	private Text ct;
@@ -51,7 +52,7 @@ public class SAttrWnd extends Widget {
 
 	private SAttr(Glob glob, String attr, Color bg) {
 	    super(new Coord(attrw, attrf.height() + UI.scale(2)));
-	    Resource res = Resource.local().loadwait("gfx/hud/chr/" + attr);
+	    this.res = Resource.local().loadwait("gfx/hud/chr/" + attr);
 	    this.nm = attr;
 	    this.img = new TexI(convolve(res.flayer(Resource.imgc).img, new Coord(this.sz.y, this.sz.y), iconfilter));
 	    this.rnm = attrf.render(res.flayer(Resource.tooltip).t);

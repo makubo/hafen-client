@@ -31,11 +31,13 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.IntStream;
+
 import haven.resutil.FoodInfo;
 import haven.resutil.Curiosity;
 import static haven.PUtils.*;
 
-public class CharWnd extends Window {
+public class CharWnd extends WindowX {
     public static final RichText.Foundry ifnd = new RichText.Foundry(Resource.remote(), java.awt.font.TextAttribute.FAMILY, "SansSerif", java.awt.font.TextAttribute.SIZE, UI.scale(9)).aa(true);
     public static final Text.Furnace catf = new BlurFurn(new TexFurn(new Text.Foundry(Text.fraktur, 25).aa(true), Window.ctex), UI.scale(3), UI.scale(2), new Color(96, 48, 0));
     public static final Text.Furnace failf = new BlurFurn(new TexFurn(new Text.Foundry(Text.fraktur, 25).aa(true), Resource.loadimg("gfx/hud/fontred")), UI.scale(3), UI.scale(2), new Color(96, 48, 0));
@@ -51,7 +53,7 @@ public class CharWnd extends Window {
     public final BAttrWnd battr;
     public final SAttrWnd sattr;
     public final SkillWnd skill;
-    public FightWnd fight;
+    public FightWndEx fight;
     public final WoundWnd wound;
     public final QuestWnd quest;
     public final Tabs.Tab battrtab, sattrtab, skilltab, fighttab, woundtab, questtab;
@@ -217,7 +219,7 @@ public class CharWnd extends Window {
 	} else if(quest.children.contains(place)) {
 	    quest.addchild(child, args);
 	} else if(place == "fmg") {
-	    fight = fighttab.add((FightWnd)child, 0, 0);
+	    fight = fighttab.add((FightWndEx)child, 0, 0);
 	} else {
 	    super.addchild(child, args);
 	}
@@ -256,5 +258,72 @@ public class CharWnd extends Window {
 	    wdgmsg(msg, args);
 	else
 	    super.wdgmsg(sender, msg, args);
+    }
+    
+    public Glob.CAttr findattr(String name) {
+	for (SAttrWnd.SAttr skill : this.sattr.attrs) {
+	    if(name.equals(skill.attr.nm)) {
+		return skill.attr;
+	    }
+	}
+	for (BAttrWnd.Attr stat : this.battr.attrs) {
+	    if(name.equals(stat.attr.nm)) {
+		return stat.attr;
+	    }
+	}
+	return null;
+    }
+    
+    public Glob.CAttr findattr(Resource res) {
+	for (SAttrWnd.SAttr skill : this.sattr.attrs) {
+	    if(res == skill.res) {
+		return skill.attr;
+	    }
+	}
+	for (BAttrWnd.Attr stat : this.battr.attrs) {
+	    if(res == stat.res) {
+		return stat.attr;
+	    }
+	}
+	return null;
+    }
+    
+    private int statIndex(Resource res) {
+	List<BAttrWnd.Attr> base = this.battr.attrs;
+	if(base != null) {
+	    return IntStream.range(0, base.size())
+		.filter(i -> base.get(i).res == res)
+		.findFirst().orElse(Integer.MAX_VALUE);
+	}
+	return Integer.MAX_VALUE;
+    }
+    
+    private int skillIndex(Resource res) {
+	Collection<SAttrWnd.SAttr> skill = this.sattr.attrs;
+	if(skill != null) {
+	    int i = 0;
+	    for (SAttrWnd.SAttr attr : skill) {
+		if(attr.res == res) {return i;}
+		i++;
+	    }
+	}
+	return Integer.MAX_VALUE;
+    }
+    
+    public int BY_PRIORITY(Resource r1, Resource r2 ) {
+	int b1 = statIndex(r1);
+	int b2 = statIndex(r2);
+	
+	if(b1 == b2) {
+	    b1 = skillIndex(r1);
+	    b2 = skillIndex(r2);
+	    if(b1 == b2) {
+		return r1.name.compareTo(r2.name);
+	    } else {
+		return Integer.compare(b1, b2);
+	    }
+	} else {
+	    return Integer.compare(b1, b2);
+	}
     }
 }

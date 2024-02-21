@@ -187,14 +187,14 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	}
 	
 	public String name() {
-	    try {
-		if(res != null)
-		    return res.get().name;
-		else
-		    return "";
-	    } catch (Loading l) {
-		return "";
+	    Sprite spr = this.spr;
+	    if(spr != null) {
+		Resource res = spr.res;
+		if(res != null) {
+		    return res.name;
+		}
 	    }
+	    return "";
 	}
     }
     
@@ -654,12 +654,12 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 
     private void overlayAdded(Overlay item) {
 	try {
-	    Indir<Resource> indir = item.res;
-	    if(indir != null) {
-		Resource res = indir.get();
+	    Sprite spr = item.spr;
+	    if(spr != null) {
+		Resource res = spr.res;
 		if(res != null) {
 		    if(res.name.equals("gfx/fx/floatimg")) {
-			processDmg(item.sdt.clone());
+			//processDmg(item.sdt.clone());
 		    } else if(res.name.equals("gfx/fx/dowse")) {
 		        ProspectingWnd.overlay(this, item);
 		    }

@@ -46,13 +46,14 @@ public class BAttrWnd extends Widget {
 	public final Glob.CAttr attr;
 	public final Tex img;
 	public final Color bg;
+	public final Resource res;
 	private double lvlt = 0.0;
 	private Text ct;
 	private int cbv = -1, ccv = -1;
 
 	private Attr(Glob glob, String attr, Color bg) {
 	    super(new Coord(attrw, attrf.height() + UI.scale(2)));
-	    Resource res = Resource.local().loadwait("gfx/hud/chr/" + attr);
+	    this.res = Resource.local().loadwait("gfx/hud/chr/" + attr);
 	    this.nm = attr;
 	    this.rnm = attrf.render(res.flayer(Resource.tooltip).t);
 	    this.img = new TexI(convolve(res.flayer(Resource.imgc).img, new Coord(this.sz.y, this.sz.y), iconfilter));
@@ -110,6 +111,10 @@ public class BAttrWnd extends Widget {
 		return(1);
 	    return(0);
 	};
+	
+	public static Color color(double a) {
+	    return (a > 1.0) ? buffed : Utils.blendcol(none, full, a);
+	}
 
 	public class El {
 	    public final ResData t;
@@ -187,7 +192,7 @@ public class BAttrWnd extends Widget {
 		    if( a != null) { a.reqdestroy();  a = null;}
 		    Label a = adda(new Label(String.format("%d%%", Math.max((int)Math.round((1.0 - el.a) * 100), 1)), attrf),
 				   sz.x - UI.scale(1), sz.y / 2, 1.0, 0.5);
-		    a.setcolor((el.a > 1.0) ? buffed : Utils.blendcol(none, full, el.a));
+		    a.setcolor(color(el.a));
 		    nm = adda(new ItemIcon(sz, new ItemSpec(OwnerContext.uictx.curry(Constipations.this.ui), el.t, null)),
 			      0, sz.y / 2, 0.0, 0.5);
 		    this.a = a;

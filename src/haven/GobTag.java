@@ -75,8 +75,8 @@ public enum GobTag {
                 try {
                     List<String> list = new ArrayList<>();
                     for (Gob.Overlay overlay : gob.ols) {
-                        if(overlay != null && overlay.res != null) {
-                            list.add(overlay.res.get().name);
+                        if(overlay != null && overlay.spr != null && overlay.spr.res != null) {
+                            list.add(overlay.spr.res.name);
                         }
                     }
                     ols = list;
