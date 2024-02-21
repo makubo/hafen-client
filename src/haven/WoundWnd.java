@@ -26,6 +26,8 @@
 
 package haven;
 
+import me.ender.WoundTreatment;
+
 import java.util.*;
 import static haven.CharWnd.*;
 
@@ -70,6 +72,7 @@ public class WoundWnd extends Widget {
 		buf.append("$img[" + res.name + "]\n\n");
 		buf.append("$b{$font[serif,16]{" + res.flayer(Resource.tooltip).t + "}}\n\n\n");
 		buf.append(res.flayer(Resource.pagina).text);
+		buf.append(WoundTreatment.treatment(res));
 		return(buf.toString());
 	    }
 
