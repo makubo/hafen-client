@@ -49,6 +49,7 @@ public class BAttrWnd extends Widget {
 	public final Resource res;
 	private double lvlt = 0.0;
 	private Text ct;
+	private Text bt;
 	private int cbv = -1, ccv = -1;
 
 	private Attr(Glob glob, String attr, Color bg) {
@@ -75,6 +76,7 @@ public class BAttrWnd extends Widget {
 		    tooltip = null;
 		}
 		ct = attrf.render(Integer.toString(ccv), c);
+		bt = attrf.render(String.format("(%d)", cbv), Color.WHITE);
 	    }
 	    if((lvlt > 0.0) && ((lvlt -= dt) < 0))
 		lvlt = 0.0;
@@ -92,6 +94,8 @@ public class BAttrWnd extends Widget {
 	    g.aimage(rnm.tex(), cn.add(img.sz().x + UI.scale(10), 1), 0, 0.5);
 	    if(ct != null)
 		g.aimage(ct.tex(), cn.add(sz.x - UI.scale(7), 1), 1, 0.5);
+	    if(bt != null)
+		g.aimage(bt.tex(), cn.add(sz.x - UI.scale(50), 1), 1, 0.5);
 	}
 
 	public void lvlup() {
@@ -455,7 +459,7 @@ public class BAttrWnd extends Widget {
 	private Tex rtip = null;
 	public Object tooltip(Coord c, Widget prev) {
 	    if(rtip == null) {
-		rtip = RichText.render(String.format("%s: %.1f\u2030\nFood efficacy: %d%%", lbl, glut * 1000, Math.round(gmod * 100)), -1).tex();
+		rtip = RichText.render(String.format("%s: %.1f\u2030\n%s: %d%%", lbl, lglut * 1000, L10N.label("Food efficacy"), Math.round(gmod * 100)), -1).tex();
 	    }
 	    return(rtip);
 	}
