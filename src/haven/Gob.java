@@ -26,9 +26,6 @@
 
 package haven;
 
-import java.awt.*;
-import java.util.*;
-import java.util.function.*;
 import haven.render.*;
 import haven.res.gfx.fx.msrad.MSRad;
 import integrations.mapv4.MappingClient;
@@ -36,6 +33,11 @@ import me.ender.Reflect;
 import me.ender.ResName;
 import me.ender.gob.GobCombatInfo;
 import me.ender.minimap.AutoMarkers;
+
+import java.awt.*;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static haven.OCache.*;
 
@@ -658,8 +660,9 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    if(spr != null) {
 		Resource res = spr.res;
 		if(res != null) {
-		    if(res.name.equals("gfx/fx/floatimg")) {
-			//processDmg(item.sdt.clone());
+		    MessageBuf sdt = spr.sdt;
+		    if(sdt != null && res.name.equals("gfx/fx/floatimg")) {
+			processDmg(sdt.clone());
 		    } else if(res.name.equals("gfx/fx/dowse")) {
 		        ProspectingWnd.overlay(this, item);
 		    }
