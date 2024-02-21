@@ -30,6 +30,7 @@ import java.util.*;
 import java.awt.Color;
 import haven.resutil.Curiosity;
 import static haven.CharWnd.*;
+import static haven.ExtInventory.*;
 import static haven.PUtils.*;
 
 public class SAttrWnd extends Widget {
@@ -237,10 +238,14 @@ public class SAttrWnd extends Widget {
     public void addchild(Widget child, Object... args) {
 	String place = (args[0] instanceof String) ? (((String)args[0]).intern()) : null;
 	if(place == "study") {
+	    if(child instanceof ExtInventory) {
+		((ExtInventory) child).disable();
+	    }
 	    add(child, studyc.add(wbox.btloff()));
 	    Widget f = Frame.around(this, Collections.singletonList(child));
 	    Widget inf = add(new StudyInfo(new Coord(attrw - child.sz.x - wbox.bisz().x - UI.scale(5), child.sz.y), child), child.pos("ur").add(wbox.bisz().x + UI.scale(5), 0));
 	    Frame.around(this, Collections.singletonList(inf));
+	    getparent(GameUI.class).studywnd.setStudy(inventory(child));
 	    pack();
 	} else {
 	    super.addchild(child, args);
