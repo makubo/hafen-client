@@ -191,14 +191,8 @@ public class Fightsess extends Widget {
     }
 
     private static final Text.Furnace ipf = new PUtils.BlurFurn(new Text.Foundry(Text.serif, 18, new Color(128, 128, 255)).aa(true), 1, 1, new Color(48, 48, 96));
-    private final Text.UText<?> ip = new Text.UText<Integer>(ipf) {
-	public String text(Integer v) {return(CFG.ALT_COMBAT_UI.get()?v.toString():"IP: " + v);}
-	public Integer value() {return(fv.current.ip);}
-    };
-    private final Text.UText<?> oip = new Text.UText<Integer>(ipf) {
-	public String text(Integer v) {return(CFG.ALT_COMBAT_UI.get()?v.toString():"IP: " + v);}
-	public Integer value() {return(fv.current.oip);}
-    };
+    private final Indir<Text> ip =  Utils.transform(() -> fv.current.ip , v -> ipf.render(CFG.ALT_COMBAT_UI.get()?v.toString():"IP: " + v));
+    private final Indir<Text> oip = Utils.transform(() -> fv.current.oip, v -> ipf.render(CFG.ALT_COMBAT_UI.get()?v.toString():"IP: " + v));
 
     private static Coord actc(int i) {
 	int rl = 5;

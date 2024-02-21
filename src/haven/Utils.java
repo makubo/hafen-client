@@ -454,6 +454,10 @@ public class Utils {
 	return(((Number)arg).intValue());
     }
 
+    public static long uiv(Object arg) {
+	return(uint32(iv(arg)));
+    }
+
     public static float fv(Object arg) {
 	return(((Number)arg).floatValue());
     }
@@ -1890,6 +1894,23 @@ public class Utils {
 			has = true;
 		    }
 		    return(val);
+		}
+	    });
+    }
+
+    public static <V, R> Indir<R> transform(Supplier<? extends V> val, Function<? super V, ? extends R> xf) {
+	return(new Indir<R>() {
+		private V last;
+		private R res;
+		private boolean has = false;
+
+		public R get() {
+		    V v = val.get();
+		    if(!has || !Utils.eq(last, v)) {
+			res = xf.apply(v);
+			last = v;
+		    }
+		    return(res);
 		}
 	    });
     }

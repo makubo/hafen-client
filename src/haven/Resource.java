@@ -138,6 +138,18 @@ public class Resource implements Serializable {
     public static interface Resolver {
 	public Indir<Resource> getres(int id);
 
+	public default Indir<Resource> getres(Object desc) {
+	    if(desc == null)
+		return(null);
+	    if(desc instanceof Number) {
+		int id = ((Number)desc).intValue();
+		if(id < 0)
+		    return(null);
+		return(this.getres(((Number)desc).intValue()));
+	    }
+	    throw(new ClassCastException("unknown type for resource id: " + desc));
+	}
+
 	public class ResourceMap implements Resource.Resolver {
 	    public final Resource.Resolver bk;
 	    public final Map<Integer, Integer> map;
@@ -958,7 +970,8 @@ public class Resource implements Serializable {
     }
 
     public static void addltype(String name, LayerFactory<?> cons) {
-	ltypes.put(name, cons);
+	if(ltypes.put(name, cons) != null)
+	   Warning.warn("duplicated layer name: " + name);
     }
     
     public static <T extends Layer> void addltype(String name, Class<T> cl) {

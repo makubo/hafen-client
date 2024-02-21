@@ -171,7 +171,9 @@ public class Widget {
 	if(!inited) {
 	    for(Factory f : dolda.jglob.Loader.get(RName.class).instances(Factory.class)) {
 		synchronized(types) {
-		    types.put(f.getClass().getAnnotation(RName.class).value(), f);
+		    String nm = f.getClass().getAnnotation(RName.class).value();
+		    if(types.put(nm, f) != null)
+			Warning.warn("duplicated widget name: " + nm);
 		}
 	    }
 	    inited = true;
@@ -1113,6 +1115,13 @@ public class Widget {
 	    x += child.sz.x + pad;
 	}
 	return(Coord.of(x - pad, y + maxh));
+    }
+
+    public int addhlp(Coord c, int pad, int w, Widget... children) {
+	int cw = (w - ((children.length - 1) * pad)) / children.length;
+	for(Widget ch : children)
+	    ch.resizew(cw);
+	return(addhl(c, w, children));
     }
 
     public int addhl(Coord c, int w, Widget... children) {
