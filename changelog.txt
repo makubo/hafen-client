@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 22.02.24:}
+  * fixed quest pointer crash
+ 
 $size[14]{$u{Update for 21.02.24:}
   * merged loftar's code
  
