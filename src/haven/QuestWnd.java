@@ -670,6 +670,21 @@ public class QuestWnd extends Widget {
     }
 
     public static final Collection<String> children = Arrays.asList("quest");
+    
+    public int getObjectiveIndex(String name) {
+	Set<Quest.Box> wdgs = children(Quest.Box.class);
+	if(!wdgs.isEmpty()) {
+	    for (Quest.Box wdg : wdgs) {
+		for (int i = 0; i < wdg.cond.length; i++) {
+		    if(wdg.cond[i].desc.contains(name)) {
+			return i;
+		    }
+		}
+	    }
+	}
+	return 0;
+    }
+    
     public void addchild(Widget child, Object... args) {
 	String place = (args[0] instanceof String) ? (((String)args[0]).intern()) : null;
 	if(place == "quest") {

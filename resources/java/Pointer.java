@@ -110,7 +110,7 @@ public class Pointer extends Widget implements MiniMap.IPointer, DTarget {
 	
 	// gl.glEnable(GL2.GL_POLYGON_SMOOTH); XXXRENDER
 	if(col == null) {
-	    int i = getparent(GameUI.class).chrwdg.getObjectiveIndex(tip);
+	    int i = getparent(GameUI.class).chrwdg.quest.getObjectiveIndex(tip);
 	    col = colors[i % colors.length];
 	}
 	g.usestate(col);
