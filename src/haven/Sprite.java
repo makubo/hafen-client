@@ -185,4 +185,8 @@ public abstract class Sprite implements RenderTree.Node, PView.Render2D {
 
     public void dispose() {
     }
+
+    public String toString() {
+	return(String.format("#<%s %s of %s>", this.getClass().getSimpleName(), (res == null) ? null : res.name, owner));
+    }
 }
