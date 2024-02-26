@@ -3,6 +3,7 @@ $size[14]{$u{Update for 26.02.24:}
   * re-added LP/H to skill tab
   * fixed resource not found crash in ToolBelt
   * fixed simple crops
+  * fixed guildings not showing in the equipment bonuses
  
 $size[14]{$u{Update for 22.02.24:}
   * fixed quest pointer crash
