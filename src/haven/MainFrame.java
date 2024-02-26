@@ -443,7 +443,7 @@ public class MainFrame extends java.awt.Frame implements Console.Directory {
     public static void main(final String[] args) {
 	/* Set up the error handler as early as humanly possible. */
 	ThreadGroup g = new ThreadGroup("Haven main group");
-	String ed = Utils.getprop("haven.errorurl", "");;
+	String ed = Config.get().getprop("haven.errorurl", "");
 	if(ed.equals("stderr")) {
 	    g = new haven.error.SimpleHandler("Haven main group", true);
 	} else {
