@@ -107,7 +107,7 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	for (int i = 0; i < size; i++) {
 	    String res = usercfg.get(slot(i));
 	    if(res != null) {
-		MenuGrid.Pagina p = ui.gui.menu.paginafor(Resource.local().load(res));
+		MenuGrid.Pagina p = ui.gui.menu.paginafor(Resource.remote().load(res));
 		custom[i] = new GameUI.PagBeltSlot(i, p);
 	    }
 	}
