@@ -477,7 +477,7 @@ public class CraftDBWnd extends WindowX implements DTarget2 {
 		    All.items.clear();
 		    All.items.addAll(
 			menu.paginae.stream()
-			    .filter(p -> category.matcher(Pagina.name(p)).matches())
+			    .filter(p -> category.matcher(Pagina.resname(p)).matches())
 			    .collect(Collectors.toList())
 		    );
 		    

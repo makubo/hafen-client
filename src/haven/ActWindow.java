@@ -141,7 +141,7 @@ public class ActWindow extends GameUI.Hidewnd {
 		    all.clear();
 		    all.addAll(
 			menu.paginae.stream()
-			    .filter(p -> category.matcher(Pagina.name(p)).matches())
+			    .filter(p -> category.matcher(Pagina.resname(p)).matches())
 			    .collect(Collectors.toList())
 		    );
 

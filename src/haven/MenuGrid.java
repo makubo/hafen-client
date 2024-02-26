@@ -86,7 +86,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    return ad != null && ad.length > 0;
 	}
 	
-	public static String name(Pagina p) { //TODO: rename to resname
+	public static String resname(Pagina p) {
 	    String name = "";
 	    if(p.res instanceof Resource.Named) {
 		name = ((Resource.Named) p.res).name;
@@ -791,7 +791,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
     }
 
     public boolean isCrafting(Pagina p) {
-	return (p != null) && (Pagina.name(p).startsWith("paginae/craft/") || isCrafting(p.res()) || isCrafting(getParent(p)));
+	return (p != null) && (Pagina.resname(p).startsWith("paginae/craft/") || isCrafting(p.res()) || isCrafting(getParent(p)));
     }
 
     public boolean isCrafting(Resource res){
@@ -847,7 +847,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    Pagina pag = iter.next();
 	    iter.remove();
 	    try {
-		if(name.equals(Pagina.name(pag))) {
+		if(name.equals(Pagina.resname(pag))) {
 		    return pag;
 		}
 		AButton ad = pag.button().act();
