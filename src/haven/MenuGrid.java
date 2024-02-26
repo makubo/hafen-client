@@ -29,6 +29,8 @@ package haven;
 import haven.ItemInfo.AttrCache;
 import haven.Resource.AButton;
 import haven.render.Pipe;
+import me.ender.CustomPagButton;
+import me.ender.CustomPaginaAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -900,27 +902,4 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	makeLocal(path, ctx -> action.run(ctx.context(UI.class).gui));
     }
     
-    public interface CustomPaginaAction {
-	void perform(OwnerContext ctx);
-    }
-    
-    public class CustomPagButton extends PagButton {
-	
-	private final CustomPaginaAction action;
-	
-	public CustomPagButton(Pagina pag, CustomPaginaAction action) {
-	    super(pag);
-	    this.action = action;
-	}
-	
-	@Override
-	public void use() {
-	    action.perform(pag.button());
-	}
-	
-	@Override
-	public void use(Interaction iact) {
-	    action.perform(pag.button());
-	}
-    }
 }
