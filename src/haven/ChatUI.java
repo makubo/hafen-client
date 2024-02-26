@@ -924,7 +924,7 @@ public class ChatUI extends Widget {
 		    Color col = null;
 		    if(args.length > 1) col = (Color) args[1];
 		    if(col == null) col = Color.WHITE;
-		    int urgency = (args.length > 2) ? (Integer) args[2] : 0;
+		    int urgency = (args.length > 2) ? Utils.iv(args[2]) : 0;
 		    Message cmsg = new SimpleMessage(line, col);
 		    append(cmsg, urgency);
 		}
@@ -1022,13 +1022,13 @@ public class ChatUI extends Widget {
 
 	public void uimsg(String msg, Object... args) {
 	    if(msg == "msg") {
-		Integer from = (Integer) args[0];
-		String line = (String) args[1];
+		Number from = (Number)args[0];
+		String line = (String)args[1];
 		if(process(line)) {
 		    if(from == null) {
 			append(new MyMessage(line), -1);
 		    } else {
-			Message cmsg = new NamedMessage(from, line, fromcolor(from));
+			Message cmsg = new NamedMessage(from.intValue(), line, fromcolor(from.intValue()));
 			append(cmsg, urgency);
 		    }
 		}
@@ -1049,8 +1049,8 @@ public class ChatUI extends Widget {
 
 	public void uimsg(String msg, Object... args) {
 	    if(msg == "msg") {
-		Integer from = (Integer)args[0];
-		long gobid = Utils.uint32((Integer)args[1]);
+		Number from = (Number)args[0];
+		long gobid = Utils.uiv(args[1]);
 		String line = (String)args[2];
 		if(process(line)) {
 		    Color col = Color.WHITE;
@@ -1062,7 +1062,7 @@ public class ChatUI extends Widget {
 		    if(from == null) {
 			append(new MyMessage(line), -1);
 		    } else {
-			Message cmsg = new NamedMessage(from, line, Utils.blendcol(col, Color.WHITE, 0.5));
+			Message cmsg = new NamedMessage(from.intValue(), line, Utils.blendcol(col, Color.WHITE, 0.5));
 			append(cmsg, urgency);
 		    }
 		}
@@ -1128,7 +1128,7 @@ public class ChatUI extends Widget {
 	    String name = (String)args[0];
 	    Channel ret = new SimpleChat(false, name);
 	    if(args.length > 1)
-		ret.icon(ui.sess.getres((Integer)args[1]));
+		ret.icon(ui.sess.getresv(args[1]));
 	    return(ret);
 	}
     }
@@ -1136,10 +1136,10 @@ public class ChatUI extends Widget {
     public static class $MChat implements Factory {
 	public Widget create(UI ui, Object[] args) {
 	    String name = (String)args[0];
-	    int urgency = (Integer)args[1];
+	    int urgency = Utils.iv(args[1]);
 	    Channel ret = new MultiChat(false, name, urgency);
 	    if(args.length > 2)
-		ret.icon(ui.sess.getres((Integer)args[2]));
+		ret.icon(ui.sess.getresv(args[2]));
 	    return(ret);
 	}
     }
@@ -1148,17 +1148,17 @@ public class ChatUI extends Widget {
 	public Widget create(UI ui, Object[] args) {
 	    Channel ret = new PartyChat();
 	    if(args.length > 0)
-		ret.icon(ui.sess.getres((Integer)args[0]));
+		ret.icon(ui.sess.getresv(args[0]));
 	    return(ret);
 	}
     }
     @RName("pmchat")
     public static class $PMChat implements Factory {
 	public Widget create(UI ui, Object[] args) {
-	    int other = (Integer)args[0];
+	    int other = Utils.iv(args[0]);
 	    Channel ret = new PrivChat(true, other);
 	    if(args.length > 1)
-		ret.icon(ui.sess.getres((Integer)args[1]));
+		ret.icon(ui.sess.getresv(args[1]));
 	    return(ret);
 	}
     }

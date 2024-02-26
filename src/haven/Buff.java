@@ -70,7 +70,7 @@ public class Buff extends Widget implements ItemInfo.ResOwner, Bufflist.Managed 
     @RName("buff")
     public static class $_ implements Factory {
 	public Widget create(UI ui, Object[] args) {
-	    Indir<Resource> res = ui.sess.getres((Integer)args[0]);
+	    Indir<Resource> res = ui.sess.getresv(args[0]);
 	    return(new Buff(res));
 	}
     }
@@ -266,7 +266,7 @@ public class Buff extends Widget implements ItemInfo.ResOwner, Bufflist.Managed 
 
     public void uimsg(String msg, Object... args) {
 	if(msg == "ch") {
-	    this.res = ui.sess.getres((Integer)args[0]);
+	    this.res = ui.sess.getresv(args[0]);
 	} else if(msg == "tt") {
 	    info = null;
 	    rawinfo = new ItemInfo.Raw(args);

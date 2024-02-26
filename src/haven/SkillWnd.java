@@ -521,7 +521,7 @@ public class SkillWnd extends Widget {
 	List<Skill> buf = new ArrayList<>();
 	while(a < args.length) {
 	    String nm = (String)args[a++];
-	    Indir<Resource> res = ui.sess.getres((Integer)args[a++]);
+	    Indir<Resource> res = ui.sess.getresv(args[a++]);
 	    int cost = Utils.iv(args[a++]);
 	    buf.add(new Skill(nm, res, cost, has));
 	}
@@ -532,7 +532,7 @@ public class SkillWnd extends Widget {
 	List<Credo> buf = new ArrayList<>();
 	while(a < args.length) {
 	    String nm = (String)args[a++];
-	    Indir<Resource> res = ui.sess.getres((Integer)args[a++]);
+	    Indir<Resource> res = ui.sess.getresv(args[a++]);
 	    buf.add(new Credo(nm, res, has));
 	}
 	return(buf);
@@ -541,7 +541,7 @@ public class SkillWnd extends Widget {
     private List<Experience> decexplist(Object[] args, int a) {
 	List<Experience> buf = new ArrayList<>();
 	while(a < args.length) {
-	    Indir<Resource> res = ui.sess.getres((Integer)args[a++]);
+	    Indir<Resource> res = ui.sess.getresv(args[a++]);
 	    int mtime = Utils.iv(args[a++]);
 	    int score = Utils.iv(args[a++]);
 	    buf.add(new Experience(res, mtime, score));
@@ -572,12 +572,12 @@ public class SkillWnd extends Widget {
 	} else if(nm == "ncr") {
 	    credos.ncr(deccrlist(args, 0, false));
 	} else if(nm == "crcost") {
-	    credos.cost = (Integer)args[0];
+	    credos.cost = Utils.iv(args[0]);
 	} else if(nm == "pcr") {
 	    if(args.length > 0) {
 		int a = 0;
 		String cnm = (String)args[a++];
-		Indir<Resource> res = ui.sess.getres((Integer)args[a++]);
+		Indir<Resource> res = ui.sess.getresv(args[a++]);
 		int crl = Utils.iv(args[a++]), crlt = Utils.iv(args[a++]);
 		int crql = Utils.iv(args[a++]), crqlt = Utils.iv(args[a++]);
 		int qid = Utils.iv(args[a++]);

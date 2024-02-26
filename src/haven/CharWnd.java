@@ -41,7 +41,7 @@ public class CharWnd extends WindowX {
     public static final RichText.Foundry ifnd = new RichText.Foundry(Resource.remote(), java.awt.font.TextAttribute.FAMILY, "SansSerif", java.awt.font.TextAttribute.SIZE, UI.scale(9)).aa(true);
     public static final Text.Furnace catf = new BlurFurn(new TexFurn(new Text.Foundry(Text.fraktur, 25).aa(true), Window.ctex), UI.scale(3), UI.scale(2), new Color(96, 48, 0));
     public static final Text.Furnace failf = new BlurFurn(new TexFurn(new Text.Foundry(Text.fraktur, 25).aa(true), Resource.loadimg("gfx/hud/fontred")), UI.scale(3), UI.scale(2), new Color(96, 48, 0));
-    public static final Text.Foundry attrf = new Text.Foundry(Text.fraktur, 18).aa(true);
+    public static final Text.Foundry attrf = new Text.Foundry(Text.fraktur.deriveFont((float)Math.floor(UI.scale(18.0)))).aa(true);
     public static final PUtils.Convolution iconfilter = new PUtils.Lanczos(3);
     public static final int attrw = BAttrWnd.FoodMeter.frame.sz().x - wbox.bisz().x;
     public static final Color debuff = new Color(255, 128, 128);
@@ -279,8 +279,8 @@ public class CharWnd extends WindowX {
 	    int a = 0;
 	    while(a < args.length) {
 		String attr = (String)args[a++];
-		int base = (Integer)args[a++];
-		int comp = (Integer)args[a++];
+		int base = Utils.iv(args[a++]);
+		int comp = Utils.iv(args[a++]);
 		ui.sess.glob.cattr(attr, base, comp);
 	    }
 	} else if(nm == "exp") {

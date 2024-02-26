@@ -510,7 +510,7 @@ public class OptWnd extends WindowX {
 		    final int steps = (int)Math.round((smax - smin) / 0.25);
 		    int ival = (int)Math.round(MapView.plobpgran);
 		    addhlp(Coord.of(x + UI.scale(5), pos.c.y), UI.scale(5),
-			   prev = new HSlider(UI.scale(155 - x), 2, 17, (ival == 0) ? 17 : ival) {
+			   prev = new HSlider(UI.scale(155) - x, 2, 17, (ival == 0) ? 17 : ival) {
 				   protected void added() {
 				       dpy();
 				   }
@@ -535,7 +535,7 @@ public class OptWnd extends WindowX {
 			    ival = i;
 		    }
 		    addhlp(Coord.of(x + UI.scale(5), ang.c.y), UI.scale(5),
-			   prev = new HSlider(UI.scale(155 - x), 0, vals.length - 1, ival) {
+			   prev = new HSlider(UI.scale(155) - x, 0, vals.length - 1, ival) {
 				   protected void added() {
 				       dpy();
 				   }

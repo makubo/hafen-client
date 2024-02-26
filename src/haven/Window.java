@@ -99,8 +99,8 @@ public class Window extends Widget implements DTarget {
     public static class $_ implements Factory {
 	public Widget create(UI ui, Object[] args) {
 	    Coord sz = UI.scale((Coord)args[0]);
-	    String cap = (args.length > 1)?(String)args[1]:null;
-	    boolean lg = (args.length > 2)?((Integer)args[2] != 0):false;
+	    String cap = (args.length > 1) ? (String)args[1] : null;
+	    boolean lg = (args.length > 2) ? Utils.bv(args[2]) : false;
 	    return WindowDetector.newWindow(sz, cap, lg);
 	}
     }
@@ -466,12 +466,12 @@ public class Window extends Widget implements DTarget {
 	    report(ON_PACK);
 	    pack();
 	} else if(msg == "dt") {
-	    dt = (Integer)args[0] != 0;
+	    dt = Utils.bv(args[0]);
 	} else if(msg == "cap") {
 	    String cap = (String)args[0];
 	    chcap(cap.equals("") ? null : cap);
 	} else if(msg == "dhide") {
-	    decohide((Integer)args[0] != 0);
+	    decohide(Utils.bv(args[0]));
 	} else {
 	    super.uimsg(msg, args);
 	}
