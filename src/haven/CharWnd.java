@@ -50,6 +50,8 @@ public class CharWnd extends WindowX {
     public static final Color every = new Color(255, 255, 255, 16), other = new Color(255, 255, 255, 32);
     public static final int width = UI.scale(255);
     public static final int height = UI.scale(260);
+    private final Tabs tabs;
+    private final IButton[] tabbtns;
     public BAttrWnd battr;
     public SAttrWnd sattr;
     public SkillWnd skill;
@@ -202,7 +204,7 @@ public class CharWnd extends WindowX {
     public CharWnd(Glob glob) {
 	super(UI.scale(new Coord(300, 290)), "Character Sheet");
 
-	Tabs tabs = new Tabs(new Coord(15, 10), UI.scale(506, 315), this);
+	tabs = new Tabs(new Coord(15, 10), UI.scale(506, 315), this);
         battrtab = tabs.add();
         sattrtab = tabs.add();
 	skilltab = tabs.add();
@@ -235,12 +237,14 @@ public class CharWnd extends WindowX {
 	    }
 
 	    this.addhl(new Coord(tabs.c.x, tabs.c.y + tabs.sz.y + UI.scale(10)), tabs.sz.x,
-		new TB("battr", battrtab, "Base Attributes"),
-		new TB("sattr", sattrtab, "Abilities"),
-		new TB("skill", skilltab, "Lore & Skills"),
-		new TB("fgt",   fighttab, "Martial Arts & Combat Schools"),
-		new TB("wound", woundtab, "Health & Wounds"),
-		new TB("quest", questtab, "Quest Log")
+		tabbtns = new IButton[] {
+		    new TB("battr", battrtab, "Base Attributes"),
+		    new TB("sattr", sattrtab, "Abilities"),
+		    new TB("skill", skilltab, "Lore & Skills"),
+		    new TB("fgt", fighttab, "Martial Arts & Combat Schools"),
+		    new TB("wound", woundtab, "Health & Wounds"),
+		    new TB("quest", questtab, "Quest Log")
+		}
 	    );
 	}
 
@@ -267,11 +271,18 @@ public class CharWnd extends WindowX {
 	    } else {
 		throw(new RuntimeException("unknown tab widget: " + child));
 	    }
+	    updlayout();
 	} else if(place == "fmg") {
 	    fight = fighttab.add((FightWndEx)child, 0, 0);
 	} else {
 	    super.addchild(child, args);
 	}
+    }
+    
+    private void updlayout() {
+	tabs.pack();
+	resize(contentsz().add(UI.scale(15, 10)));
+	Widget.poshl(new Coord(tabs.c.x, tabs.c.y + tabs.sz.y + UI.scale(10)), tabs.sz.x, tabbtns);
     }
 
     public void uimsg(String nm, Object... args) {

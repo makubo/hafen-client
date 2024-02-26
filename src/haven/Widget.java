@@ -1605,4 +1605,22 @@ public class Widget {
     public <T> void listen(String event, Action1<T> callback, Class<T> clazz) {
 	subscriptions.add(Reactor.listen(event, callback, clazz));
     }
+    
+    public static int poshl(Coord c, int w, Widget... children) {
+	int x = c.x, y = c.y;
+	int maxh = 0, cw = 0;
+	for (Widget child : children) {
+	    cw += child.sz.x;
+	    maxh = Math.max(maxh, child.sz.y);
+	}
+	int tpad = w - cw, npad = children.length - 1, perror = 0;
+	for (Widget child : children) {
+	    child.c = Coord.of(x, y + ((maxh - child.sz.y) / 2));
+	    x += child.sz.x;
+	    perror += tpad;
+	    x += perror / npad;
+	    perror %= npad;
+	}
+	return (y + maxh);
+    }
 }
