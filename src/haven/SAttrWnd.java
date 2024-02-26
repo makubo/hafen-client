@@ -151,6 +151,7 @@ public class SAttrWnd extends Widget {
 	public final Widget study;
 	public final Inventory inv;
 	public int texp, tw, tenc;
+	public int tlph;
 
 	private StudyInfo(Coord sz, Widget study) {
 	    super(sz);
@@ -165,6 +166,9 @@ public class SAttrWnd extends Widget {
 	    plbl = add(new Label("Experience cost:"), pval.pos("bl").adds(0, 2).xs(2));
 	    pval = adda(new RLabel<Integer>(() -> tenc, Utils::thformat, new Color(255, 255, 192, 255)),
 			plbl.pos("br").adds(0, 2).x(sz.x - UI.scale(2)), 1.0, 0.0);
+	    pval = adda(new RLabel<Integer>(() -> tlph, Utils::thformat, new Color(192, 255, 255, 255)),
+		pval.pos("br").adds(0, 30), 1.0, 1.0);
+	    plbl = adda(new Label("LP/hour:"), plbl.pos("bl").adds(0, 30), 0.0, 1.0);
 	    pval = adda(new RLabel<Integer>(() -> texp, Utils::thformat, new Color(192, 192, 255, 255)),
 			pos("cbr").subs(2, 2), 1.0, 1.0);
 	    plbl = adda(new Label("Learning points:"), pval.pos("ul").subs(0, 2).xs(2), 0.0, 1.0);
@@ -178,9 +182,13 @@ public class SAttrWnd extends Widget {
 	    }, pval.pos("bl").adds(0, 5).xs(2));
 	    pack();
 	}
+	
+	public Coord contentsz() { return super.contentsz().add(UI.scale(5, 2)); }
+	
 
 	private void upd() {
 	    int texp = 0, tw = 0, tenc = 0;
+	    int tlph = 0;
 	    for(GItem item : study.children(GItem.class)) {
 		try {
 		    Curiosity ci = ItemInfo.find(Curiosity.class, item.info());
@@ -188,11 +196,13 @@ public class SAttrWnd extends Widget {
 			texp += ci.exp;
 			tw += ci.mw;
 			tenc += ci.enc;
+			tlph += Curiosity.lph(ci.lph);
 		    }
 		} catch(Loading l) {
 		}
 	    }
 	    this.texp = texp; this.tw = tw; this.tenc = tenc;
+	    this.tlph = tlph;
 	}
 
 	public void tick(double dt) {
