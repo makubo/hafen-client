@@ -652,7 +652,7 @@ public class CraftDBWnd extends WindowX implements DTarget2 {
 		if(res != null) {
 		    BufferedImage icon = PUtils.convolvedown(res.layer(Resource.imgc).img, ICON_SZ, CharWnd.iconfilter);
 		    
-		    Resource.AButton act = p.button().act();
+		    Resource.AButton act = p.button().acts();
 		    String name = "...";
 		    if(act != null) {
 			name = act.name;

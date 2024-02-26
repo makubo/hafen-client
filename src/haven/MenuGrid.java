@@ -80,7 +80,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    this.res = res;
 	}
 	public boolean isAction() {
-	    Resource.AButton act = button().act();
+	    Resource.AButton act = button().acts();
 	    if(act == null) {return false;}
 	    String[] ad = act.ad;
 	    return ad != null && ad.length > 0;
@@ -168,6 +168,12 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	public AButton act() {
 	    if(act == null)
 		act = res.flayer(Resource.action);
+	    return(act);
+	}
+	
+	public AButton acts() {
+	    if(act == null)
+		act = res.layer(Resource.action);
 	    return(act);
 	}
 
