@@ -124,8 +124,8 @@ public class ItemFilter {
     }
 
     final public boolean matches(MenuGrid.Pagina pagina, Session sess) {
-	List<ItemInfo> infos = pagina.info();
-	if(infos == null || infos.isEmpty()){
+	List<ItemInfo> infos = pagina.button().info();
+	if(infos == null || infos.isEmpty()) {
 	    return matches(ItemData.get(pagina), sess);
 	}
 	return matches(infos);

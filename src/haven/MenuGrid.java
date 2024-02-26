@@ -26,18 +26,19 @@
 
 package haven;
 
+import haven.ItemInfo.AttrCache;
 import haven.Resource.AButton;
+import haven.render.Pipe;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 public class MenuGrid extends Widget implements KeyBinding.Bindable {
     public final static Tex bg = Inventory.invsq;
@@ -78,7 +79,25 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    this.id = id;
 	    this.res = res;
 	}
-
+	public boolean isAction() {
+	    Resource.AButton act = button().act();
+	    if(act == null) {return false;}
+	    String[] ad = act.ad;
+	    return ad != null && ad.length > 0;
+	}
+	
+	public static String name(Pagina p) { //TODO: rename to resname
+	    String name = "";
+	    if(p.res instanceof Resource.Named) {
+		name = ((Resource.Named) p.res).name;
+	    } else {
+		try {
+		    name = p.res.get().name;
+		} catch (Loading ignored) {}
+	    }
+	    return name;
+	}
+	
 	public Resource res() {
 	    return(res.get());
 	}
@@ -103,6 +122,9 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    }
 	    return(button);
 	}
+	
+	public void button(PagButton btn) {button = btn;}
+	
 
 	public Pagina parent() {
 	    return(button().parent());
@@ -306,6 +328,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    .add(PagButton.class, p -> p)
 	    .add(MenuGrid.class, p -> p.pag.scm)
 	    .add(Glob.class, p -> p.pag.scm.ui.sess.glob)
+	    .add(UI.class, p -> p.pag.scm.ui)
 	    .add(Session.class, p -> p.pag.scm.ui.sess);
 	public <T> T context(Class<T> cl) {return(ctxr.context(cl, this));}
 	public Random mkrandoom() {return(new Random());}
@@ -401,17 +424,6 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	}
     }
     
-    public Pagina paginafor(Resource res) {
-	if(res != null) {
-	    synchronized (pmap) {
-		for (Indir<Resource> key : pmap.keySet()) {
-		    if(Objects.equals(key.get().name, res.name)) { return pmap.get(key); }
-		}
-	    }
-	}
-	return null;
-    }
-    
     public Pagina paginafor(String name) {
 	return paginafor(Resource.remote().load(name));
     }
@@ -466,17 +478,6 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	initCustomPaginae();
     }
 
-    public static Comparator<Pagina> sorter = new Comparator<Pagina>() {
-	public int compare(Pagina a, Pagina b) {
-	    AButton aa = a.act(), ab = b.act();
-	    if((aa.ad.length == 0) && (ab.ad.length > 0))
-		return(-1);
-	    if((aa.ad.length > 0) && (ab.ad.length == 0))
-		return(1);
-	    return(aa.name.compareTo(ab.name));
-	}
-    };
-
     private void updlayout() {
 	synchronized(paginae) {
 	    List<PagButton> cur = new ArrayList<>();
@@ -521,7 +522,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	}
 	BufferedImage ret = ttfnd.render(tt, 300).img;
 	if(withpg) {
-	    List<ItemInfo> info = pag.info();
+	    List<ItemInfo> info = pag.button().info();
 	    info.removeIf(el -> el instanceof ItemInfo.Name);
 	    if(!info.isEmpty())
 		ret = ItemInfo.catimgs(0, ret, ItemInfo.longtip(info));
@@ -827,6 +828,12 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	return((h == null) ? null : h.bind);
     }
     
+    @Override
+    public void bound() {
+	super.bound();
+	ui.gui.menuObservable.notifyObservers();
+    }
+    
     public Pagina findPagina(Indir<Resource> res) {
 	if(res == null) {return null;}
 	return pmap.get(res);
@@ -843,7 +850,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 		if(name.equals(Pagina.name(pag))) {
 		    return pag;
 		}
-		AButton ad = pag.act();
+		AButton ad = pag.button().act();
 		if(ad != null) {
 		    Pagina parent = paginafor(ad.parent);
 		    if((parent != null) && !close.contains(parent) && !open.contains(parent))
@@ -854,5 +861,60 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	    }
 	}
 	return null;
+    }
+    
+    private void initCustomPaginae() {
+	makeLocal("paginae/add/timer", Action.TOGGLE_TIMERS);
+	makeLocal("paginae/add/clear_player_dmg", Action.CLEAR_PLAYER_DAMAGE);
+	makeLocal("paginae/add/clear_all_dmg", Action.CLEAR_ALL_DAMAGE);
+	makeLocal("paginae/add/craftdb", Action.OPEN_CRAFT_DB);
+	makeLocal("paginae/add/actlist", Action.OPEN_QUICK_ACTION);
+	makeLocal("paginae/add/buildlist", Action.OPEN_QUICK_BUILD);
+	makeLocal("paginae/add/craftlist", Action.OPEN_QUICK_CRAFT);
+	makeLocal("paginae/add/autobot", Action.BOT_PICK_ALL_HERBS);
+	makeLocal("paginae/add/hide_trees", Action.TOGGLE_HIDE_TREES);
+	makeLocal("paginae/add/refill_drinks", Action.ACT_REFILL_DRINKS);
+	makeLocal("paginae/add/quest_help", Action.OPEN_QUEST_HELP);
+	makeLocal("paginae/add/inspect", Action.TOGGLE_INSPECT);
+	makeLocal("paginae/add/track", Action.TRACK_OBJECT);
+	makeLocal("paginae/add/fsmelter9", Action.FUEL_SMELTER_9);
+	makeLocal("paginae/add/fsmelter12", Action.FUEL_SMELTER_12);
+	makeLocal("paginae/add/foven4", Action.FUEL_OVEN_4);
+    }
+    
+    private void makeLocal(String path, CustomPaginaAction action) {
+	Resource.Named res = Resource.local().loadwait(path).indir();
+	Pagina pagina = new Pagina(this, res, res);
+	pagina.button(new CustomPagButton(pagina, action));
+	synchronized (pmap) { pmap.put(res, pagina); }
+	synchronized (paginae) { paginae.add(pagina); }
+    }
+    
+    private void makeLocal(String path, Action action) {
+	makeLocal(path, ctx -> action.run(ctx.context(UI.class).gui));
+    }
+    
+    public interface CustomPaginaAction {
+	void perform(OwnerContext ctx);
+    }
+    
+    public class CustomPagButton extends PagButton {
+	
+	private final CustomPaginaAction action;
+	
+	public CustomPagButton(Pagina pag, CustomPaginaAction action) {
+	    super(pag);
+	    this.action = action;
+	}
+	
+	@Override
+	public void use() {
+	    action.perform(pag.button());
+	}
+	
+	@Override
+	public void use(Interaction iact) {
+	    action.perform(pag.button());
+	}
     }
 }

@@ -1,6 +1,7 @@
 package haven;
 
 import auto.Bot;
+import haven.render.Pipe;
 import haven.resutil.Curiosity;
 import haven.rx.Reactor;
 import rx.Subscription;
@@ -359,8 +360,7 @@ public class ExtInventory extends Widget {
 	final Double quality;
 	final boolean matches;
 	final boolean loading;
-	final Color color;
-	final ColorMask mask;
+	final Pipe.Op color;
 	final String cacheId;
 
 	public ItemType(WItem w, Double quality) {
@@ -368,8 +368,7 @@ public class ExtInventory extends Widget {
 	    this.resname = resname(w);
 	    this.quality = quality;
 	    this.matches = w.item.matches();
-	    this.color = w.olcol.get();
-	    this.mask = color == null ? null : new ColorMask(color);
+	    this.color = w.rstate.get();
 	    loading = name.startsWith("???");
 	    cacheId = String.format("%s@%s", resname, name);
 	}
@@ -386,7 +385,7 @@ public class ExtInventory extends Widget {
 		} else if(other.color == null) {
 		    byOverlay = -1;
 		} else {
-		    byOverlay = Integer.compare(color.getRGB(), other.color.getRGB());
+		    byOverlay = Integer.compare(color.hashCode(), other.color.hashCode());
 		}
 	    }
 	    if(byOverlay != 0) { return byOverlay; }
@@ -500,8 +499,8 @@ public class ExtInventory extends Widget {
 		    g.chcolor();
 		}
 		int sx = (itemh - icon.sz().x) / 2;
-		if(type.mask != null) {
-		    g.usestate(type.mask);
+		if(type.color != null) {
+		    g.usestate(type.color);
 		}
 		g.aimage(icon, new Coord(sx, itemh / 2), 0.0, 0.5);
 		g.defstate();

@@ -1104,12 +1104,6 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    studywnd.hide();
 	    chrwdg = add((CharWnd)child, Utils.getprefc("wndc-chr", new Coord(300, 50)));
 	    chrwdg.hide();
-	    if(CFG.HUNGER_METER.get()) {
-		addcmeter(new HungerMeter(chrwdg.battr.glut));
-	    }
-	    if(CFG.FEP_METER.get()) {
-		addcmeter(new FEPMeter(chrwdg.battr.feps));
-	    }
 	} else if(place == "craft") {
 	    String cap = "";
 	    final Widget mkwdg = child;

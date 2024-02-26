@@ -93,7 +93,7 @@ public class ItemData {
     }
     
     public static Tex longtip(Pagina pagina, Session sess, int titleSize, int titleSpace) {
-	List<ItemInfo> infos = pagina.info();
+	List<ItemInfo> infos = pagina.button().info();
 	if(infos == null || infos.isEmpty()) {
 	    return ItemData.get(pagina).longtip(pagina.res(), sess, titleSize, titleSpace);
 	}
@@ -155,7 +155,7 @@ public class ItemData {
     }
 
     public static ItemData get(Pagina p){
-	List<ItemInfo> infos = p.info();
+	List<ItemInfo> infos = p.button().info();
 	if(infos == null || infos.isEmpty()){
 	    return ItemData.get(p.res().name);
 	}

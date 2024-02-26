@@ -27,6 +27,7 @@
 package haven;
 
 import haven.QualityList.SingleType;
+import haven.render.*;
 import haven.resutil.Curiosity;
 import me.ender.Reflect;
 

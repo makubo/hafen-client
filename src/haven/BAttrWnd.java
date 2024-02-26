@@ -471,6 +471,17 @@ public class BAttrWnd extends Widget {
 	    return(rtip);
 	}
     }
+    
+    @Override
+    protected void attached() {
+	super.attached();
+	if(CFG.HUNGER_METER.get()) {
+	    ui.gui.addcmeter(new HungerMeter(glut));
+	}
+	if(CFG.FEP_METER.get()) {
+	    ui.gui.addcmeter(new FEPMeter(feps));
+	}
+    }
 
     public BAttrWnd(Glob glob) {
 	Widget prev;

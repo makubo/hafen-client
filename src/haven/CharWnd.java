@@ -256,8 +256,8 @@ public class CharWnd extends WindowX {
 		sattr = sattrtab.add((SAttrWnd)child, Coord.z);
 	    } else if(child instanceof SkillWnd) {
 		skill = skilltab.add((SkillWnd)child, Coord.z);
-	    } else if(child instanceof FightWnd) {
-		fight = fighttab.add((FightWnd)child, Coord.z);
+	    } else if(child instanceof FightWndEx) {
+		fight = fighttab.add((FightWndEx)child, Coord.z);
 	    } else if(child instanceof WoundWnd) {
 		wound = woundtab.add((WoundWnd)child, Coord.z);
 	    } else if(child instanceof QuestWnd) {
@@ -321,25 +321,27 @@ public class CharWnd extends WindowX {
     }
     
     private int statIndex(Resource res) {
-	List<BAttrWnd.Attr> base = this.battr.attrs;
-	if(base != null) {
-	    return IntStream.range(0, base.size())
-		.filter(i -> base.get(i).res == res)
-		.findFirst().orElse(Integer.MAX_VALUE);
-	}
-	return Integer.MAX_VALUE;
+	return Optional.ofNullable(this.battr)
+	    .map(x -> x.attrs)
+	    .map(attrs -> IntStream.range(0, attrs.size())
+		.filter(i -> attrs.get(i).res == res)
+		.findFirst()
+		.orElse(Integer.MAX_VALUE)
+	    ).orElse(Integer.MAX_VALUE);
     }
     
     private int skillIndex(Resource res) {
-	Collection<SAttrWnd.SAttr> skill = this.sattr.attrs;
-	if(skill != null) {
-	    int i = 0;
-	    for (SAttrWnd.SAttr attr : skill) {
-		if(attr.res == res) {return i;}
-		i++;
-	    }
-	}
-	return Integer.MAX_VALUE;
+	return Optional.ofNullable(this.sattr)
+	    .map(x -> x.attrs)
+	    .map(attrs -> {
+		    int i = 0;
+		    for (SAttrWnd.SAttr attr : attrs) {
+			if(attr.res == res) {return i;}
+			i++;
+		    }
+		    return Integer.MAX_VALUE;
+		}
+	    ).orElse(Integer.MAX_VALUE);
     }
     
     public int BY_PRIORITY(Resource r1, Resource r2 ) {

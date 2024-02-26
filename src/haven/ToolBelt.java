@@ -27,7 +27,7 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
     private static Map<String, Map<Integer, String>> config;
     private final int[] beltkeys;
     private Map<Integer, String> usercfg;
-    private final GameUI.PaginaBeltSlot[] custom;
+    private final GameUI.PagBeltSlot[] custom;
     private final int group;
     private final int start;
     private final int size;
@@ -74,7 +74,7 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	this.beltkeys = beltkeys;
 	this.size = size;
 	keys = new Tex[size];
-	custom = new GameUI.PaginaBeltSlot[size];
+	custom = new GameUI.PagBeltSlot[size];
 	loadBelt();
 	if(beltkeys != null) {
 	    for (int i = 0; i < size; i++) {
@@ -108,7 +108,7 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	    String res = usercfg.get(slot(i));
 	    if(res != null) {
 		MenuGrid.Pagina p = ui.gui.menu.paginafor(Resource.local().load(res));
-		custom[i] = ui.gui.new PaginaBeltSlot(i, p);
+		custom[i] = new GameUI.PagBeltSlot(i, p);
 	    }
 	}
     }
@@ -180,26 +180,21 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
     }
     
     private void setcustom(int slot, MenuGrid.Pagina p) {
-	GameUI.PaginaBeltSlot pslot = custom[slot - start];
-	if((pslot == null && p != null) || (pslot != null && pslot.pagina != p)) {
-	    custom[slot - start] = p != null ? ui.gui.new PaginaBeltSlot(slot, p) : null;
+	GameUI.PagBeltSlot pslot = custom[slot - start];
+	if((pslot == null && p != null) || (pslot != null && pslot.pag != p)) {
+	    custom[slot - start] = p != null ? new GameUI.PagBeltSlot(slot, p) : null;
 	    usercfg.put(slot, p != null ? p.res().name : null);
 	    save();
 	}
     }
     
     private MenuGrid.Pagina getcustom(GameUI.BeltSlot slot) {
-	if(slot instanceof GameUI.PaginaBeltSlot) {
-	    return ((GameUI.PaginaBeltSlot) slot).pagina;
-	} else if(slot != null) {
-	    return ui.gui.menu.findPagina(slot.res);
+	if(slot instanceof GameUI.PagBeltSlot) {
+	    return ((GameUI.PagBeltSlot) slot).pag;
+	} else if(slot instanceof GameUI.ResBeltSlot) {
+	    return ui.gui.menu.findPagina(((GameUI.ResBeltSlot) slot).rdt.res);
 	}
 	return null;
-    }
-    
-    private MenuGrid.Pagina getcustom(Resource res) {
-	MenuGrid.Pagina p = ui.gui.menu.paginafor(res);
-	return (p != null && p.button() instanceof MenuGrid.CustomPagButton) ? p : null;
     }
     
     @Override
@@ -219,7 +214,7 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	    try {
 		GameUI.BeltSlot item = belt(slot);
 		if(item != null) {
-		    item.spr().draw(g.reclip(c.add(1, 1), invsq.sz().sub(2, 2)));
+		    item.draw(g.reclip(c.add(1, 1), invsq.sz().sub(2, 2)));
 		}
 	    } catch (Loading ignored) {}
 	    if(keys[i] != null) {
@@ -305,11 +300,11 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	    if(ttip != null) {ttip.dispose();}
 	    ttip = null;
 	    try {
-		MenuGrid.Pagina p = ui.gui.menu.findPagina(item.res);
+		MenuGrid.Pagina p = getcustom(item);
 		if(p != null) {
 		    ttip = ItemData.longtip(p, ui.sess);
-		} else {
-		    Resource.Tooltip tt = item.getres().layer(Resource.tooltip);
+		} else if(item instanceof GameUI.ResBeltSlot) {
+		    Resource.Tooltip tt = ((GameUI.ResBeltSlot) item).getres().layer(Resource.tooltip);
 		    if(tt != null) {
 			ttip = Text.render(tt.t).tex();
 		    }
@@ -336,17 +331,13 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	if(slot != -1) {
 	    if(thing instanceof Resource) {
 		Resource res = (Resource) thing;
-		if(res.layer(Resource.action) != null) {
-		    MenuGrid.Pagina pagina = getcustom(res);
-		    if(pagina != null) {
-			setcustom(slot, pagina);
-			ui.gui.wdgmsg("setbelt", slot, 1); //clear default action in this slot
-		    } else {
-			setcustom(slot, null);
-			ui.gui.wdgmsg("setbelt", slot, res.name);
-		    }
-		    return true;
-		}
+		setcustom(slot, null);
+		ui.gui.wdgmsg("setbelt", slot, res.name);
+		return true;
+	    } else if(thing instanceof MenuGrid.Pagina) {
+		setcustom(slot, (MenuGrid.Pagina) thing);
+		ui.gui.wdgmsg("setbelt", slot, 1); //clear default action in this slot
+		return true;
 	    }
 	}
 	return false;
