@@ -375,7 +375,7 @@ public class CraftDBWnd extends WindowX implements DTarget2 {
 	}
 	if(description == null) {
 	    try {
-		description = ItemData.longtip(descriptionPagina, ui.sess, 20, 5);
+		description = ItemData.longtip(descriptionPagina, ui.sess, true, 20, 5);
 	    } catch (Loading ignored) {}
 	}
 	if(description != null) {

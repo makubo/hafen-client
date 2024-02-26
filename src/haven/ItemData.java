@@ -88,19 +88,19 @@ public class ItemData {
 	}
     }
 
-    public static Tex longtip(Pagina pagina, Session sess) {
-        return longtip(pagina, sess, 0, 0);
+    public static Tex longtip(Pagina pagina, Session sess, boolean widePagina) {
+        return longtip(pagina, sess, widePagina, 0, 0);
     }
     
-    public static Tex longtip(Pagina pagina, Session sess, int titleSize, int titleSpace) {
+    public static Tex longtip(Pagina pagina, Session sess, boolean widePagina, int titleSize, int titleSpace) {
 	List<ItemInfo> infos = pagina.button().info();
 	if(infos == null || infos.isEmpty()) {
-	    return ItemData.get(pagina).longtip(pagina.res(), sess, titleSize, titleSpace);
+	    return ItemData.get(pagina).longtip(pagina.res(), sess, widePagina, titleSize, titleSpace);
 	}
-	return longtip(pagina.res(), infos, titleSize, titleSpace);
+	return longtip(pagina.res(), infos, widePagina, titleSize, titleSpace);
     }
 
-    private static Tex longtip(Resource res, List<ItemInfo> infos, int titleSize, int titleSpace) {
+    private static Tex longtip(Resource res, List<ItemInfo> infos, boolean widePagina, int titleSize, int titleSpace) {
 	Resource.AButton ad = res.layer(Resource.action);
 	Resource.Pagina pg = res.layer(Resource.pagina);
 	Resource.Tooltip tip = res.layer(Resource.tooltip);
@@ -109,8 +109,14 @@ public class ItemData {
 	if(titleSize > 0) {
 	    tt = String.format("$size[%d]{%s}", titleSize, tt);
 	}
+	if(pg == null) {widePagina = false;}
 	
-	if(pg != null) {tt += "\n\n" + pg.text;}
+	if(widePagina) {
+	    tt += "\n\n" + pg.text;
+	    infos = infos.stream()
+		.filter(i -> !(i instanceof ItemInfo.Pagina))
+		.collect(Collectors.toList());
+	}
 
 	BufferedImage img = MenuGrid.ttfnd.render(tt, UI.scale(300)).img;
 
@@ -120,8 +126,8 @@ public class ItemData {
 	return new TexI(img);
     }
 
-    private Tex longtip(Resource res, Session sess, int titleSize, int titleSpace) {
-	return longtip(res, iteminfo(sess), titleSize, titleSpace);
+    private Tex longtip(Resource res, Session sess, boolean widePagina, int titleSize, int titleSpace) {
+	return longtip(res, iteminfo(sess), widePagina, titleSize, titleSpace);
     }
     
     public List<ItemInfo> iteminfo(Session sess) {
