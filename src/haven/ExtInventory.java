@@ -360,7 +360,8 @@ public class ExtInventory extends Widget {
 	final Double quality;
 	final boolean matches;
 	final boolean loading;
-	final Pipe.Op color;
+	final Color color;
+	final Pipe.Op state;
 	final String cacheId;
 
 	public ItemType(WItem w, Double quality) {
@@ -368,7 +369,8 @@ public class ExtInventory extends Widget {
 	    this.resname = resname(w);
 	    this.quality = quality;
 	    this.matches = w.item.matches();
-	    this.color = w.rstate.get();
+	    this.color = w.olcol.get();
+	    this.state = this.color != null ? new ColorMask(this.color) : null;
 	    loading = name.startsWith("???");
 	    cacheId = String.format("%s@%s", resname, name);
 	}
@@ -385,7 +387,7 @@ public class ExtInventory extends Widget {
 		} else if(other.color == null) {
 		    byOverlay = -1;
 		} else {
-		    byOverlay = Integer.compare(color.hashCode(), other.color.hashCode());
+		    byOverlay = Integer.compare(color.getRGB(), other.color.getRGB());
 		}
 	    }
 	    if(byOverlay != 0) { return byOverlay; }
@@ -499,8 +501,8 @@ public class ExtInventory extends Widget {
 		    g.chcolor();
 		}
 		int sx = (itemh - icon.sz().x) / 2;
-		if(type.color != null) {
-		    g.usestate(type.color);
+		if(type.state != null) {
+		    g.usestate(type.state);
 		}
 		g.aimage(icon, new Coord(sx, itemh / 2), 0.0, 0.5);
 		g.defstate();

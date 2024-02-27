@@ -157,6 +157,19 @@ public class WItem extends Widget implements DTarget2 {
 	    Pipe.Op cmp = Pipe.Op.compose(ops);
 	    return(() -> cmp);
 	});
+    
+    public final AttrCache<Color> olcol = new AttrCache<>(this::info, info -> {
+	Color c = null;
+	for (ItemInfo inf : info) {
+	    if(inf instanceof GItem.ColorInfo) {
+		c = ((GItem.ColorInfo) inf).olcol();
+		break;
+	    }
+	}
+	final Color color = c;
+	return (() -> color);
+    });
+    
     public final AttrCache<GItem.InfoOverlay<?>[]> itemols = new AttrCache<>(this::info, info -> {
 	    ArrayList<GItem.InfoOverlay<?>> buf = new ArrayList<>();
 	    for(ItemInfo inf : info) {
