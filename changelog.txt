@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 27.02.24:}
+  * fixed list inventory grouping
+ 
 $size[14]{$u{Update for 26.02.24:}
   * merged loftar's code
   * re-added LP/H to skill tab
