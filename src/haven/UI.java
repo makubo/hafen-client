@@ -486,6 +486,7 @@ public class UI {
 		if(pwdg == null)
 		    throw(new UIException(String.format("Null parent widget %d for %d (%s)", parent, id, wdg), null, pargs));
 		pwdg.addchild(wdg, pargs);
+		WindowDetector.process(wdg, pwdg);
 	    }
 	}
 
