@@ -1,3 +1,8 @@
+$size[14]{$u{Update for 04.03.24:}
+  * merged loftar's code
+  * fixed gilding window
+  * fixed timers
+ 
 $size[14]{$u{Update for 27.02.24:}
   * fixed list inventory grouping
  
