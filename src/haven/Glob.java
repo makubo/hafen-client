@@ -212,6 +212,7 @@ public class Glob {
 	double now = Utils.rtime();
 	double delta = now - epoch;
 	epoch = now;
+	Timer.server((long) (1000 * sgtime));
 	if((this.sgtime == 0) || !inc || (Math.abs(sgtime - this.sgtime) > 500)) {
 	    this.gtime = this.sgtime = sgtime;
 	    return;
@@ -222,7 +223,6 @@ public class Glob {
 	    stimefac = (stimefac * (1 - f)) + (utimefac * f);
 	}
 	this.sgtime = sgtime;
-	Timer.server((long) (1000 * sgtime));
     }
 
     public String gtimestats() {
