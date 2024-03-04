@@ -1834,7 +1834,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     }
 
     public void msg(String msg, Color color) {
-	msg(msg, color, true);
+	msg(msg, color, color);
     }
     
     public void msg(String msg, Color color, boolean sfx) {
@@ -1842,7 +1842,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     }
     
     public void msg(String msg, Color color, Audio.Clip sfx) {
-	msg(msg, color);
+	msg(msg, color, color);
 	ui.sfxrl(sfx);
     }
 
