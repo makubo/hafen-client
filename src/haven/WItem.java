@@ -247,10 +247,10 @@ public class WItem extends Widget implements DTarget2 {
     
     public final AttrCache<List<ItemInfo>> gilding = new AttrCache<List<ItemInfo>>(this::info, AttrCache.cache(info -> ItemInfo.findall(ItemData.INFO_CLASS_GILDING, info)));
     
-    public final AttrCache<List<ItemInfo>> slots = new AttrCache<List<ItemInfo>>(this::info, AttrCache.cache(info -> ItemInfo.findall("ISlots", info)));
+    public final AttrCache<List<ItemInfo>> slots = new AttrCache<List<ItemInfo>>(this::info, AttrCache.cache(info -> ItemInfo.findall(ItemData.INFO_CLASS_SLOTS, info)));
 
     public final AttrCache<Boolean> gildable = new AttrCache<Boolean>(this::info, AttrCache.cache(info -> {
-	List<ItemInfo> slots = ItemInfo.findall("ISlots", info);
+	List<ItemInfo> slots = ItemInfo.findall(ItemData.INFO_CLASS_SLOTS, info);
 	for(ItemInfo slot : slots) {
 	    if(Reflect.getFieldValueInt(slot, "left") > 0) {
 		return true;

@@ -62,9 +62,9 @@ public class ItemData {
 		food = new FoodInfo.Data((FoodInfo) ii, q);
 	    } else if("Gast".equals(className)){
 	        gast = new GastronomyData(ii, q);
-	    } else if("ISlots".equals(className)){
+	    } else if(INFO_CLASS_SLOTS.equals(className)){
 		slots = SlotsData.make(ii);
-	    } else if("Slotted".equals(className)){
+	    } else if(INFO_CLASS_GILDING.equals(className)){
 	        gilding = SlottedData.make(ii, q);
 	    }
 	    
