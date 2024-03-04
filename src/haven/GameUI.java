@@ -47,7 +47,6 @@ import static haven.Inventory.*;
 import static haven.ItemFilter.*;
 
 public class GameUI extends ConsoleHost implements Console.Directory, UI.MessageWidget {
-    public static final Text.Foundry msgfoundry = RootWidget.msgfoundry;
     private static final int blpw = UI.scale(142), brpw = UI.scale(142);
     public final List<Widget> EXT_INVENTORIES = new LinkedList<>();
     public final String chrid, genus;
@@ -1470,11 +1469,11 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	if(msg == "err") {
 	    String err = (String)args[0];
 	    Reactor.EMSG.onNext(err);
-	    error(err);
+	    ui.error(err);
 	} else if(msg == "msg") {
 	    String text = (String)args[0];
 	    Reactor.IMSG.onNext(text);
-	    msg(text);
+	    ui.msg(text);
 	} else if(msg == "prog") {
 	    if(args.length > 0) {
 		double p = Utils.dv(args[0]) / 100.0;
@@ -1576,7 +1575,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 			    Resource lres = Resource.remote().load(res.name, res.ver).get();
 			    Resource.Tooltip tip = lres.layer(Resource.tooltip);
 			    if(tip != null)
-				msg(String.format("%s added to list of seen icons.", tip.t));
+				ui.msg(String.format("%s added to list of seen icons.", tip.t));
 			}, (Supplier<Object>)() -> null);
 		}
 	    } else if(args[1] instanceof Object[]) {
@@ -1827,7 +1826,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     
     public void msg(String msg, Color color, Color logcol) {
 	msgtime = Utils.rtime();
-	lastmsg = msgfoundry.render(msg, color);
+	lastmsg = RootWidget.msgfoundry.render(msg, color);
 	Gob g = detectGob;
 	if(g != null) {
 	    Matcher m = GeneralGobInfo.GOB_Q.matcher(msg);
@@ -1854,19 +1853,17 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	msg(msg, color, color);
 	if(sfx != null) {Audio.play(sfx);}
     }
-    
-    public static final Resource errsfx = Resource.local().loadwait("sfx/error");
-    private double lasterrsfx = 0;
-    public void error(String msg) {
-	msg(msg, MsgType.ERROR);
+
+    public void msg(String msg, Color color, Audio.Clip sfx) {
+	msg(msg, color);
+	ui.sfxrl(sfx);
     }
 
-    private double lastmsgsfx = 0;
-    private final Map<String, Double> lastsfx = new HashMap<>();
-    public void msg(String msg) {
-	msg(msg, MsgType.INFO);
+    public void error(String msg) {
+	ui.error(msg);
     }
     
+    private final Map<String, Double> lastsfx = new HashMap<>();
     public void msg(String msg, MsgType type) {
 	msg(msg, type.color, type.logcol);
 	double now = Utils.rtime();
@@ -1875,18 +1872,18 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    lastsfx.put(type.sfx.name, now);
 	}
     }
-
+    
     public enum MsgType {
 	INFO(Color.WHITE, RootWidget.msgsfx), GOOD(Color.GREEN), BAD(Color.RED),
 	ERROR(new Color(192, 0, 0), new Color(255, 0, 0), "sfx/error");
-
+	
 	public final Color color, logcol;
 	public final Resource sfx;
-
+	
 	MsgType(Color color) {
 	    this(color, color, null);
 	}
-
+	
 	MsgType(Color color, Color logcol, String sfx) {
 	    this.logcol = logcol;
 	    this.color = color;
@@ -1897,31 +1894,6 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    this.logcol = color;
 	    this.color = color;
 	    this.sfx = sfx;
-	}
-    }
-    
-    private final Map<Marker, Widget> trackedMarkers = new HashMap<>();
-    
-    public void track(Marker marker) {
-	untrack(marker);
-	try {
-	    Factory f = Widget.gettype2("ui/locptr");
-	    if(f != null) {
-		Widget wdg = f.create(ui, new Object[]{marker});
-		trackedMarkers.put(marker, wdg);
-		ui.gui.add(wdg);
-	    }
-	} catch (InterruptedException ignored) {
-	}
-    }
-    
-    public void untrack(Marker marker) {
-	Widget wdg = trackedMarkers.remove(marker);
-	if(wdg != null) {
-	    if(marker instanceof MapWnd2.GobMarker){
-	        ui.gui.mapfile.untrack(((MapWnd2.GobMarker) marker).gobid);
-	    }
-	    wdg.reqdestroy();
 	}
     }
     
