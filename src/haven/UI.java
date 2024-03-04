@@ -83,6 +83,14 @@ public class UI {
     {
 	lastevent = lasttick = Utils.rtime();
     }
+    public Observable menuObservable = new Observable(){
+	@Override
+	public void notifyObservers(Object arg) {
+	    setChanged();
+	    super.notifyObservers(arg);
+	    clearChanged();
+	}
+    };
 	
     public interface Receiver {
 	public void rcvmsg(int widget, String msg, Object... args);

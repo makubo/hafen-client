@@ -99,14 +99,6 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public TimerPanel timers;
     private Gob detectGob;
     public StudyWnd studywnd;
-    public Observable menuObservable = new Observable(){
-	@Override
-	public void notifyObservers(Object arg) {
-	    setChanged();
-	    super.notifyObservers(arg);
-	    clearChanged();
-	}
-    };
 
     public static abstract class BeltSlot {
 	public final int idx;

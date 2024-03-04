@@ -101,7 +101,7 @@ public class BuffToggles {
 	public void setup(GameUI gameUI) {
 	    gui = gameUI;
 	    if(gui.menu == null) {
-		gui.menuObservable.addObserver(this);
+		gui.ui.menuObservable.addObserver(this);
 	    }
 	    if(startup.get()) {
 		act();
@@ -110,7 +110,7 @@ public class BuffToggles {
 
 	@Override
 	public void update(Observable o, Object arg) {
-	    gui.menuObservable.deleteObserver(this);
+	    gui.ui.menuObservable.deleteObserver(this);
 	    if(toggled) {
 		act();
 	    }

@@ -841,7 +841,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
     @Override
     public void bound() {
 	super.bound();
-	ui.gui.menuObservable.notifyObservers();
+	ui.menuObservable.notifyObservers();
     }
     
     public Pagina findPagina(Indir<Resource> res) {
