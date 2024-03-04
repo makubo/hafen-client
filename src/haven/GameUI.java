@@ -1846,14 +1846,9 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     }
     
     public void msg(String msg, Color color, boolean sfx) {
-	msg(msg, color, sfx ? RootWidget.msgsfx : null);
+	msg(msg, color, sfx ? UI.msgsfx : null);
     }
     
-    public void msg(String msg, Color color, Resource sfx) {
-	msg(msg, color, color);
-	if(sfx != null) {Audio.play(sfx);}
-    }
-
     public void msg(String msg, Color color, Audio.Clip sfx) {
 	msg(msg, color);
 	ui.sfxrl(sfx);
@@ -1863,37 +1858,29 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	ui.error(msg);
     }
     
-    private final Map<String, Double> lastsfx = new HashMap<>();
     public void msg(String msg, MsgType type) {
-	msg(msg, type.color, type.logcol);
-	double now = Utils.rtime();
-	if(type.sfx != null && now - lastsfx.getOrDefault(type.sfx.name, 0d) > 0.1) {
-	    ui.sfx(type.sfx);
-	    lastsfx.put(type.sfx.name, now);
-	}
+	msg(msg, type.color, type.sfx);
     }
     
     public enum MsgType {
-	INFO(Color.WHITE, RootWidget.msgsfx), GOOD(Color.GREEN), BAD(Color.RED),
-	ERROR(new Color(192, 0, 0), new Color(255, 0, 0), "sfx/error");
+	INFO(Color.WHITE, UI.msgsfx), GOOD(Color.GREEN), BAD(Color.RED),
+	ERROR(new Color(192, 0, 0), new Color(255, 0, 0), UI.errsfx);
 	
 	public final Color color, logcol;
-	public final Resource sfx;
+	public final Audio.Clip sfx;
 	
 	MsgType(Color color) {
 	    this(color, color, null);
 	}
 	
-	MsgType(Color color, Color logcol, String sfx) {
+	MsgType(Color color, Color logcol, Audio.Clip sfx) {
 	    this.logcol = logcol;
 	    this.color = color;
-	    this.sfx = (sfx != null) ? Resource.local().loadwait(sfx) : null;
+	    this.sfx = sfx;
 	}
 	
-	MsgType(Color color, Resource sfx) {
-	    this.logcol = color;
-	    this.color = color;
-	    this.sfx = sfx;
+	MsgType(Color color, Audio.Clip sfx) {
+	    this(color, color, sfx);
 	}
     }
     

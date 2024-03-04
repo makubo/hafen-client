@@ -872,7 +872,7 @@ public class UI {
 	}
     }
     
-    public void message(String str, Color msgColor, Resource sfx) {
+    public void message(String str, Color msgColor, Audio.Clip sfx) {
 	if((cons != null) && (gui != null)) {
 	    gui.msg(str, msgColor, sfx);
 	}
