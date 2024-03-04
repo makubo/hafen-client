@@ -104,10 +104,15 @@ public class Label extends Widget {
 	}
     }
     
+    @Override
+    public void i10n(boolean on) {
+	super.i10n(on);
+	settext(original);
+    }
     
     private String i10n(String text) {
 	original = text;
-	return i10n ? L10N.label(text) : text;
+	return i10n() ? L10N.label(text) : text;
     }
     
     public static class Untranslated extends Label {

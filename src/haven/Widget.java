@@ -57,7 +57,7 @@ public class Widget {
     private Widget prevtt;
     static Map<String, Factory> types = new TreeMap<String, Factory>();
     private final List<Subscription> subscriptions = new ArrayList<>();
-    protected final boolean i10n = i10n();
+    private boolean i10n = true;
     private boolean disposed = false;
     private boolean bound = false;
     public boolean invisibleKeys = false;
@@ -1601,8 +1601,11 @@ public class Widget {
     public void onFocused(Action2<Widget, Boolean> action) {
 	synchronized (focusListeners) { focusListeners.add(action); }
     }
+    public void i10n(boolean on) {
+	i10n = on;
+    }
     
-    protected boolean i10n() {return true;}
+    protected boolean i10n() {return i10n;}
     
     public void listen(String event, Action1<Reactor.Event> callback) {
 	subscriptions.add(Reactor.listen(event, callback));

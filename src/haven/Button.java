@@ -94,7 +94,7 @@ public class Button extends SIWidget {
 
     public Button(int w, String text, boolean lg, Runnable action) {
 	this(w, lg);
-	if(i10n) text = L10N.button(text);
+	if(i10n()) text = L10N.button(text);
 	this.text = nf.render(text);
 	this.cont = this.text.img;
 	this.action = action;
@@ -167,14 +167,14 @@ public class Button extends SIWidget {
     }
 	
     public void change(String text, Color col) {
-	if(i10n) text = L10N.button(text);
+	if(i10n()) text = L10N.button(text);
 	this.text = tf.render(text, col);
 	this.cont = this.text.img;
 	redraw();
     }
     
     public void change(String text) {
-	if(i10n) text = L10N.button(text);
+	if(i10n()) text = L10N.button(text);
 	this.text = nf.render(text);
 	this.cont = this.text.img;
 	redraw();
