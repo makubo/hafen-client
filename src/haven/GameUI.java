@@ -1519,6 +1519,9 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 		    belt[slot] = new ResBeltSlot(slot, new ResData(res, sdt));
 		    break;
 		}
+		case "s": {
+		    belt[slot] = ToolBelt.makeCustom(this, slot, (String) args[2]);
+		}
 		}
 	    }
 	} else if(msg == "polowner") {

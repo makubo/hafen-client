@@ -1,14 +1,9 @@
 package haven;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import me.ender.CustomPagina;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 
 import static haven.Inventory.*;
 
@@ -22,12 +17,7 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
     public static final int[] FKEYS = {KeyEvent.VK_F1, KeyEvent.VK_F2, KeyEvent.VK_F3, KeyEvent.VK_F4,
 	KeyEvent.VK_F5, KeyEvent.VK_F6, KeyEvent.VK_F7, KeyEvent.VK_F8,
 	KeyEvent.VK_F9, KeyEvent.VK_F10, KeyEvent.VK_F11, KeyEvent.VK_F12};
-    private static final String CONFIG_JSON = "belts.json";
-    private static final Gson gson;
-    private static Map<String, Map<Integer, String>> config;
     private final int[] beltkeys;
-    private Map<Integer, String> usercfg;
-    private final IndirSlot[] custom;
     private final int group;
     private final int start;
     private final int size;
@@ -37,27 +27,6 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
     final Tex[] keys;
     private GameUI.BeltSlot last = null;
     private Tex ttip = null;
-    
-    
-    static {
-	gson = (new GsonBuilder()).setPrettyPrinting().create();
-	load();
-    }
-    
-    private static void load() {
-	try {
-	    Type type = new TypeToken<Map<String, Map<Integer, String>>>() {
-	    }.getType();
-	    config = gson.fromJson(Config.loadFile(CONFIG_JSON), type);
-	} catch (Exception ignore) {}
-	if(config == null) {
-	    config = new HashMap<>();
-	}
-    }
-    
-    private static void save() {
-	Config.saveFile(CONFIG_JSON, gson.toJson(config));
-    }
     
     public ToolBelt(String name, int start, int group, int[] beltkeys) {
         this(name, start, group, beltkeys.length, beltkeys);
@@ -74,8 +43,6 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	this.beltkeys = beltkeys;
 	this.size = size;
 	keys = new Tex[size];
-	custom = new IndirSlot[size];
-	loadBelt();
 	if(beltkeys != null) {
 	    for (int i = 0; i < size; i++) {
 		if(beltkeys[i] != 0) {
@@ -91,25 +58,6 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	btnFlip = add(new IButton("gfx/hud/btn-flip", "", "-d", "-h"));
 	btnFlip.action(this::flip);
 	btnFlip.recthit = true;
-    }
-    
-    private void loadBelt() {
-	String path = Config.userpath();
-	if(!config.containsKey(path)) {
-	    config.put(path, new HashMap<>());
-	}
-	usercfg = config.get(path);
-    }
-    
-    @Override
-    protected void attached() {
-	super.attached();
-	for (int i = 0; i < size; i++) {
-	    String res = usercfg.get(slot(i));
-	    if(res != null) {
-		custom[i] = new WaitSlot(i, ui.gui.menu, res);
-	    }
-	}
     }
     
     @Override
@@ -154,13 +102,19 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	storeCfg();
     }
     
+    public void act(int idx, MenuGrid.Interaction iact) {
+	GameUI.BeltSlot slot = belt(idx);
+	if(slot != null) {
+	    slot.use(iact);
+	}
+    }
+    
     private GameUI.BeltSlot belt(int slot) {
 	if(slot < 0) {return null;}
-	if(ui != null && ui.gui != null && ui.gui.belt[slot] != null) {
+	if(ui != null && ui.gui != null) {
 	    return ui.gui.belt[slot];
 	}
-	IndirSlot indir = custom[slot - start];
-	return indir != null ? indir.get() : null;
+	return null;
     }
     
     private Coord beltc(int i) {
@@ -178,17 +132,7 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	return (-1);
     }
     
-    private void setcustom(int slot, MenuGrid.Pagina p) {
-	IndirSlot indirSlot = custom[slot - start];
-	GameUI.PagBeltSlot pslot = indirSlot != null ? indirSlot.get() : null;
-	if((pslot == null && p != null) || (pslot != null && pslot.pag != p)) {
-	    custom[slot - start] = p != null ? new ReadySlot(slot, p) : null;
-	    usercfg.put(slot, p != null ? p.res().name : null);
-	    save();
-	}
-    }
-    
-    private MenuGrid.Pagina getcustom(GameUI.BeltSlot slot) {
+    private MenuGrid.Pagina getpagina(GameUI.BeltSlot slot) {
 	if(slot instanceof GameUI.PagBeltSlot) {
 	    return ((GameUI.PagBeltSlot) slot).pag;
 	} else if(slot instanceof GameUI.ResBeltSlot) {
@@ -238,28 +182,19 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
     }
     
     public void keyact(final int slot) {
-	MenuGrid.Pagina pagina = getcustom(belt(slot));
-	if(pagina != null) {
-	    pagina.button().use();
-	    return;
-	}
 	MapView map = ui.gui.map;
-	if(map != null) {
-	    Coord mvc = map.rootxlate(ui.mc);
-	    if(mvc.isect(Coord.z, map.sz)) {
-		map.new Hittest(mvc) {
-		    protected void hit(Coord pc, Coord2d mc, ClickData inf) {
-			Object[] args = {slot, 1, ui.modflags(), mc.floor(OCache.posres)};
-			if(inf != null) { args = Utils.extend(args, inf.clickargs());}
-			ui.gui.wdgmsg("belt", args);
-		    }
-		    
-		    protected void nohit(Coord pc) {
-			ui.gui.wdgmsg("belt", slot, 1, ui.modflags());
-		    }
-		}.run();
+	if(map == null) {return;}
+	Coord mvc = map.rootxlate(ui.mc);
+	if(!mvc.isect(Coord.z, map.sz)) {return;}
+	map.new Hittest(mvc) {
+	    protected void hit(Coord pc, Coord2d mc, ClickData inf) {
+		act(slot, new MenuGrid.Interaction(1, ui.modflags(), mc, inf));
 	    }
-	}
+	    
+	    protected void nohit(Coord pc) {
+		act(slot, new MenuGrid.Interaction(1, ui.modflags()));
+	    }
+	}.run();
     }
     
     @Override
@@ -267,19 +202,12 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	//TODO: Make actions draggable if not locked
 	int slot = beltslot(c);
 	if(slot != -1) {
-	    GameUI.BeltSlot slotItem = belt(slot);
 	    if(button == 1) {
-		MenuGrid.Pagina pagina = getcustom(slotItem);
-		if(pagina != null) {
-		    pagina.button().use();
-		} else {
-		    ui.gui.wdgmsg("belt", slot, 1, ui.modflags());
-		}
+		act(slot, new MenuGrid.Interaction(1, ui.modflags()));
 	    } else if(button == 3) {
-		ui.gui.wdgmsg("setbelt", slot, 1);
-		setcustom(slot, null);
+		ui.gui.wdgmsg("setbelt", slot, null);
 	    }
-	    if(slotItem != null) {return true;}
+	    return true;
 	}
 	return super.mousedown(c, button);
     }
@@ -300,7 +228,7 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	    if(ttip != null) {ttip.dispose();}
 	    ttip = null;
 	    try {
-		MenuGrid.Pagina p = getcustom(item);
+		MenuGrid.Pagina p = getpagina(item);
 		if(p != null) {
 		    ttip = ItemData.longtip(p, ui.sess, false);
 		} else if(item instanceof GameUI.ResBeltSlot) {
@@ -329,57 +257,36 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
     public boolean dropthing(Coord c, Object thing) {
 	int slot = beltslot(c);
 	if(slot != -1) {
-	    if(thing instanceof Resource) {
-		Resource res = (Resource) thing;
-		setcustom(slot, null);
-		ui.gui.wdgmsg("setbelt", slot, res.name);
-		return true;
-	    } else if(thing instanceof MenuGrid.Pagina) {
-		setcustom(slot, (MenuGrid.Pagina) thing);
-		ui.gui.wdgmsg("setbelt", slot, 1); //clear default action in this slot
-		return true;
+	    if(thing instanceof MenuGrid.Pagina) {
+		MenuGrid.Pagina pag = (MenuGrid.Pagina) thing;
+		if(CustomPagina.isLocalPagina(pag)) {
+		    String resName = MenuGrid.Pagina.resname(pag);
+		    if(resName.isEmpty()) {return false;}
+		    ui.gui.wdgmsg("setbelt", slot, "str", "pag:" + resName);
+		    return (true);
+		}
+		try {
+		    if(pag.id instanceof Indir)
+			ui.gui.wdgmsg("setbelt", slot, pag.res().name);
+		    else
+			ui.gui.wdgmsg("setbelt", slot, "pag", pag.id);
+		} catch (Loading ignored) {
+		}
+		return (true);
 	    }
 	}
 	return false;
     }
     
-    private static abstract class IndirSlot implements Indir<GameUI.PagBeltSlot> {
-    }
-    
-    private static class WaitSlot extends IndirSlot {
-	private final int idx;
-	private final MenuGrid scm;
-	private final String resname;
-	GameUI.PagBeltSlot slot;
-	
-	public WaitSlot(int idx, MenuGrid scm, String resname) {
-	    this.idx = idx;
-	    this.scm = scm;
-	    this.resname = resname;
-	}
-	
-	@Override
-	public GameUI.PagBeltSlot get() {
-	    if(slot == null && scm != null) {
-		MenuGrid.Pagina pagina = scm.findPagina(resname);
-		if(pagina != null) {
-		    slot = new GameUI.PagBeltSlot(idx, pagina);
-		}
+    public static GameUI.BeltSlot makeCustom(GameUI gui, int slot, String data) {
+	if(data.startsWith("pag:") && gui.menu != null) {
+	    MenuGrid.Pagina pagina = gui.menu.findPagina(data.substring(4));
+	    if(pagina == null) {
+		return null;
 	    }
-	    return slot;
+	    return new GameUI.PagBeltSlot(slot, pagina);
 	}
+	return null;
     }
     
-    private static class ReadySlot extends IndirSlot {
-	private final GameUI.PagBeltSlot slot;
-	
-	public ReadySlot(int idx, MenuGrid.Pagina pag) {
-	    slot = new GameUI.PagBeltSlot(idx, pag);
-	}
-	
-	@Override
-	public GameUI.PagBeltSlot get() {
-	    return slot;
-	}
-    }
 }

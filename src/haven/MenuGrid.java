@@ -29,7 +29,7 @@ package haven;
 import haven.ItemInfo.AttrCache;
 import haven.Resource.AButton;
 import haven.render.Pipe;
-import me.ender.CustomPagButton;
+import me.ender.CustomPagina;
 import me.ender.CustomPaginaAction;
 
 import javax.swing.*;
@@ -90,6 +90,9 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	
 	public static String resname(Pagina p) {
 	    String name = "";
+	    if(p instanceof CustomPagina) {
+		return ((CustomPagina) p).resName;
+	    }
 	    if(p.res instanceof Resource.Named) {
 		name = ((Resource.Named) p.res).name;
 	    } else {
@@ -894,8 +897,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
     
     private void makeLocal(String path, CustomPaginaAction action) {
 	Resource.Named res = Resource.local().loadwait(path).indir();
-	Pagina pagina = new Pagina(this, res, res);
-	pagina.button(new CustomPagButton(pagina, action));
+	Pagina pagina = new CustomPagina(this, res, action);
 	synchronized (pmap) { pmap.put(res, pagina); }
 	synchronized (paginae) { paginae.add(pagina); }
     }
