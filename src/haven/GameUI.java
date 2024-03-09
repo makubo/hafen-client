@@ -256,6 +256,9 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    if(slot != -1) {
 		if(thing instanceof MenuGrid.Pagina) {
 		    MenuGrid.Pagina pag = (MenuGrid.Pagina)thing;
+		    if(ToolBelt.setCustomPagina(GameUI.this, pag, slot)) {
+			return (true);
+		    }
 		    try {
 			if(pag.id instanceof Indir)
 			    GameUI.this.wdgmsg("setbelt", slot, pag.res().name);

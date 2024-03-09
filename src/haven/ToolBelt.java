@@ -259,11 +259,8 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 	if(slot != -1) {
 	    if(thing instanceof MenuGrid.Pagina) {
 		MenuGrid.Pagina pag = (MenuGrid.Pagina) thing;
-		if(CustomPagina.isLocalPagina(pag)) {
-		    String resName = MenuGrid.Pagina.resname(pag);
-		    if(resName.isEmpty()) {return false;}
-		    ui.gui.wdgmsg("setbelt", slot, "str", "pag:" + resName);
-		    return (true);
+		if(setCustomPagina(ui.gui, pag, slot)) {
+		    return true;
 		}
 		try {
 		    if(pag.id instanceof Indir)
@@ -274,6 +271,18 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
 		}
 		return (true);
 	    }
+	}
+	return false;
+    }
+    
+    /**@return true if this was custom pagina*/
+    public static boolean setCustomPagina(GameUI gui, MenuGrid.Pagina pag, int slot) {
+	if(CustomPagina.isLocalPagina(pag)) {
+	    String resName = MenuGrid.Pagina.resname(pag);
+	    if(!resName.isEmpty()) {
+		gui.wdgmsg("setbelt", slot, "str", "pag:" + resName);
+	    }
+	    return true;
 	}
 	return false;
     }
