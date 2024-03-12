@@ -1,5 +1,7 @@
 $size[14]{$u{Update for 12.03.24:}
-  * fixed window detection
+  * fixed cattle window detection
+  * fixed crash when picking up item with not-yet-loaded resource
+  * fixed $font[monospaced,13]{use:} item filter not working
  
 $size[14]{$u{Update for 09.03.24:}
   * made custom tool belts store action same way default client does - on server side
