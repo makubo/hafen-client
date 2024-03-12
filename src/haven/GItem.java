@@ -185,11 +185,13 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 	return(spr);
     }
 
-    public String resname(){
-	Resource res = resource();
-	if(res != null){
-	    return res.name;
-	}
+    public String resname() {
+	try {
+	    Resource res = resource();
+	    if(res != null) {
+		return res.name;
+	    }
+	} catch (Loading ignore) {}
 	return "";
     }
 
