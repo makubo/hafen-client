@@ -649,7 +649,7 @@ public abstract class ItemInfo {
     }
     
     public static List<Pair<Resource, Integer>> getInputs(List<ItemInfo> infos) {
-	List<ItemInfo> inputInfos = ItemInfo.findall("Inputs", infos);
+	List<ItemInfo> inputInfos = ItemInfo.findall("haven.res.ui.tt.inputs.Inputs", infos);
 	List<Pair<Resource, Integer>> result = new LinkedList<>();
 	try {
 	    for (ItemInfo info : inputInfos) {
