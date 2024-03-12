@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 12.03.24:}
+  * fixed window detection
+ 
 $size[14]{$u{Update for 09.03.24:}
   * made custom tool belts store action same way default client does - on server side
  
