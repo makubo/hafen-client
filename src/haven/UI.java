@@ -443,8 +443,10 @@ public class UI {
 	public void run() {
 	    if((type == null) && ((type = Widget.gettype3(typenm)) == null))
 		throw(new UIException("Bad widget name", typenm, cargs));
-	    if(wdg == null)
+	    if(wdg == null) {
 		wdg = type.create(UI.this, cargs);
+		if(wdg instanceof Window) {WindowDetector.detect((Window) wdg);}
+	    }
 	    synchronized(UI.this) {
 		wdg.attach(UI.this);
 		bind(wdg, id);
