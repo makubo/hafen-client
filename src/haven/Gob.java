@@ -41,7 +41,7 @@ import java.util.function.Supplier;
 
 import static haven.OCache.*;
 
-public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, EquipTarget {
+public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, EquipTarget, RandomSource {
     private static final Color COL_READY = new Color(16, 255, 16, 128);
     private static final Color COL_FULL = new Color(215, 63, 250, 64);
     private static final Color COL_EMPTY = new Color(104, 213, 253, 64);

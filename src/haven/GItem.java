@@ -36,7 +36,7 @@ import java.awt.image.BufferedImage;
 
 import static haven.WItem.*;
 
-public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owner {
+public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owner, RandomSource {
     private static ItemFilter filter;
     private static long lastFilter = 0;
     public Indir<Resource> res;
