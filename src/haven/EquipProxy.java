@@ -28,7 +28,7 @@ public class EquipProxy extends DraggableWidget implements DTarget2 {
     
     @Override
     public boolean mousehover(Coord c, boolean on) {
-	Equipory e = ui.gui.equipory;
+	Equipory e = getEquipory();
 	if(e != null) {
 	    WItem w = e.slots[slot(c).idx];
 	    if(w != null) {
@@ -49,7 +49,7 @@ public class EquipProxy extends DraggableWidget implements DTarget2 {
     
     @Override
     public boolean mousedown(Coord c, int button) {
-	Equipory e = ui.gui.equipory;
+	Equipory e = getEquipory();
 	if(e != null) {
 	    WItem w = e.slots[slot(c).idx];
 	    if(w != null) {
@@ -62,7 +62,7 @@ public class EquipProxy extends DraggableWidget implements DTarget2 {
     
     @Override
     public void draw(GOut g) {
-	Equipory equipory = ui.gui.equipory;
+	Equipory equipory = getEquipory();
 	if(equipory != null) {
 	    int k = 0;
 	    g.chcolor(BG_COLOR);
@@ -86,7 +86,7 @@ public class EquipProxy extends DraggableWidget implements DTarget2 {
     
     @Override
     public Object tooltip(Coord c, Widget prev) {
-	Equipory e = ui.gui.equipory;
+	Equipory e = getEquipory();
 	if(e != null) {
 	    Equipory.SLOTS slot = slot(c);
 	    WItem w = e.slots[slot.idx];
@@ -101,7 +101,7 @@ public class EquipProxy extends DraggableWidget implements DTarget2 {
     
     @Override
     public boolean drop(WItem target, Coord cc, Coord ul) {
-	Equipory e = ui.gui.equipory;
+	Equipory e = getEquipory();
 	if(e != null) {
 	    e.wdgmsg("drop", slot(cc).idx);
 	    return true;
@@ -109,9 +109,16 @@ public class EquipProxy extends DraggableWidget implements DTarget2 {
 	return false;
     }
     
+    private Equipory getEquipory() {
+	if(ui != null && ui.gui != null) {
+	    return ui.gui.equipory;
+	}
+	return null;
+    }
+    
     @Override
     public boolean iteminteract(WItem target, Coord cc, Coord ul) {
-	Equipory e = ui.gui.equipory;
+	Equipory e = getEquipory();
 	if(e != null) {
 	    WItem w = e.slots[slot(cc).idx];
 	    if(w != null) {

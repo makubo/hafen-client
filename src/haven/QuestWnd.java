@@ -740,7 +740,9 @@ public class QuestWnd extends Widget {
 		    dqst.remove(id);
 		}
 	    }
-	    ui.gui.questHelper.refresh();
+	    if(ui.gui != null) {
+		ui.gui.questHelper.refresh();
+	    }
 	} else {
 	    super.uimsg(nm, args);
 	}

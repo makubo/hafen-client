@@ -109,11 +109,12 @@ public class Pointer extends Widget implements MiniMap.IPointer, DTarget {
 	Coord ad = sp.b;
 	
 	// gl.glEnable(GL2.GL_POLYGON_SMOOTH); XXXRENDER
-	if(col == null) {
-	    int i = getparent(GameUI.class).chrwdg.quest.getObjectiveIndex(tip);
+	QuestWnd questWnd;
+	if(col == null && (questWnd = getQuestWnd()) != null) {
+	    int i = questWnd.getObjectiveIndex(tip);
 	    col = colors[i % colors.length];
 	}
-	g.usestate(col);
+	g.usestate(col != null ? col : colors[0]);
 	Coord tmp = sc;
 	sc = sc.add(g.tx);
 	g.drawp(Model.Mode.TRIANGLES, new float[]{
@@ -224,6 +225,14 @@ public class Pointer extends Widget implements MiniMap.IPointer, DTarget {
 	    return (true);
 	}
 	return (super.mousedown(c, button));
+    }
+    
+    private QuestWnd getQuestWnd() {
+	GameUI gui = getparent(GameUI.class);
+	if(gui != null && gui.chrwdg != null && gui.chrwdg.quest != null) {
+	    return gui.chrwdg.quest;
+	}
+	return null;
     }
     
     private Gob getGob() {
