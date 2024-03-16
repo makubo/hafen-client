@@ -33,21 +33,27 @@ public class Radar {
 	return null;
     }
     
-    public static void addCustomSettings(Collection<GobIcon.Setting> settings, UI ui) {
+    public static void addCustomSettings(GobIcon.Settings.Loader loader, UI ui) {
 	List<RadarItemVO> items = load(Config.loadJarFile(CONFIG_JSON));
 	items.addAll(load(Config.loadFSFile(CONFIG_JSON)));
 	for (RadarItemVO item : items) {
 	    gob2icon.put(item.match, item.icon);
-	    addSetting(settings, item.icon, item.visible);
+	    addSetting(loader, item.icon, item.visible);
 	}
 	ui.sess.glob.oc.gobAction(Gob::iconUpdated);
     }
     
-    private static void addSetting(Collection<GobIcon.Setting> settings, String res, boolean def) {
-	if(settings.stream().noneMatch(s -> Objects.equals(s.res.name, res))) {
-	    GobIcon.Setting cfg = new GobIcon.Setting(new Resource.Spec(null, res), new Object[0]);
+    private static void addSetting(GobIcon.Settings.Loader loader, String res, boolean def) {
+	if(loader.load.stream().noneMatch(q -> Objects.equals(q.res.name, res))) {
+	    Resource.Spec spec = new Resource.Spec(null, res);
+	    GobIcon.Settings.ResID id = new GobIcon.Settings.ResID(spec, new byte[0]);
+	    GobIcon.Setting cfg = new GobIcon.Setting(spec, GobIcon.Icon.nilid);
 	    cfg.show = cfg.defshow = def;
-	    settings.add(cfg);
+	    
+	    Collection<GobIcon.Setting> sets = new ArrayList<>();
+	    sets.add(cfg);
+	    loader.load.add(id);
+	    loader.resolve.put(id, sets);
 	}
     }
     

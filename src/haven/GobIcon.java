@@ -632,9 +632,9 @@ public class GobIcon extends GAttrib {
 		    }
 		}
 		l.load.add(res);
-	    	Radar.addCustomSettings(sets, ui);
 		l.resolve.put(res, sets);
 	    }
+	    Radar.addCustomSettings(l, ui);
 	    l.submit();
 	}
 
