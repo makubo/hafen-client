@@ -746,7 +746,7 @@ public class GobIcon extends GAttrib {
 	    private Tex img = null;
 	    public Tex img() {
 		if(this.img == null) {
-		    this.img = tex(conf.res.loadsaved(Resource.remote()).layer(Resource.imgc).img);
+		    this.img = tex(conf.res.get().layer(Resource.imgc).img);
 		}
 		return(this.img);
 	    }

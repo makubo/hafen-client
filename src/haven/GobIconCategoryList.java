@@ -202,8 +202,8 @@ public class GobIconCategoryList extends Listbox<GobIconCategoryList.GobCategory
 	
 	public GobIcon.SettingsWindow.ListIcon icon() {
 	    if(icon == null) {
-		Resource.Spec spec = new Resource.Spec(null, resname);
-		Resource res = spec.loadsaved(Resource.local());
+		Resource.Saved spec = new Resource.Saved(Resource.local(), resname, -1);
+		Resource res = spec.get();
 		GobIcon.Icon gicon = new CategoryIcon(null, res);
 		icon = new GobIcon.SettingsWindow.ListIcon(new GobIcon.Setting(spec, new Object[0], gicon, null));
 		Resource.Tooltip name = res.layer(Resource.tooltip);

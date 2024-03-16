@@ -45,7 +45,7 @@ public class Radar {
     
     private static void addSetting(GobIcon.Settings.Loader loader, String res, boolean def) {
 	if(loader.load.stream().noneMatch(q -> Objects.equals(q.res.name, res))) {
-	    Resource.Spec spec = new Resource.Spec(null, res);
+	    Resource.Saved spec = new Resource.Saved(Resource.remote(), res, -1);
 	    GobIcon.Settings.ResID id = new GobIcon.Settings.ResID(spec, new byte[0]);
 	    GobIcon.Setting cfg = new GobIcon.Setting(spec, GobIcon.Icon.nilid);
 	    cfg.show = cfg.defshow = def;
