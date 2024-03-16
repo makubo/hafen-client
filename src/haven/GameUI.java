@@ -280,7 +280,9 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    String genus = "";
 	    if(args.length > 2)
 		genus = (String)args[2];
-	    return(new GameUI(chrid, plid, genus));
+	    GameUI gui = new GameUI(chrid, plid, genus);
+	    ui.setGUI(gui);
+	    return gui;
 	}
     }
     
@@ -352,7 +354,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
     @Override
     protected void attach(UI ui) {
-	ui.gui = this;
+	ui.setGUI(this);
 	Timer.start(this);
 	super.attach(ui);
     }
@@ -362,7 +364,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	closeWindows();
 	untrackAllMarkers();
 	super.destroy();
-	ui.gui = null;
+	ui.clearGUI(this);
     }
     
     private static void closeWindow(Window wnd) { if(wnd != null) {wnd.close();} }

@@ -80,6 +80,7 @@ public class UI {
     public final Loader loader;
     public final CommandQueue queue = new CommandQueue();
     private static final double scalef;
+    private final Object guiLock = new Object();
     public GameUI gui = null;
     
     {
@@ -1048,6 +1049,20 @@ public class UI {
 	    return Optional.of(gui.equipory);
 	}
 	return Optional.empty();
+    }
+    
+    public void setGUI(GameUI gui) {
+	synchronized (guiLock) {
+	    this.gui = gui;
+	}
+    }
+    
+    public void clearGUI(GameUI gui) {
+	synchronized (guiLock) {
+	    if(this.gui == gui) {
+		this.gui = null;
+	    }
+	}
     }
 
     static {
