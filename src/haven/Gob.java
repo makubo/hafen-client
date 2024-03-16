@@ -31,6 +31,7 @@ import haven.res.gfx.fx.msrad.MSRad;
 import integrations.mapv4.MappingClient;
 import me.ender.Reflect;
 import me.ender.ResName;
+import me.ender.gob.KinInfo;
 import me.ender.gob.GobCombatInfo;
 import me.ender.minimap.AutoMarkers;
 
@@ -793,7 +794,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	GameUI gui = context(GameUI.class);
 	if(icon == null || gui == null || gui.iconconf == null) {return null;}
 	try {
-	    GobIcon.Setting s = gui.iconconf.get(icon.res.get());
+	    GobIcon.Setting s = gui.iconconf.get(icon.icon());
 	    return s == null ? null : s.show;
 	} catch (Loading ignored) {}
 	return null;
@@ -891,8 +892,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 		if(a != prev) drawableUpdated();
 	    } else if(ac == Moving.class) {
 		moving = (Moving) a;
-	    } else if(ac == KinInfo.class) {
-		tagsUpdated();
+	    } else if(KinInfo.isKinInfo(ac)) {
+		kinUpdated();
 	    } else if(ac == GobHealth.class) {
 		status.update(StatusType.info);
 	    }
@@ -1541,6 +1542,12 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    }
 	}
 	customColor.color(c);
+    }
+    
+    public KinInfo kin() {
+	synchronized (attr) {
+	    return KinInfo.from(this, attr);
+	}
     }
     
     public float scale() {return info.growthScale();}

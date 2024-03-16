@@ -1,6 +1,7 @@
 package haven;
 
 import me.ender.ContainerInfo;
+import me.ender.gob.KinInfo;
 
 import java.util.*;
 
@@ -104,7 +105,7 @@ public enum GobTag {
                     if(me) {
                         tags.add(ME);
                     } else {
-                        tags.add(KinInfo.isFoe(gob) ? FOE : FRIEND);
+			tags.add(KinInfo.isFoe(gob) ? FOE : FRIEND);
                     }
                 }
             } else if(name.startsWith("gfx/kritter/") || ofType(name, LIKE_CRITTER)) {

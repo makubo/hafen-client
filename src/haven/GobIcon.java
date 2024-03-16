@@ -54,6 +54,7 @@ public class GobIcon extends GAttrib {
     public GobIcon(Gob g, Indir<Resource> res, boolean isCustom) {
 	super(g);
 	this.res = res;
+	this.sdt = new byte[0];
 	this.isCustom = isCustom;
     }
 
@@ -67,6 +68,15 @@ public class GobIcon extends GAttrib {
 	    this.res = res;
 	}
 
+	public String tooltip() {
+	    String tt = name();
+	    try {
+		Resource.Tooltip name = res.layer(Resource.tooltip);
+		tt = (name == null) ? res.name : name.t;
+	    } catch (Resource.Loading ignored) {}
+	    return tt;
+	}
+	
 	public static enum Markable {
 	    UNMARKABLE, NONDEFAULT, DEFAULT
 	}
@@ -84,8 +94,7 @@ public class GobIcon extends GAttrib {
 	    public Icon create(OwnerContext owner, Resource res, Message sdt);
 	    public Collection<? extends Icon> enumerate(OwnerContext owner, Resource res, Message sdt);
 	}
-	this.sdt = sdt;
-	
+    }
 
     public static class Image {
 	private static final Map<Resource, Image> cache = new WeakHashMap<>();
@@ -281,21 +290,6 @@ public class GobIcon extends GAttrib {
 	    });
     }
 
-    
-    public Image imggray() {
-	if(this.imggray == null) {
-	    synchronized(cachegray) {
-		Image img = cachegray.get(res);
-		if(img == null) {
-		    Resource.Image rimg = res.get().layer(Resource.imgc);
-		    img = new Image(rimg, PUtils.monochromize(rimg.img, Color.WHITE));
-		    cachegray.put(res, img);
-		}
-		this.imggray = img;
-	    }
-	}
-	return(this.imggray);
-    }
     
     public String tooltip() {
 	String tt = null;
@@ -638,10 +632,10 @@ public class GobIcon extends GAttrib {
 		    }
 		}
 		l.load.add(res);
+	    	Radar.addCustomSettings(sets, ui);
 		l.resolve.put(res, sets);
 	    }
 	    l.submit();
-	    Radar.addCustomSettings(ret.settings, ui);
 	}
 
 	public void save() {
@@ -683,7 +677,7 @@ public class GobIcon extends GAttrib {
 		return(new Settings(ui, name));
 	    try(StreamMessage fp = new StreamMessage(ResCache.global.fetch(name))) {
 		Settings ret = new Settings(ui, name);
-		ret.load(fp);
+		ret.load(fp, ui);
 		return(ret);
 	    } catch(FileNotFoundException e) {
 	    }
@@ -805,6 +799,10 @@ public class GobIcon extends GAttrib {
 			ordered.add(new ListIcon(conf));
 		    this.cur = cur;
 		    this.ordered = ordered;
+		    this.reorder = true;
+		}
+		if(this.reorder) {
+		    this.reorder = false;
 		    Collections.sort(ordered, (a, b) -> {
 			    int c;;
 			    if((c = a.name.compareTo(b.name)) != 0)
@@ -954,12 +952,11 @@ public class GobIcon extends GAttrib {
 		@Override
 		public void changed(boolean val) {
 		    list.items().forEach(icon -> icon.conf.show = val);
-		    if(save != null)
-			save.run();
+		    conf.dsave();
 		}}, 0);
 	    list = cont.last(new IconList(UI.scale(250, 500)), 0);
 	    
-	    left.last(new GobIconCategoryList(UI.scale(250), 8, elh){
+	    left.last(new GobIconCategoryList(UI.scale(250), 8, elh) {
 		@Override
 		public void change(GobIconCategoryList.GobCategory item) {
 		    super.change(item);
@@ -987,7 +984,7 @@ public class GobIcon extends GAttrib {
 	    if(toggleAll == null) {
 		return;
 	    }
-	    List<? extends Icon> items = list != null ? list.items() : null;
+	    List<? extends ListIcon> items = list != null ? list.items() : null;
 	    toggleAll.a = items != null 
 		&& !items.isEmpty() 
 		&& items.stream().allMatch(icon -> icon.conf.show);

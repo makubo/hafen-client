@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Radar {
     public static final String CONFIG_JSON = "radar.json";
@@ -36,7 +33,7 @@ public class Radar {
 	return null;
     }
     
-    public static void addCustomSettings(Map<String, GobIcon.Setting> settings, UI ui) {
+    public static void addCustomSettings(Collection<GobIcon.Setting> settings, UI ui) {
 	List<RadarItemVO> items = load(Config.loadJarFile(CONFIG_JSON));
 	items.addAll(load(Config.loadFSFile(CONFIG_JSON)));
 	for (RadarItemVO item : items) {
@@ -46,11 +43,11 @@ public class Radar {
 	ui.sess.glob.oc.gobAction(Gob::iconUpdated);
     }
     
-    private static void addSetting(Map<String, GobIcon.Setting> settings, String res, boolean def) {
-	if(!settings.containsKey(res)) {
-	    GobIcon.Setting cfg = new GobIcon.Setting(new Resource.Spec(null, res));
+    private static void addSetting(Collection<GobIcon.Setting> settings, String res, boolean def) {
+	if(settings.stream().noneMatch(s -> Objects.equals(s.res.name, res))) {
+	    GobIcon.Setting cfg = new GobIcon.Setting(new Resource.Spec(null, res), new Object[0]);
 	    cfg.show = cfg.defshow = def;
-	    settings.put(res, cfg);
+	    settings.add(cfg);
 	}
     }
     

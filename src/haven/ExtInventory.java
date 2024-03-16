@@ -478,13 +478,13 @@ public class ExtInventory extends Widget {
 		    try {
 			GSprite sprite = sample.item.sprite();
 			if(sprite instanceof GSprite.ImageSprite) {
-			    icon = GobIcon.SettingsWindow.Icon.tex(((GSprite.ImageSprite) sprite).image());
+			    icon = GobIcon.SettingsWindow.ListIcon.tex(((GSprite.ImageSprite) sprite).image());
 			} else {
 			    Resource.Image image = sample.item.resource().layer(Resource.imgc);
 			    if(image == null) {
-				icon = GobIcon.SettingsWindow.Icon.tex(def);
+				icon = GobIcon.SettingsWindow.ListIcon.tex(def);
 			    } else {
-				icon = GobIcon.SettingsWindow.Icon.tex(image.img);
+				icon = GobIcon.SettingsWindow.ListIcon.tex(image.img);
 			    }
 			}
 			cache.put(type.cacheId, icon);

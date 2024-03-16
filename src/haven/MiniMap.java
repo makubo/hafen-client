@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import haven.MapFile.Segment;
 import haven.MapFile.DataGrid;
 import haven.MapFile.GridInfo;
+import me.ender.gob.KinInfo;
 import me.ender.minimap.*;
 
 import static haven.MCache.cmaps;
@@ -323,27 +324,19 @@ public class MiniMap extends Widget {
 	}
     
 	public Object tooltip() {
-	    KinInfo kin = kin();
+	    KinInfo kin = gob.kin();
 	    if(kin != null) {
-		if(kin.isVillager() && kin.name.trim().isEmpty()) {
+		if(kin.isVillager && kin.name.trim().isEmpty()) {
 		    return "Villager";
-		} else {
-		    return kin.rendered();
+		} else if(kin.rname != null) {
+		    return kin.rname;
 		}
 	    }
 	    return icon.tooltip();
 	}
     
-	public KinInfo kin() {
-	    return icon.gob.getattr(KinInfo.class);
-	}
-    
 	public boolean isPlayer() {
-	    return "gfx/hud/mmap/plo".equals(icon.res.get().name);
-	}
-	
-	public boolean isDead() {
-	    return gob.anyOf(GobTag.DEAD, GobTag.KO);
+	    return "gfx/hud/mmap/plo".equals(icon.res.name);
 	}
     }
 
