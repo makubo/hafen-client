@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 16.03.24:}
+  * merged loftar's changes
+  * fixed bunch of errors when trying to enter Valhalla
+ 
 $size[14]{$u{Update for 12.03.24:}
   * fixed cattle window detection
   * fixed crash when picking up item with not-yet-loaded resource
