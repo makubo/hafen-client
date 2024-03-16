@@ -75,7 +75,7 @@ public class ISBox extends Widget implements DTarget {
     
     @Override
     public void unlink() {
-	ui.gui.remInventory(this);
+	ui.remInventory(this);
 	super.unlink();
     }
     
@@ -94,7 +94,7 @@ public class ISBox extends Widget implements DTarget {
 
 		sz = sz.add(0, UI.scale(25));
 		
-		ui.gui.addInventory(this);
+		ui.addInventory(this);
 	    }
 	}
     }

@@ -127,7 +127,7 @@ public class ExtInventory extends Widget {
     
     @Override
     public void unlink() {
-	ui.gui.remInventory(this);
+	ui.remInventory(this);
 	if(chb_show.parent != null) {
 	    chb_show.unlink();
 	}
@@ -138,8 +138,13 @@ public class ExtInventory extends Widget {
     }
     
     @Override
+    protected void attached() {
+	ui.addInventory(this);
+	super.attached();
+    }
+    
+    @Override
     protected void added() {
-	ui.gui.addInventory(this);
 	wnd = null;//just in case
 	Window tmp;
 	//do not try to add if we are in the contents window
@@ -697,7 +702,7 @@ public class ExtInventory extends Widget {
 	if(inv != ui.gui.maininv) {
 	    return null;
 	}
-	List<Widget> inventories = ui.gui.EXT_INVENTORIES;
+	List<Widget> inventories = ui.EXT_INVENTORIES;
 	if(inventories.isEmpty()) {
 	    return null;
 	}

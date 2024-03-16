@@ -42,6 +42,8 @@ import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.io.Serializable;
+import java.util.List;
+
 import static haven.Utils.el;
 import haven.render.Environment;
 import haven.render.Render;
@@ -91,7 +93,24 @@ public class UI {
 	    clearChanged();
 	}
     };
-	
+    public final List<Widget> EXT_INVENTORIES = new LinkedList<>();
+    public void addInventory(Widget wdg) {
+	WindowX wnd = wdg.getparent(WindowX.class);
+	if(wnd == null) {return;}
+	String name = wnd.caption().toLowerCase();
+	if(name.contains("inventory")
+	    || name.contains("character sheet")
+	    || name.contains("belt")
+	    || name.contains("equipment")
+	    || name.contains("study")) {
+	    return;
+	}
+	EXT_INVENTORIES.add(wdg);
+    }
+    
+    public void remInventory(Widget wdg) {
+	EXT_INVENTORIES.remove(wdg);
+    }	
     public interface Receiver {
 	public void rcvmsg(int widget, String msg, Object... args);
     }

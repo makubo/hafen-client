@@ -48,7 +48,6 @@ import static haven.ItemFilter.*;
 
 public class GameUI extends ConsoleHost implements Console.Directory, UI.MessageWidget {
     private static final int blpw = UI.scale(142), brpw = UI.scale(142);
-    public final List<Widget> EXT_INVENTORIES = new LinkedList<>();
     public final String chrid, genus;
     public final long plid;
     private final Hidepanel ulpanel, umpanel, urpanel, blpanel, mapmenupanel, brpanel, menupanel;
@@ -1896,24 +1895,6 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	wdgmsg("act", al);
     }
     
-    public void addInventory(Widget wdg) {
-	WindowX wnd = wdg.getparent(WindowX.class);
-	if(wnd == null) {return;}
-	String name = wnd.caption().toLowerCase();
-	if(name.contains("inventory")
-	    || name.contains("character sheet")
-	    || name.contains("belt")
-	    || name.contains("equipment")
-	    || name.contains("study")) {
-	    return;
-	}
-	EXT_INVENTORIES.add(wdg);
-    }
-    
-    public void remInventory(Widget wdg) {
-	EXT_INVENTORIES.remove(wdg);
-    }
-
     public class FKeyBelt extends Belt implements DTarget, DropTarget {
 	public final int beltkeys[] = {KeyEvent.VK_F1, KeyEvent.VK_F2, KeyEvent.VK_F3, KeyEvent.VK_F4,
 				       KeyEvent.VK_F5, KeyEvent.VK_F6, KeyEvent.VK_F7, KeyEvent.VK_F8,

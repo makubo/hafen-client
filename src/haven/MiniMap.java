@@ -1074,7 +1074,7 @@ public class MiniMap extends Widget {
     void drawview(GOut g) {
 	int zmult = 1 << zoomlevel;
 	Coord2d sgridsz = new Coord2d(MCache.sgridsz);
-	Gob player = ui.gui.map.player();
+	Gob player = player();
 	if(player != null) {
 	    Coord rc = p2c(player.rc.floor(sgridsz).sub(4, 4).mul(sgridsz));
 	    Coord viewsz = VIEW_SZ.div(zmult).mul(scale);
@@ -1133,7 +1133,7 @@ public class MiniMap extends Widget {
 	try {
 	    String newbiome = biome;
 	    if(loc == null) {
-		Gob player = ui.gui.map.player();
+		Gob player = player();
 		if(player != null) {
 		    MCache mCache = ui.sess.glob.map;
 		    int tile = mCache.gettile(player.rc.div(tilesz).floor());
@@ -1162,6 +1162,11 @@ public class MiniMap extends Widget {
 		biometex = Text.renderstroked(Utils.prettyResName(biome)).tex();
 	    }
 	} catch (Loading ignored) {}
+    }
+    
+    private Gob player() {
+	if(ui == null || ui.gui == null || ui.gui.map == null) {return null;}
+	return ui.gui.map.player();
     }
     
     public interface IPointer {
