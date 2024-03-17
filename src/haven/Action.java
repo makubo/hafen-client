@@ -1,11 +1,12 @@
 package haven;
 
 import auto.Bot;
+import me.ender.GobInfoOpts;
 
 public enum Action {
     TOGGLE_TIMERS(GameUI::toggleTimers, "Toggle Timers"),
     ACT_HAND_0(gui -> gui.eqproxy.activate(Equipory.SLOTS.HAND_LEFT, 1), "Left hand", "Left click on left hand slot."),
-    ACT_HAND_1(gui -> gui.eqproxy.activate(Equipory.SLOTS.HAND_RIGHT,1), "Right hand", "Left click on right hand slot."),
+    ACT_HAND_1(gui -> gui.eqproxy.activate(Equipory.SLOTS.HAND_RIGHT, 1), "Right hand", "Left click on right hand slot."),
     ACT_BELT(gui -> gui.eqproxy.activate(Equipory.SLOTS.BELT, 3), "Belt", "Right click on belt slot."),
     ACT_DRINK(Bot::drink, "Drink", "Drinks water."),
     ACT_REFILL_DRINKS(Bot::refillDrinks, "Refill drinks", "Refills all water skins, flasks and jugs from nearby barrel or water tile."),
@@ -26,8 +27,8 @@ public enum Action {
 	Config.center_tile = !Config.center_tile;
 	gui.ui.message(String.format("Tile centering turned %s", Config.center_tile ? "ON" : "OFF"), GameUI.MsgType.INFO);
     }, "Toggle tile centering"),
-    TOGGLE_INSPECT(gui -> { gui.map.toggleInspectMode(); }, "Toggle inspect mode"),
-    TRACK_OBJECT(gui -> { gui.map.toggleTrackingMode(); }, "Track object"),
+    TOGGLE_INSPECT(gui -> {gui.map.toggleInspectMode();}, "Toggle inspect mode"),
+    TRACK_OBJECT(gui -> {gui.map.toggleTrackingMode();}, "Track object"),
     BOT_PICK_ALL_HERBS(Bot::pickup, "Auto-pick stuff", "Will automatically pickup all herbs/mussels/clay/frogs/grasshoppers etc. in radius that can be changed in Options->General."),
     BOT_OPEN_GATE(Bot::openGate, "Toggle closest gate", "Will right click on closest gate in 3 tile radius."),
     TOGGLE_PEACE(GameUI::togglePeace, "Toggle Peace", "Toggle peace for current target"),
@@ -48,6 +49,14 @@ public enum Action {
     FUEL_SMELTER_9(gui -> Bot.fuelGob(gui, "terobjs/smelter", "Coal", 9)),
     FUEL_SMELTER_12(gui -> Bot.fuelGob(gui, "terobjs/smelter", "Coal", 12)),
     FUEL_OVEN_4(gui -> Bot.fuelGob(gui, "terobjs/oven", "Branch", 4)),
+    TOGGLE_GOB_INFO_PLANTS(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.PLANT_GROWTH)),
+    TOGGLE_GOB_INFO_TREES(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.TREE_GROWTH)),
+    TOGGLE_GOB_INFO_HEALTH(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.HEALTH)),
+    TOGGLE_GOB_INFO_BARREL(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.BARREL)),
+    TOGGLE_GOB_INFO_SIGN(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.DISPLAY_SIGN)),
+    TOGGLE_GOB_INFO_CHEESE(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.CHEESE_RACK)),
+    TOGGLE_GOB_INFO_QUALITY(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.QUALITY)),
+    TOGGLE_GOB_INFO_TIMER(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.TIMER)),
     
     CLEAR_PLAYER_DAMAGE(GobDamageInfo::clearPlayerDamage, "Clear damage from player"),
     CLEAR_ALL_DAMAGE(GobDamageInfo::clearAllDamage, "Clear damage from everyone");
@@ -64,7 +73,7 @@ public enum Action {
     }
     
     Action(Do action) {
-        this(action, null);
+	this(action, null);
     }
     
     Action(Do action, String name) {
@@ -72,11 +81,11 @@ public enum Action {
     }
     
     Action(CFG<Boolean> toggle, String name, String description) {
-        this(gui -> toggle.set(!toggle.get(), true), name, description);
+	this(gui -> toggle.set(!toggle.get(), true), name, description);
     }
     
     Action(CFG<Boolean> toggle, String name) {
-        this(toggle, name, null);
+	this(toggle, name, null);
     }
     
     public void run(GameUI gui) {

@@ -31,6 +31,8 @@ import haven.Resource.AButton;
 import haven.render.Pipe;
 import me.ender.CustomPagina;
 import me.ender.CustomPaginaAction;
+import me.ender.GobInfoOpts;
+import me.ender.GobInfoOpts.InfoPart;
 
 import javax.swing.*;
 import java.awt.*;
@@ -889,6 +891,14 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	makeLocal("paginae/add/fsmelter9", Action.FUEL_SMELTER_9);
 	makeLocal("paginae/add/fsmelter12", Action.FUEL_SMELTER_12);
 	makeLocal("paginae/add/foven4", Action.FUEL_OVEN_4);
+	makeLocal("paginae/add/info/plant-growth", Action.TOGGLE_GOB_INFO_PLANTS, () -> GobInfoOpts.enabled(InfoPart.PLANT_GROWTH));
+	makeLocal("paginae/add/info/tree-growth", Action.TOGGLE_GOB_INFO_TREES, () -> GobInfoOpts.enabled(InfoPart.TREE_GROWTH));
+	makeLocal("paginae/add/info/health", Action.TOGGLE_GOB_INFO_HEALTH, () -> GobInfoOpts.enabled(InfoPart.HEALTH));
+	makeLocal("paginae/add/info/barrel", Action.TOGGLE_GOB_INFO_BARREL, () -> GobInfoOpts.enabled(InfoPart.BARREL));
+	makeLocal("paginae/add/info/sign", Action.TOGGLE_GOB_INFO_SIGN, () -> GobInfoOpts.enabled(InfoPart.DISPLAY_SIGN));
+	makeLocal("paginae/add/info/cheese", Action.TOGGLE_GOB_INFO_CHEESE, () -> GobInfoOpts.enabled(InfoPart.CHEESE_RACK));
+	makeLocal("paginae/add/info/quality", Action.TOGGLE_GOB_INFO_QUALITY, () -> GobInfoOpts.enabled(InfoPart.QUALITY));
+	makeLocal("paginae/add/info/timer", Action.TOGGLE_GOB_INFO_TIMER, () -> GobInfoOpts.enabled(InfoPart.TIMER));
     }
     
     private void makeLocal(String path, CustomPaginaAction action, Supplier<Boolean> toggleState) {
