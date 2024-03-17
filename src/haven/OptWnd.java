@@ -1285,9 +1285,19 @@ public class OptWnd extends WindowX {
     
 	y += 2*STEP;
 	panel.add(new CFGBox("Require SHIFT to show stack inventory", CFG.UI_STACK_SUB_INV_ON_SHIFT, "Show stack hover-inventories only if SHIFT is pressed"), x, y);
-    
+	
 	y += STEP;
-	panel.add(new CFGBox("Unpack stacks in extra inventory", CFG.UI_STACK_EXT_INV_UNPACK, "Show stacked items 'unpacked' in extra inventory's list"), x, y);
+	Label label = panel.add(new Label(String.format("Minimum rows in list inventory: %d", CFG.UI_EXT_INV_MIN_ROWS.get())), x, y);
+	y += UI.scale(15);
+	panel.add(new CFGHSlider(UI.scale(150), CFG.UI_EXT_INV_MIN_ROWS, 3, 15) {
+	    @Override
+	    public void changed() {
+		label.settext(String.format("Minimum rows in list inventory: %d", val));
+	    }
+	}, x, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Unpack stacks in list inventory", CFG.UI_STACK_EXT_INV_UNPACK, "Show stacked items 'unpacked' in extra inventory's list"), x, y);
     
 	//second row
 	my = Math.max(my, y);

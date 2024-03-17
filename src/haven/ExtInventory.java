@@ -103,6 +103,7 @@ public class ExtInventory extends Widget {
 	composer = new Composer(this).hmrgn(margin);
 	composer.addr2(inv, extension);
 	pack();
+	
     }
     
     private void showHelp() {
@@ -126,8 +127,13 @@ public class ExtInventory extends Widget {
 	if(wnd != null) {wnd.placetwdgs();}
     }
     
+    private void minRowsChanged(CFG<Integer> cfg){
+	updateLayout();
+    }
+    
     @Override
     public void unlink() {
+	CFG.UI_EXT_INV_MIN_ROWS.unobserve(this::minRowsChanged);
 	ui.remInventory(this);
 	if(chb_show.parent != null) {
 	    chb_show.unlink();
@@ -140,6 +146,7 @@ public class ExtInventory extends Widget {
     
     @Override
     protected void attached() {
+	CFG.UI_EXT_INV_MIN_ROWS.observe(this::minRowsChanged);
 	ui.addInventory(this);
 	super.attached();
     }
@@ -214,7 +221,13 @@ public class ExtInventory extends Widget {
 	}
 	extension.move(new Coord(szx + margin, extension.c.y));
 	type.c.y = space.c.y = szy - space.sz.y;
-	list.resize(new Coord(list.sz.x, space.c.y - grouping.sz.y - 2 * margin));
+	int list_h = space.c.y - grouping.sz.y - 2 * margin;
+	int min_items = CFG.UI_EXT_INV_MIN_ROWS.get();
+	if(list_h / itemh < min_items) {
+	    list_h = min_items * itemh;
+	    type.c.y = space.c.y = list.c.y + list_h;
+	}
+	list.resize(new Coord(list.sz.x, list_h));
 	extension.pack();
 	pack();
 	if(wnd != null) {wnd.pack();}
