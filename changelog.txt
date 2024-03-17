@@ -1,5 +1,9 @@
 $size[14]{$u{Update for 17.03.24:}
   * fixed QBuff crash
+  * added option to set minimum rows for list inventory
+  * fixed layout of stockpile widget
+  * show tooltip for all gobs when inspect cursor is active
+  * added buttons to menu grid (eXtra -> Object Info) to toggle which parts of object info to show
  
 $size[14]{$u{Update for 16.03.24:}
   * merged loftar's changes
