@@ -39,6 +39,7 @@ import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 
@@ -880,7 +881,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	makeLocal("paginae/add/buildlist", Action.OPEN_QUICK_BUILD);
 	makeLocal("paginae/add/craftlist", Action.OPEN_QUICK_CRAFT);
 	makeLocal("paginae/add/autobot", Action.BOT_PICK_ALL_HERBS);
-	makeLocal("paginae/add/hide_trees", Action.TOGGLE_HIDE_TREES);
+	makeLocal("paginae/add/hide_trees", Action.TOGGLE_HIDE_TREES, CFG.HIDE_TREES::get);
 	makeLocal("paginae/add/refill_drinks", Action.ACT_REFILL_DRINKS);
 	makeLocal("paginae/add/quest_help", Action.OPEN_QUEST_HELP);
 	makeLocal("paginae/add/inspect", Action.TOGGLE_INSPECT);
@@ -890,15 +891,19 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	makeLocal("paginae/add/foven4", Action.FUEL_OVEN_4);
     }
     
-    private void makeLocal(String path, CustomPaginaAction action) {
+    private void makeLocal(String path, CustomPaginaAction action, Supplier<Boolean> toggleState) {
 	Resource.Named res = Resource.local().loadwait(path).indir();
-	Pagina pagina = new CustomPagina(this, res, action);
+	Pagina pagina = new CustomPagina(this, res, action, toggleState);
 	synchronized (pmap) { pmap.put(res, pagina); }
 	synchronized (paginae) { paginae.add(pagina); }
     }
     
     private void makeLocal(String path, Action action) {
-	makeLocal(path, ctx -> action.run(ctx.context(UI.class).gui));
+	makeLocal(path, action, null);
+    }
+    
+    private void makeLocal(String path, Action action, Supplier<Boolean> toggleState) {
+	makeLocal(path, ctx -> action.run(ctx.context(UI.class).gui), toggleState);
     }
     
 }

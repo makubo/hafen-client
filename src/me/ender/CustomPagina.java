@@ -3,13 +3,15 @@ package me.ender;
 import haven.MenuGrid;
 import haven.Resource;
 
+import java.util.function.Supplier;
+
 public class CustomPagina extends MenuGrid.Pagina {
     public final String resName;
     
-    public CustomPagina(MenuGrid scm, Resource.Named res, CustomPaginaAction action) {
+    public CustomPagina(MenuGrid scm, Resource.Named res, CustomPaginaAction action, Supplier<Boolean> toggleState) {
 	super(scm, res, res);
 	this.resName = res.name;
-	button(new CustomPagButton(this, action));
+	button(new CustomPagButton(this, action, toggleState));
     }
     
     public static boolean isLocalPagina(MenuGrid.Pagina p) {
