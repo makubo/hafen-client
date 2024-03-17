@@ -61,7 +61,12 @@ public class LocalInspect extends Widget {
 		    if(name != null)
 			return(name.t);
 		}
-		return ob.tooltip();
+		String tip = ob.tooltip();
+		String contents = ob.contents();
+		if(contents != null) {
+		    tip += " of " + contents;
+		}
+		return tip;
 	    }
 	    if(mc != null) {
 		int tid = ui.sess.glob.map.gettile(mc.floor(MCache.tilesz));
