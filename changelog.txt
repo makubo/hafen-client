@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 17.03.24:}
+  * fixed QBuff crash
+ 
 $size[14]{$u{Update for 16.03.24:}
   * merged loftar's changes
   * fixed bunch of errors when trying to enter Valhalla
