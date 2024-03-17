@@ -45,6 +45,8 @@ public class ISBox extends Widget implements DTarget {
 	};
     public static final Coord defsz = UI.scale(145, 42);
     public static final Text.Foundry lf = new Text.Foundry(Text.fraktur, 22, Color.WHITE).aa(true);
+    private int first_Line = UI.scale(20);
+    
     private final Indir<Resource> res;
     private Text label;
 
@@ -84,17 +86,19 @@ public class ISBox extends Widget implements DTarget {
 	if(parent instanceof Window) {
 	    boolean isStockpile = "Stockpile".equals(((Window) parent).caption());
 	    if(isStockpile) {
-		value = new Value(UI.scale(40), "");
-		add(value, UI.scale(60, 46));
+		value = new Value(UI.scale(50), "");
+		add(value, UI.scale(45, 41));
 		value.canactivate = true;
 
 		take = new Button(UI.scale(40), "Take");
-		add(take, UI.scale(105, 44));
+		add(take, UI.scale(100, 39));
 		take.canactivate = true;
 
 		sz = sz.add(0, UI.scale(25));
 		
 		ui.addInventory(this);
+	    } else {
+		first_Line = sz.y / 2;
 	    }
 	}
     }
@@ -111,10 +115,10 @@ public class ISBox extends Widget implements DTarget {
 	box.draw(g, Coord.z, sz);
 	try {
             Tex t = res.get().flayer(Resource.imgc).tex();
-            Coord dc = Coord.of(UI.scale(6), (sz.y - t.sz().y) / 2);
+	    Coord dc = Coord.of(UI.scale(6), first_Line - t.sz().y / 2);
             g.image(t, dc);
         } catch(Loading e) {}
-        g.image(label.tex(), new Coord(UI.scale(40), (sz.y - label.sz().y) / 2));
+	g.image(label.tex(), new Coord(UI.scale(40), first_Line - label.sz().y / 2));
 	super.draw(g);
     }
 
