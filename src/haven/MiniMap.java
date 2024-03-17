@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import haven.MapFile.Segment;
 import haven.MapFile.DataGrid;
 import haven.MapFile.GridInfo;
+import me.ender.ClientUtils;
 import me.ender.gob.KinInfo;
 import me.ender.minimap.*;
 
@@ -1159,7 +1160,7 @@ public class MiniMap extends Widget {
 	    if(newbiome == null) {newbiome = "???";}
 	    if(!newbiome.equals(biome)) {
 		biome = newbiome;
-		biometex = Text.renderstroked(Utils.prettyResName(biome)).tex();
+		biometex = Text.renderstroked(ClientUtils.prettyResName(biome)).tex();
 	    }
 	} catch (Loading ignored) {}
     }

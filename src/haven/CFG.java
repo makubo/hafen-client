@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import haven.PathVisualizer.PathCategory;
 import haven.rx.BuffToggles;
+import me.ender.ClientUtils;
 import me.ender.GobInfoOpts;
 import me.ender.Reflect;
 
@@ -195,7 +196,7 @@ public class CFG<T> {
 			value = (E) data;
 		    } else if(Number.class.isAssignableFrom(defClass)) {
 			Number n = (Number) data;
-			value = (E) Utils.num2value(n, (Class<? extends Number>)defClass);
+			value = (E) ClientUtils.num2value(n, (Class<? extends Number>)defClass);
 		    } else if(Enum.class.isAssignableFrom(defClass)) {
 			@SuppressWarnings("rawtypes") Class<? extends Enum> enumType = Reflect.getEnumSuperclass(defClass);
 			if(enumType != null) {

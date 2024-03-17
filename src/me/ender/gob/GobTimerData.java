@@ -3,6 +3,7 @@ package me.ender.gob;
 import haven.Window;
 import haven.*;
 import haven.rx.Reactor;
+import me.ender.ClientUtils;
 import me.ender.GobInfoOpts;
 import me.ender.GobInfoOpts.InfoPart;
 import me.ender.RichUText;
@@ -46,7 +47,7 @@ public class GobTimerData {
     private long lastUpdateTs = 0;
     private final RichUText<Integer> text = new RichUText<Integer>(RichText.stdf) {
 	public String text(Integer v) {
-	    return v == null ? null : String.format("$img[gfx/hud/gob/timer,c]%s", Utils.formatTimeShort(v));
+	    return v == null ? null : String.format("$img[gfx/hud/gob/timer,c]%s", ClientUtils.formatTimeShort(v));
 	}
 	
 	@Override

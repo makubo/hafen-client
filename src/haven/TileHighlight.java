@@ -3,6 +3,7 @@ package haven;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import me.ender.ClientUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -120,7 +121,7 @@ public class TileHighlight {
 	private TileItem(String res) {
 	    //TODO: add I10N support
 	    this.res = res;
-	    this.name = Utils.prettyResName(res);
+	    this.name = ClientUtils.prettyResName(res);
 	    this.tex = elf.render(this.name).tex();
 	}
     }

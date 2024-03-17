@@ -27,6 +27,7 @@
 package haven.resutil;
 
 import haven.*;
+import me.ender.ClientUtils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -162,7 +163,7 @@ public class FoodInfo extends ItemInfo.Tip {
 	    double multiplier = single.multiplier;
 	    fep = new ArrayList<>(info.evs.length);
 	    for (int i = 0; i < info.evs.length; i++) {
-		fep.add(new Pair<>(info.evs[i].res, Utils.round(info.evs[i].a / multiplier, 2)));
+		fep.add(new Pair<>(info.evs[i].res, ClientUtils.round(info.evs[i].a / multiplier, 2)));
 	    }
 	    types  = info.types;
 	}

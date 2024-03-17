@@ -1,6 +1,7 @@
 import haven.*;
 import haven.render.BaseColor;
 import haven.render.Model;
+import me.ender.ClientUtils;
 import me.ender.minimap.*;
 
 import java.awt.*;
@@ -329,7 +330,7 @@ public class Pointer extends Widget implements MiniMap.IPointer, DTarget {
 	        firsSegment = curseg;
 		firstLine = line;
 	    } else if(curseg == firsSegment) {
-		mc = Utils.intersect(firstLine, line).orElse(mc);
+		mc = ClientUtils.intersect(firstLine, line).orElse(mc);
 		//do not stop triangulation if calculated point diverges too far off from server one
 		if(mc != null && Math.abs(player.rc.angle(mc) - player.rc.angle(b)) > PI / 3) {
 		    mc = null;

@@ -29,6 +29,7 @@ package haven;
 import haven.QualityList.SingleType;
 import haven.render.*;
 import haven.resutil.Curiosity;
+import me.ender.ClientUtils;
 import me.ender.Reflect;
 
 import java.awt.*;
@@ -367,7 +368,7 @@ public class WItem extends Widget implements DTarget2 {
 	    tip = data == null ? null : data.b;
 	} else {
 	    int remaining = remainingSeconds();
-	    if(remaining >= 0) {value = Utils.formatTimeShort(remaining);}
+	    if(remaining >= 0) {value = ClientUtils.formatTimeShort(remaining);}
 	}
 	
 	if(!Objects.equals(tip, cachedTipValue)) {

@@ -29,6 +29,7 @@ package haven;
 import haven.render.*;
 import haven.res.gfx.fx.msrad.MSRad;
 import integrations.mapv4.MappingClient;
+import me.ender.ClientUtils;
 import me.ender.Reflect;
 import me.ender.ResName;
 import me.ender.gob.KinInfo;
@@ -1295,7 +1296,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    tt = icon.tooltip();
 	}
 	if(tt == null) {
-	    tt = Utils.prettyResName(resid());
+	    tt = ClientUtils.prettyResName(resid());
 	}
 	return tt;
     }

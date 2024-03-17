@@ -2,6 +2,7 @@ package auto;
 
 import haven.*;
 import haven.rx.Reactor;
+import me.ender.ClientUtils;
 import rx.functions.Action2;
 
 import java.util.*;
@@ -243,7 +244,7 @@ public class Bot implements Defer.Callable<Void> {
     
     public static void drink(GameUI gui) {
 	Collection<Supplier<List<WItem>>> everywhere = Arrays.asList(HANDS(gui), INVENTORY(gui), BELT(gui));
-	Utils.chainOptionals(
+	ClientUtils.chainOptionals(
 	    () -> findFirstThatContains("Tea", everywhere),
 	    () -> findFirstThatContains("Water", everywhere)
 	).ifPresent(Bot::drink);

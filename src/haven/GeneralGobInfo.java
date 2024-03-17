@@ -1,5 +1,6 @@
 package haven;
 
+import me.ender.ClientUtils;
 import me.ender.GobInfoOpts;
 import me.ender.GobInfoOpts.InfoPart;
 import me.ender.Reflect;
@@ -98,7 +99,7 @@ public class GeneralGobInfo extends GobInfo {
 	    if(GobInfoOpts.enabled(InfoPart.CHEESE_RACK) && res.startsWith("gfx/terobjs/cheeserack")) {
 		if(name.startsWith("gfx/terobjs/items/cheesetray-")) {
 		    name = name.substring(name.lastIndexOf("-") + 1);
-		    text = Utils.prettyResName(name);
+		    text = ClientUtils.prettyResName(name);
 		}
 	    }
 	    
@@ -208,7 +209,7 @@ public class GeneralGobInfo extends GobInfo {
 		.map(Gob.Overlay::name)
 		.filter(name -> name.startsWith("gfx/terobjs/barrel-"))
 		.map(name -> name.substring(name.lastIndexOf("-") + 1))
-		.map(Utils::prettyResName)
+		.map(ClientUtils::prettyResName)
 		.findAny();
 	    
 	} else if(res.startsWith("gfx/terobjs/iconsign")) {
@@ -223,7 +224,7 @@ public class GeneralGobInfo extends GobInfo {
 		Session session = gob.context(Session.class);
 		Indir<Resource> cres = session.getres2(resid);
 		if(cres != null) {
-		    contents = Optional.of(Utils.prettyResName(cres));
+		    contents = Optional.of(ClientUtils.prettyResName(cres));
 		}
 	    }
 	}

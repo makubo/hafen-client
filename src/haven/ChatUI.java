@@ -26,6 +26,7 @@
 
 package haven;
 
+import me.ender.ClientUtils;
 import me.ender.Reflect;
 
 import java.io.*;
@@ -164,7 +165,7 @@ public class ChatUI extends Widget {
 	    
 	    public String message() {
 		if(Reflect.is(this, "haven.res.ui.rchan.RealmChannel$PNamedMessage")) {
-		    return Utils.timestamp(String.format("%s: %s", Reflect.getFieldValueString(this, "cn"), Reflect.getFieldValueString(this, "text")));
+		    return ClientUtils.timestamp(String.format("%s: %s", Reflect.getFieldValueString(this, "cn"), Reflect.getFieldValueString(this, "text")));
 		}
 		return null;
 	    }
@@ -284,7 +285,7 @@ public class ChatUI extends Widget {
 
 	    public SimpleMessage(String text, Color col) {
 		if(CFG.SHOW_CHAT_TIMESTAMP.get()){
-		    text = Utils.timestamp(text);
+		    text = ClientUtils.timestamp(text);
 		}
 		this.text = text;
 		this.col = col;

@@ -28,6 +28,7 @@ package haven;
 
 import haven.rx.Reactor;
 import integrations.mapv4.MappingClient;
+import me.ender.ClientUtils;
 
 import java.io.*;
 import java.net.URI;
@@ -37,8 +38,6 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Properties;
 import java.util.function.*;
-import java.io.*;
-import java.nio.file.*;
 
 public class Config {
     public static final File HOMEDIR = new File("").getAbsoluteFile();
@@ -134,7 +133,7 @@ public class Config {
     private static String getString(InputStream inputStream) {
 	if(inputStream != null) {
 	    try {
-		return Utils.stream2str(inputStream);
+		return ClientUtils.stream2str(inputStream);
 	    } catch (Exception ignore) {
 	    } finally {
 		try {inputStream.close();} catch (IOException ignored) {}

@@ -4,6 +4,7 @@ import auto.Bot;
 import haven.render.Pipe;
 import haven.resutil.Curiosity;
 import haven.rx.Reactor;
+import me.ender.ClientUtils;
 import rx.Subscription;
 
 import java.awt.*;
@@ -436,12 +437,12 @@ public class ExtInventory extends Widget {
 	    } else {
 		quality = type.quality;
 	    }
-	    String quantity = Utils.f2s(items.stream().map(wItem -> wItem.quantity.get()).reduce(0f, Float::sum));
+	    String quantity = ClientUtils.f2s(items.stream().map(wItem -> wItem.quantity.get()).reduce(0f, Float::sum));
 	    this.text[DisplayType.Name.ordinal()] = fnd.render(String.format("×%s %s", quantity, type.name)).tex();
 	    if(!Double.isNaN(quality)) {
 		String avg = type.quality != null ? "" : "~";
 		String sign = (g == Grouping.NONE || g == Grouping.Q) ? "" : "+";
-		String q = String.format("%sq%s%s", avg, Utils.f2s(quality, 1), sign);
+		String q = String.format("%sq%s%s", avg, ClientUtils.f2s(quality, 1), sign);
 		this.text[DisplayType.Quality.ordinal()] = fnd.render(String.format("×%s %s", quantity, q)).tex();
 	    } else {
 		this.text[DisplayType.Quality.ordinal()] = text[DisplayType.Name.ordinal()];
