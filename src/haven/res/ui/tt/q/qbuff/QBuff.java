@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 
 @haven.FromResource(name = "ui/tt/q/qbuff", version = 7)
 public class QBuff extends ItemInfo.Tip {
+    public final String original;
     public BufferedImage icon;
     public String name;
     public double q;
@@ -14,7 +15,8 @@ public class QBuff extends ItemInfo.Tip {
     public QBuff(Owner owner, BufferedImage icon, String name, double q) {
 	super(owner);
 	this.icon = icon;
-	this.name = name;
+	this.name = L10N.tooltip(name);
+	this.original = name;
 	this.q = q;
     }
     
