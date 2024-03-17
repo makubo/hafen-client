@@ -250,4 +250,9 @@ public class Button extends SIWidget {
 	}
 	return(false);
     }
+    
+    public void large(boolean val) {
+	lg = val;
+	sz = Coord.of(sz.x, lg ? hl : hs);
+    }
 }

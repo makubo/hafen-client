@@ -75,7 +75,7 @@ public class WindowDetector {
 		    lbl = (Label) wdg;
 		    ((ProspectingWnd) parent).text(lbl.original);
 		} else if(wdg instanceof Button) {
-	            ((Button) wdg).lg = false;
+	            ((Button) wdg).large(false);
 		}
 	    }
 	}
