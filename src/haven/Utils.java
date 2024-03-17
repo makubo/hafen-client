@@ -2457,6 +2457,7 @@ public class Utils {
 	if(customNames.containsKey(resname)) {
 	    return customNames.get(resname);
 	}
+	String fullname = resname;
 	Matcher m = RESID.matcher(resname);
 	if(m.matches()) {
 	    resname = m.group(1);
@@ -2464,6 +2465,16 @@ public class Utils {
 	int k = resname.lastIndexOf("/");
 	resname = resname.substring(k + 1);
 	resname = resname.substring(0, 1).toUpperCase() + resname.substring(1);
+	
+	//handle logs
+	if(fullname.contains("terobjs/trees/") && resname.endsWith("log")) {
+	    resname = resname.substring(0, resname.length() - 3);
+	    if(resname.endsWith("tree")) {
+		resname = resname.substring(0, resname.length() - 4) + " Tree";
+	    }
+	    resname += " Log";
+	}
+	
 	return resname;
     }
     
