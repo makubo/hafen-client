@@ -73,6 +73,11 @@ public class ClientUtils {
 	    resname += " Log";
 	}
 	
+	//handle flour
+	if(resname.endsWith("flour")) {
+	    resname = resname.substring(0, resname.length() - 5) + " Flour";
+	}
+	
 	return resname;
     }
     
