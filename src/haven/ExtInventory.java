@@ -5,6 +5,7 @@ import haven.render.Pipe;
 import haven.resutil.Curiosity;
 import haven.rx.Reactor;
 import me.ender.ClientUtils;
+import me.ender.Reflect;
 import rx.Subscription;
 
 import java.awt.*;
@@ -327,10 +328,7 @@ public class ExtInventory extends Widget {
     
     private void processItem(SortedMap<ItemType, List<WItem>> groups, WItem witem) {
 	try {
-	    Widget winv = witem.item.contents;
-	    if(winv != null && CFG.UI_STACK_EXT_INV_UNPACK.get()) {
-		winv.children(WItem.class).forEach((w) -> processItem(groups, w));
-	    } else {
+	    if(tryToUnpack(groups, witem)) {
 		Double quality = quality(witem, grouping.sel);
 		ItemType type = new ItemType(witem, quality);
 		if(type.loading) {needUpdate = true;}
@@ -339,6 +337,16 @@ public class ExtInventory extends Widget {
 	} catch (Loading ignored) {
 	    needUpdate = true;
 	}
+    }
+    
+    /** returns true if this item should be processed, false if skipped (e.g. stack that's unpacked) */
+    private boolean tryToUnpack(SortedMap<ItemType, List<WItem>> groups, WItem wItem) {
+	Widget inv = wItem.item.contents;
+	if(inv == null || !CFG.UI_STACK_EXT_INV_UNPACK.get()) {
+	    return true;
+	}
+	inv.children(WItem.class).forEach((w) -> processItem(groups, w));
+	return !Reflect.is(inv, "haven.res.ui.stackinv.ItemStack"); //this is just a stack, hide it
     }
     
     private static String name(WItem item) {
