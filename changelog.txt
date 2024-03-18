@@ -1,6 +1,7 @@
 $size[14]{$u{Update for 18.03.24:}
   * fixed food tooltip hanging client if food has no hunger stats
   * fixed "Dismiss" button on prospecting window
+  * improved handling of pickling jars in list inventory
  
 $size[14]{$u{Update for 17.03.24:}
   * fixed QBuff crash
