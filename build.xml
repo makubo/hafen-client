@@ -238,4 +238,13 @@
     <delete file="bin/hafen-res.jar" />
     <delete file="bin/builtin-res.jar" />
   </target>
+
+  <target name="update-res-sources" depends="clean-code, jar">
+    <delete dir="resources/loftar-res-sources"/>
+    <mkdir dir="resources/loftar-res-sources"/>
+    <exec executable="java" dir="build" failifexecutionfails="true">
+      <arg line="-cp hafen.jar me.ender.ResSourceUpdater"/>
+    </exec>
+  </target>
+  
 </project>
