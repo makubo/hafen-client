@@ -92,8 +92,12 @@ public class FoodInfo extends ItemInfo.Tip {
     }
     
     public BufferedImage tipimg() {
+	String energy_hunger = glut != 0 
+	    ? Utils.odformat2(end / (10 * glut), 2)
+	    : end == 0 ? "0" : "∞";
+	
 	String head = String.format("Energy: $col[128,128,255]{%s%%}, Hunger: $col[255,192,128]{%s\u2030}, Energy/Hunger: $col[128,128,255]{%s%%}",
-	    Utils.odformat2(end * 100, 2), Utils.odformat2(glut * 1000, 2), Utils.odformat2(end / (10 * glut), 2));
+	    Utils.odformat2(end * 100, 2), Utils.odformat2(glut * 1000, 2), energy_hunger);
 	if(cons != 0)
 	    head += String.format(", Satiation: $col[192,192,128]{%s%%}", Utils.odformat2(cons * 1000, 2));
 	BufferedImage base = RichText.render(head, 0).img;
@@ -128,7 +132,11 @@ public class FoodInfo extends ItemInfo.Tip {
 	    Color col = color(effective);
 	    imgs.add(RichText.render(String.format("Effective: $col[%d,%d,%d]{%s%%}", col.getRed(), col.getGreen(), col.getBlue(), Utils.odformat2(100 * effective, 2)), 0).img);
 	}
-	imgs.add(RichText.render(String.format("FEP Sum: $col[128,255,0]{%s}, FEP/Hunger: $col[128,255,0]{%s}", Utils.odformat2(fepSum, 2), Utils.odformat2(fepSum / (100 * glut), 2)), 0).img);
+	String fep_hunger = glut != 0
+	    ? Utils.odformat2(fepSum / (100 * glut), 2)
+	    : fepSum == 0 ? "0" : "∞";
+	    
+	imgs.add(RichText.render(String.format("FEP Sum: $col[128,255,0]{%s}, FEP/Hunger: $col[128,255,0]{%s}", Utils.odformat2(fepSum, 2), fep_hunger), 0).img);
 	return(catimgs(0, imgs.toArray(new BufferedImage[0])));
     }
     
