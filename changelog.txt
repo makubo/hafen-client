@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 19.03.24:}
+  * fixed ConcurrentModificationException in Buddy's Info 
+  * fixed NPE in Buddy code 
+ 
 $size[14]{$u{Update for 18.03.24:}
   * fixed food tooltip hanging client if food has no hunger stats
   * fixed "Dismiss" button on prospecting window
