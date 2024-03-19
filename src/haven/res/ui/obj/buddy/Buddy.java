@@ -64,7 +64,7 @@ public class Buddy extends GAttrib implements InfoPart {
 	super.ctick(dt);
 	if((bw != null) && (bw.serial != bseq)) {
 	    bseq = bw.serial;
-	    if((bw.find(id) != b) || (rnm != b.name) || (rgrp != b.group))
+	    if((bw.find(id) != b) || b != null && ((!Objects.equals(rnm, b.name)) || (rgrp != b.group)))
 		info.dirty();
 	}
     }
