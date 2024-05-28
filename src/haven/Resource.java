@@ -82,7 +82,15 @@ public class Resource implements Serializable {
 	    Named o = (Named)other;
 	    return(o.name.equals(this.name) && (o.ver == this.ver));
 	}
-
+	
+	public Resource loadsaved() {
+	    return loadsaved(Resource.remote());
+	}
+	
+	public Resource loadsaved(Pool pool) {
+	    return Resource.loadsaved(pool, this);
+	}
+	
 	public int hashCode() {
 	    int ret = name.hashCode();
 	    ret = (ret * 31) + ver;
@@ -2001,7 +2009,7 @@ public class Resource implements Serializable {
 	in.close();
     }
     
-    public static Resource loadsaved(Resource.Pool pool, Resource.Spec spec) {
+    public static Resource loadsaved(Resource.Pool pool, Named spec) {
 	try {
 	    return (spec.get());
 	} catch (haven.Loading l) {
