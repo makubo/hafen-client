@@ -6,7 +6,7 @@ import haven.render.*;
 import java.util.*;
 import java.awt.Color;
 
-@haven.FromResource(name = "ui/obj/buddy", version = 2)
+@haven.FromResource(name = "ui/obj/buddy", version = 3)
 public class Buddy extends GAttrib implements InfoPart {
     public final int id;
     public final Info info;
@@ -64,7 +64,7 @@ public class Buddy extends GAttrib implements InfoPart {
 	super.ctick(dt);
 	if((bw != null) && (bw.serial != bseq)) {
 	    bseq = bw.serial;
-	    if((bw.find(id) != b) || (rnm != b.name) || (rgrp != b.group))
+	    if((bw.find(id) != b) || ((b != null) && ((rnm != b.name) || (rgrp != b.group))))
 		info.dirty();
 	}
     }
