@@ -659,7 +659,7 @@ public class WaterTile extends Tiler {
 
     public void lay(MapMesh m, Random rnd, Coord lc, Coord gc) {
 	MapMesh.MapSurface ms = m.data(MapMesh.gnd);
-	MPart d = MPart.splitquad(lc, gc, ms.fortilea(lc), ms.split[ms.ts.o(lc)]);
+	MPart d = MPart.splitquad(lc, gc, ms.fortilea(lc), ms.split[ms.bs.o(lc)]);
 
 	{
 	    MeshBuf mesh = MapMesh.Model.get(m, surfmat);
@@ -696,7 +696,7 @@ public class WaterTile extends Tiler {
 	}
 
 	Bottom b = m.data(Bottom.id);
-	MPart bd = MPart.splitquad(lc, gc, b.fortilea(lc), ms.split[ms.ts.o(lc)]);
+	MPart bd = MPart.splitquad(lc, gc, b.fortilea(lc), ms.split[ms.bs.o(lc)]);
 	bd.mat = botmat();
 	bottom.faces(m, bd);
     }
@@ -708,7 +708,7 @@ public class WaterTile extends Tiler {
 	    if(bottom instanceof CTrans) {
 		MapMesh.MapSurface ms = m.data(MapMesh.gnd);
 		Bottom b = m.data(Bottom.id);
-		MPart d = MPart.splitquad(lc, gc, b.fortilea(lc), ms.split[ms.ts.o(lc)]);
+		MPart d = MPart.splitquad(lc, gc, b.fortilea(lc), ms.split[ms.bs.o(lc)]);
 		d.mat = botmat();
 		((CTrans)bottom).tcons(z, bmask, cmask).faces(m, d);
 	    }
