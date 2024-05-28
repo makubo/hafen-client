@@ -96,8 +96,7 @@ public class QuestHelper extends GameUI.Hidewnd {
 	    if(!tvisible()) {return;}
 	    GameUI gui = ui.gui;
 	    if(gui == null || gui.chrwdg == null) {return;}
-	    QuestWnd questWnd = gui.chrwdg.quest;
-	    int currentQuest = Optional.ofNullable(questWnd.quest)
+	    int currentQuest = Optional.ofNullable(gui.chrwdg.quest).map(q -> q.quest)
 		.map(QuestWnd.Quest.Info::questid).orElse(-1);
 	    
 	    if(!refresh) {
@@ -119,18 +118,18 @@ public class QuestHelper extends GameUI.Hidewnd {
 		tasks.clear();
 		
 		boolean changed = false;
-		for (QuestWnd.Quest quest : questWnd.cqst.quests) {
+		for (QuestWnd.Quest quest : gui.chrwdg.quest.cqst.quests) {
 		    //currently selected quest will be selected last
 		    if(currentQuest == quest.id) {continue;}
-		    questWnd.wdgmsg("qsel", quest.id);
+		    gui.chrwdg.quest.wdgmsg("qsel", quest.id);
 		    changed = true;
 		}
 		if(currentQuest >= 0) {
-		    questWnd.wdgmsg("qsel", currentQuest);
+		    gui.chrwdg.quest.wdgmsg("qsel", currentQuest);
 		    //if the only quest in the log is currently selected - send selection again to re-select it
-		    if(!changed) {questWnd.wdgmsg("qsel", currentQuest);}
+		    if(!changed) {gui.chrwdg.quest.wdgmsg("qsel", currentQuest);}
 		} else {
-		    questWnd.wdgmsg("qsel", (Object) null);
+		    gui.chrwdg.quest.wdgmsg("qsel", (Object) null);
 		}
 		Collections.sort(tasks);
 	    }
