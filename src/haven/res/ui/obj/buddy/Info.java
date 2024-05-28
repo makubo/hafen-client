@@ -6,7 +6,7 @@ import haven.render.*;
 import java.util.*;
 import java.awt.Color;
 
-@FromResource(name = "ui/obj/buddy", version = 2)
+@FromResource(name = "ui/obj/buddy", version = 4)
 public class Info extends GAttrib implements RenderTree.Node, PView.Render2D {
     public final List<InfoPart> parts = new ArrayList<>();
     private Tex rend = null;
