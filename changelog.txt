@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 28.05.24:}
+  * merged loftar's code
+  * added Full Screen option in Video settings
+ 
 $size[14]{$u{Update for 19.03.24:}
   * fixed ConcurrentModificationException in Buddy's Info 
   * fixed NPE in Buddy code 
