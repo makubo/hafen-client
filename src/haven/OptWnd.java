@@ -150,6 +150,12 @@ public class OptWnd extends WindowX {
 			    a = val;
 			}
 		    }, Coord.z);
+		prev = add(new CFGBox("Full screen", CFG.VIDEO_FULL_SCREEN).set(v -> {
+		    try {
+			ui.cons.run(new String[]{"fs", v?"1":"0"});
+		    } catch (Exception ignored) {
+		    }
+		}), prev.pos("bl").adds(0, 5));
 		prev = add(new Label("Render scale"), prev.pos("bl").adds(0, 5));
 		{
 		    Label dpy = new Label.Untranslated("");

@@ -413,6 +413,7 @@ public class MainFrame extends java.awt.Frame implements Console.Directory {
     }
 
     private static void main2(String[] args) {
+	initfullscreen.set(CFG.VIDEO_FULL_SCREEN.get());
 	Config.cmdline(args);
 	status("start");
 	try {
