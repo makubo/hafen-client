@@ -1,18 +1,18 @@
 /* Preprocessed source code */
+package haven.res.ui.r_enact;
+
 import haven.*;
 import haven.CharWnd.LoadingTextBox;
 import java.util.*;
 import java.awt.Color;
 
-@FromResource(name = "ui/r-enact", version = 63)
+@haven.FromResource(name = "ui/r-enact", version = 64)
 public class Enactment {
     public final int id;
     public final Indir<Resource> res;
     public int lvl, mlvl;
     public Cost cost, dcost, icost;
     String sortkey = "\uffff";
-    Tex small;
-    Text rnm, rlvl;
 
     public Enactment(int id, Indir<Resource> res) {
 	this.id = id;

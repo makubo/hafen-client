@@ -1,10 +1,12 @@
 /* Preprocessed source code */
+package haven.res.ui.r_enact;
+
 import haven.*;
 import haven.CharWnd.LoadingTextBox;
 import java.util.*;
 import java.awt.Color;
 
-@FromResource(name = "ui/r-enact", version = 63)
+@haven.FromResource(name = "ui/r-enact", version = 64)
 public class Enactments extends Widget {
     public static final Tex mpi = Resource.classres(Enactments.class).layer(Resource.imgc, 1).tex();
     public static final Tex ipi = Resource.classres(Enactments.class).layer(Resource.imgc, 0).tex();
@@ -19,20 +21,20 @@ public class Enactments extends Widget {
     public Costbox cost;
 
     public Enactments() {
-	add(Frame.with(info = new LoadingTextBox(new Coord(CharWnd.attrw, UI.scale(330)), "", CharWnd.ifnd), true), 0, 0);
+	add(Frame.with(info = new LoadingTextBox(new Coord(CharWnd.attrw, UI.scale(290)), "", CharWnd.ifnd), true), 0, 0);
 	info.bg = new Color(0, 0, 0, 128);
 	int right = info.parent.sz.x + UI.scale(10);
-	adda(Frame.with(list = new EList(rwidth, 7), false), info.parent.pos("ur").adds(10, 0), 0.0, 0.0);
+	adda(Frame.with(list = new EList(Coord.of(rwidth, (namef.height() + UI.scale(2)) * 7)), false), info.parent.pos("ur").adds(10, 0), 0.0, 0.0);
 	adda(Frame.with(cost = new Costbox(null), false), info.parent.pos("br").adds(10, 0), 0.0, 1.0);
 	pack();
     }
 
-    public class EList extends Listbox<Enactment> {
+    public class EList extends SListBox<Enactment, Widget> {
 	public List<Enactment> acts = new ArrayList<>();
 	private boolean loading = false;
 
-	public EList(int w, int h) {
-	    super(w, h, namef.height() + 2);
+	public EList(Coord sz) {
+	    super(sz, namef.height() + UI.scale(2));
 	}
 
 	public void tick(double dt) {
@@ -48,42 +50,23 @@ public class Enactments extends Widget {
 		}
 		Collections.sort(acts, Comparator.comparing(act -> act.sortkey));
 	    }
+	    super.tick(dt);
 	}
 
-	protected Enactment listitem(int idx) {return(acts.get(idx));}
-	protected int listitems() {return(acts.size());}
+	protected List<Enactment> items() {return(acts);}
+	protected Widget makeitem(Enactment act, int idx, Coord sz) {return(new Item(sz, act));}
 
-	protected void drawbg(GOut g) {}
-
-	protected void drawitem(GOut g, Enactment act, int idx) {
-	    g.chcolor((idx % 2 == 0) ? CharWnd.every : CharWnd.other);
-	    g.frect(Coord.z, g.sz());
-	    g.chcolor();
-	    try {
-		if(act.small == null)
-		    act.small = new TexI(PUtils.convolvedown(act.res.get().layer(Resource.imgc).img, new Coord(itemh, itemh), CharWnd.iconfilter));
-		if(act.rnm == null)
-		    act.rnm = namef.render(act.res.get().layer(Resource.tooltip).t);
-		if(act.rlvl == null) {
-		    String ls;
-		    if(act.mlvl <= 0)
-			ls = String.format("%d", act.lvl);
-		    else
-			ls = String.format("%d/%d", act.lvl, act.mlvl);
-		    act.rlvl = namef.render(ls);
-		}
-		g.image(act.small, Coord.z);
-		g.aimage(act.rnm.tex(), new Coord(itemh + UI.scale(5), itemh / 2), 0, 0.5);
-		g.aimage(act.rlvl.tex(), new Coord(sz.x - UI.scale(15), itemh / 2), 1.0, 0.5);
-	    } catch(Loading l) {
-		g.image(WItem.missing.layer(Resource.imgc).tex(), Coord.z, new Coord(itemh, itemh));
+	public class Item extends ItemWidget<Enactment> {
+	    public Item(Coord sz, Enactment act) {
+		super(EList.this, sz, act);
+		String ls = (act.mlvl <= 0) ? String.format("%d", act.lvl) : String.format("%d/%d", act.lvl, act.mlvl);
+		Widget prev = adda(new Label(ls, namef), sz.x - UI.scale(5), sz.y / 2, 1.0, 0.5);
+		adda(IconText.of(Coord.of(prev.c.x - UI.scale(5), sz.y), act.res), 0, sz.y / 2, 0.0, 0.5);
 	    }
 	}
 
 	public void pop(Collection<Enactment> nacts) {
 	    List<Enactment> acts = new ArrayList<>(nacts);
-	    sb.val = 0;
-	    sb.max = acts.size() - h;
 	    Enactment psel = sel;
 	    sel = null;
 	    this.acts = acts;
@@ -97,6 +80,7 @@ public class Enactments extends Widget {
 	    }
 	    updcostbox();
 	    loading = true;
+	    reset();
 	}
 
 	public void change(Enactment act) {
@@ -255,7 +239,6 @@ public class Enactments extends Widget {
 		}
 		act.lvl = (Integer)args[a++];
 		act.mlvl = (Integer)args[a++];
-		act.rlvl = null;
 		if(((Integer)args[a++]) != 0)
 		    act.cost = new Cost(((Number)args[a++]).doubleValue(), ((Number)args[a++]).doubleValue(), ((Number)args[a++]).doubleValue(), ((Number)args[a++]).doubleValue());
 		else

@@ -1,10 +1,12 @@
 /* Preprocessed source code */
+package haven.res.ui.r_enact;
+
 import haven.*;
 import haven.CharWnd.LoadingTextBox;
 import java.util.*;
 import java.awt.Color;
 
-@FromResource(name = "ui/r-enact", version = 63)
+@haven.FromResource(name = "ui/r-enact", version = 64)
 public class Cost {
     public final double mp, ip, rp, lp;
 
