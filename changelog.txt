@@ -1,7 +1,11 @@
+$size[14]{$u{Update for 29.05.24:}
+  * fixed overlap in Realm Blessings window
+  * fixed another potential crash on client start related to QuestHelper 
+ 
 $size[14]{$u{Update for 28.05.24:}
   * merged loftar's code
   * added Full Screen option in Video settings
-  * fixed potential NPE on client start related to QuestHelper
+  * fixed potential crash on client start related to QuestHelper
  
 $size[14]{$u{Update for 19.03.24:}
   * fixed ConcurrentModificationException in Buddy's Info 
