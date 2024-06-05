@@ -117,21 +117,22 @@ public class QuestHelper extends GameUI.Hidewnd {
 	    lastUpdateTime = System.currentTimeMillis();
 	    synchronized (this) {
 		tasks.clear();
-		
+		if(!optQuestWnd.isPresent()) {return;}
+		QuestWnd questWnd = optQuestWnd.get();
 		boolean changed = false;
 		List<QuestWnd.Quest> quests = optQuestWnd.map(w -> w.cqst).map(c -> c.quests).orElse(Collections.emptyList());
 		for (QuestWnd.Quest quest : quests) {
 		    //currently selected quest will be selected last
 		    if(currentQuest == quest.id) {continue;}
-		    gui.chrwdg.quest.wdgmsg("qsel", quest.id);
+		    questWnd.wdgmsg("qsel", quest.id);
 		    changed = true;
 		}
 		if(currentQuest >= 0) {
-		    gui.chrwdg.quest.wdgmsg("qsel", currentQuest);
+		    questWnd.wdgmsg("qsel", currentQuest);
 		    //if the only quest in the log is currently selected - send selection again to re-select it
-		    if(!changed) {gui.chrwdg.quest.wdgmsg("qsel", currentQuest);}
+		    if(!changed) {questWnd.wdgmsg("qsel", currentQuest);}
 		} else {
-		    gui.chrwdg.quest.wdgmsg("qsel", (Object) null);
+		    questWnd.wdgmsg("qsel", (Object) null);
 		}
 		Collections.sort(tasks);
 	    }
@@ -195,7 +196,7 @@ public class QuestHelper extends GameUI.Hidewnd {
 	    if(markerName == null || gui == null || gui.map == null || gui.mapfile == null) {return null;}
 	    
 	    MiniMap.Location loc = gui.mapfile.playerLocation();
-	    if( loc == null) {return null;}
+	    if(loc == null) {return null;}
 	    
 	    Gob player = gui.map.player();
 	    if(player == null) {return null;}
