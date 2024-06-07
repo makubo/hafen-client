@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 07.06.24:}
+  * fixed another potential crash on client start related to QuestHelper
+  * added earth worms to auto-pickup command list 
+ 
 $size[14]{$u{Update for 29.05.24:}
   * fixed overlap in Realm Blessings window
   * fixed another potential crash on client start related to QuestHelper 
