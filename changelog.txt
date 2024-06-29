@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 29.06.24:}
+  * added whirling snowflake to critters
+ 
 $size[14]{$u{Update for 28.06.24:}
   * merged loftar's code 
  
