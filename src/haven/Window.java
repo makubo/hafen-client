@@ -140,10 +140,20 @@ public class Window extends Widget implements DTarget {
 
     protected void added() {
 	super.added();
+	if(shouldGrabFocusOnAdd()){
 	parent.setfocus(this);
+	}
 
 	initCfg();
 	initanim();
+    }
+    
+    private boolean shouldGrabFocusOnAdd() {
+	//If ContentsWindow grabs focus on add, then it steals focus from chat 
+	if(this instanceof GItem.ContentsWindow) {
+	    return false;
+	}
+	return true;
     }
 
     protected void initCfg() {
