@@ -29,6 +29,7 @@ package haven;
 import haven.ItemInfo.AttrCache;
 import haven.Resource.AButton;
 import haven.render.Pipe;
+import haven.rx.BuffToggles;
 import me.ender.CustomPagina;
 import me.ender.CustomPaginaAction;
 import me.ender.GobInfoOpts;
@@ -842,7 +843,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
     @Override
     public void bound() {
 	super.bound();
-	ui.menuObservable.notifyObservers();
+	BuffToggles.menuBound(this);
     }
     
     public Pagina findPagina(Indir<Resource> res) {

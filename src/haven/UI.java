@@ -86,14 +86,6 @@ public class UI {
     {
 	lastevent = lasttick = Utils.rtime();
     }
-    public Observable menuObservable = new Observable(){
-	@Override
-	public void notifyObservers(Object arg) {
-	    setChanged();
-	    super.notifyObservers(arg);
-	    clearChanged();
-	}
-    };
     public final List<Widget> EXT_INVENTORIES = new LinkedList<>();
     public void addInventory(Widget wdg) {
 	WindowX wnd = wdg.getparent(WindowX.class);
