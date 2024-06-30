@@ -86,7 +86,6 @@ public class BuffToggles {
 
 	public boolean act() {
 	    if(gui != null && menu != null) {
-	    	gui.msg(resname, GameUI.MsgType.INFO);
 		menu.paginafor(resname).button().use();
 		return true;
 	    } else {
