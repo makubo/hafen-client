@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 30.06.24:}
+  * fixed startup buffs not working
+  * fixed chat losing focus when items stack in inventory 
+ 
 $size[14]{$u{Update for 29.06.24:}
   * added whirling snowflake to critters
  
