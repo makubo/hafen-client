@@ -6,6 +6,8 @@ import me.ender.ClientUtils;
 import rx.functions.Action2;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -264,6 +266,25 @@ public class Bot implements Defer.Callable<Void> {
 	}
     }
     
+    public static void aggro(GameUI gui) {
+	mapPosOfMouse(gui).thenAccept(mc -> {
+	    List<Target> targets = getNearestTargets(gui, GobTag.AGGRO_TARGET, 1, mc, 150);
+	    aggro(gui, targets);
+	});
+    }
+    
+    public static void aggro(GameUI gui, List<Target> targets) {
+	if(!targets.isEmpty()) {
+	    start(new Bot(targets, (target, bot) -> {
+		gui.menu.paginafor("paginae/act/atk").button().use();
+		target.click(1, 0);
+		rclick(gui);
+	    }), gui.ui);
+	} else {
+	    gui.error("No targets to aggro");
+	}
+    }
+    
     private static List<Target> getNearestTargets(GameUI gui, String name, int limit, double distance) {
 	return gui.ui.sess.glob.oc.stream()
 	    .filter(gobIs(name))
@@ -275,13 +296,25 @@ public class Bot implements Defer.Callable<Void> {
     }
     
     private static List<Target> getNearestTargets(GameUI gui, GobTag tag, int limit, double distance) {
+	return getNearestTargets(gui, tag, limit, Bot::distanceToPlayer, distance);
+    }
+    
+    private static List<Target> getNearestTargets(GameUI gui, GobTag tag, int limit, Coord2d pos, double distance) {
+	return getNearestTargets(gui, tag, limit, g -> distanceToCoord(pos, g), distance);
+    }
+    
+    private static List<Target> getNearestTargets(GameUI gui, GobTag tag, int limit, Function<Gob, Double> meter, double distance) {
 	return gui.ui.sess.glob.oc.stream()
 	    .filter(gobIs(tag))
-	    .filter(gob -> distanceToPlayer(gob) <= distance)
-	    .sorted(byDistance)
+	    .filter(gob -> meter.apply(gob) <= distance)
+	    .sorted(Comparator.comparingDouble(meter::apply))
 	    .limit(limit)
 	    .map(Target::new)
 	    .collect(Collectors.toList());
+    }
+    
+    private static CompletableFuture<Coord2d> mapPosOfMouse(GameUI gui) {
+	return gui.map.hit(gui.ui.mc);
     }
     
     private static BotAction fuelWith(GameUI gui, String fuel, int count) {
@@ -423,6 +456,11 @@ public class Bot implements Defer.Callable<Void> {
 	return p.rc.dist(gob.rc);
     }
     
+    private static double distanceToCoord(Coord2d c, Gob gob) {
+	if(c == null) {return Double.MAX_VALUE;}
+	return c.dist(gob.rc);
+    }
+    
     public static Comparator<Gob> byDistance = (o1, o2) -> {
 	try {
 	    Gob p = o1.glob.oc.getgob(o1.glob.sess.ui.gui.plid);
@@ -430,6 +468,14 @@ public class Bot implements Defer.Callable<Void> {
 	} catch (Exception ignored) {}
 	return Long.compare(o1.id, o2.id);
     };
+    
+    public static void rclick(GameUI gui) {
+	click(3, gui);
+    }
+    
+    public static void click(int btn, GameUI gui) {
+	gui.map.wdgmsg("click", Coord.z, gui.map.player().rc.floor(OCache.posres), btn, 0);
+    }
     
     private static BotAction selectFlower(String... options) {
 	return (target, bot) -> {
@@ -510,6 +556,14 @@ public class Bot implements Defer.Callable<Void> {
 		if(gob != null) {gob.rclick(modflags);}
 		if(item != null) {item.rclick(modflags);}
 		if(contained != null) {contained.item.rclick(modflags);}
+	    }
+	}
+	
+	public void click(int button, int modflags) {
+	    if(!disposed()) {
+		if(gob != null) {gob.click(button, modflags);}
+		if(item != null) {item.mouseclick(Coord.z, button, modflags);}
+		if(contained != null) {contained.item.mouseclick(Coord.z, button, modflags);}
 	    }
 	}
     

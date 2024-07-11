@@ -36,6 +36,7 @@ import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.*;
 
 import haven.render.*;
@@ -2748,5 +2749,21 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    return MapWnd.markcurs;
 	}
 	return super.getcurs(c);
+    }
+    
+    public CompletableFuture<Coord2d> hit(Coord c) {
+	CompletableFuture<Coord2d> res = new CompletableFuture<>();
+	new MapView.Hittest(c) {
+	    @Override
+	    protected void hit(Coord pc, Coord2d mc, ClickData inf) {
+		res.complete(mc);
+	    }
+	    
+	    @Override
+	    protected void nohit(Coord pc) {
+		res.complete(null);
+	    }
+	}.run();
+	return res;
     }
 }

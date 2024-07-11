@@ -25,7 +25,7 @@ public enum GobTag {
     
     HAS_WATER,
     
-    PLAYER, ME, FRIEND, FOE,
+    PLAYER, ME, FRIEND, FOE, PARTY, LEADER, IN_COMBAT, COMBAT_TARGET, AGGRO_TARGET,
     KO, DEAD, EMPTY, READY, FULL,
     
     MENU, PICKUP, HIDDEN;
@@ -66,7 +66,9 @@ public enum GobTag {
     public static Set<GobTag> tags(Gob gob) {
         Set<GobTag> tags = new HashSet<>();
         GameUI gui = gob.context(GameUI.class);
+        Glob glob = gob.context(Glob.class);
         Equipory equipory = gui != null ? gui.equipory : null;
+        Fightview fight = gui != null ? gui.fv : null;
         
         String name = gob.resid();
         int sdt = gob.sdt();
@@ -179,6 +181,30 @@ public enum GobTag {
             
             if(anyOf(tags, DOMESTIC, HERB, TREE, BUSH)) {
                 tags.add(MENU);
+            }
+            
+            //TODO: need to refresh tags on fight changes
+            Party.Member member = glob.party.memb.get(gob.id);
+            if(member != null) {
+                tags.add(PARTY);
+                //TODO: check for leader
+            }
+            
+            if(fight != null) {//TODO: need to refresh tags on fight changes
+                for (Fightview.Relation relation : fight.lsrel) {
+                    if(relation.gobid == gob.id) {
+                        tags.add(IN_COMBAT);
+                        break;
+                    }
+                }
+                Fightview.Relation current = fight.current;
+                if(current != null && current.gobid == gob.id) {
+                    tags.add(COMBAT_TARGET);
+                }
+            }
+            
+            if(anyOf(tags, PLAYER, ANIMAL) && !anyOf(tags, ME, FRIEND, PARTY, IN_COMBAT)) {
+                tags.add(AGGRO_TARGET);
             }
     
             ContainerInfo.get(name).ifPresent(container -> {
