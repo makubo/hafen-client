@@ -1,6 +1,6 @@
 package haven;
 
-import auto.Bot;
+import auto.Actions;
 import haven.render.Pipe;
 import haven.resutil.Curiosity;
 import haven.rx.Reactor;
@@ -482,7 +482,7 @@ public class ExtInventory extends Widget {
 	    if(extInventory.chb_repeat.a && !choice.forced && choice.opt != null && choice.target != null && choice.target.item == sample) {
 		flowerSubscription.unsubscribe();
 		List<WItem> targets = items.stream().filter(wItem -> wItem != sample).collect(Collectors.toList());
-		Bot.selectFlowerOnItems(ui.gui, choice.opt, targets);
+		Actions.selectFlowerOnItems(ui.gui, choice.opt, targets);
 	    }
 	}
 	

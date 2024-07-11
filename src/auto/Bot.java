@@ -2,43 +2,37 @@ package auto;
 
 import haven.*;
 import haven.rx.Reactor;
-import me.ender.ClientUtils;
 import rx.functions.Action2;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static auto.InvHelper.*;
 
 
 public class Bot implements Defer.Callable<Void> {
     private static final Object lock = new Object();
     private static Bot current;
-    private final List<Target> targets;
+    private final List<ITarget> targets;
     private final BotAction[] actions;
     private Defer.Future<Void> task;
     private boolean cancelled = false;
     private String message = null;
     private static final Object waiter = new Object();
     
-    public Bot(List<Target> targets, BotAction... actions) {
+    public Bot(List<ITarget> targets, BotAction... actions) {
 	this.targets = targets;
 	this.actions = actions;
     }
     
     public Bot(BotAction... actions) {
-	this(Collections.singletonList(Target.EMPTY), actions);
+	this(Collections.singletonList(EmptyTarget.EMPTY), actions);
     }
     
     @Override
     public Void call() throws InterruptedException {
-	targets.forEach(Target::highlight);
-	for (Target target : targets) {
+	targets.forEach(ITarget::highlight);
+	for (ITarget target : targets) {
 	    for (BotAction action : actions) {
 		if(target.disposed()) {break;}
 		action.call(target, this);
@@ -88,11 +82,11 @@ public class Bot implements Defer.Callable<Void> {
 	}
     }
     
-    private static void start(Bot bot, UI ui) {
+    static void start(Bot bot, UI ui) {
 	start(bot, ui, false);
     }
     
-    private static void start(Bot bot, UI ui, boolean silent) {
+    static void start(Bot bot, UI ui, boolean silent) {
 	setCurrent(bot);
 	bot.run((error, message) -> {
 	    if(!silent && CFG.SHOW_BOT_MESSAGES.get() || error) {
@@ -108,261 +102,8 @@ public class Bot implements Defer.Callable<Void> {
 	});
     }
     
-    public static void pickup(GameUI gui, String filter) {
-	pickup(gui, filter, Integer.MAX_VALUE);
-    }
-    
-    public static void pickup(GameUI gui, String filter, int limit) {
-	pickup(gui, startsWith(filter), limit);
-    }
-    
-    public static void pickup(GameUI gui, Predicate<Gob> filter) {
-	pickup(gui, filter, Integer.MAX_VALUE);
-    }
-    
-    public static void pickup(GameUI gui, Predicate<Gob> filter, int limit) {
-	List<Target> targets = gui.ui.sess.glob.oc.stream()
-	    .filter(filter)
-	    .filter(gob -> distanceToPlayer(gob) <= CFG.AUTO_PICK_RADIUS.get())
-	    .filter(Bot::isOnRadar)
-	    .sorted(byDistance)
-	    .limit(limit)
-	    .map(Target::new)
-	    .collect(Collectors.toList());
-	
-	start(new Bot(targets,
-	    Target::rclick_shift,
-	    (target, bot) -> target.gob.waitRemoval()
-	), gui.ui);
-    }
-    
-    public static void pickup(GameUI gui) {
-	pickup(gui, has(GobTag.PICKUP));
-    }
-    
-    public static void openGate(GameUI gui) {
-	List<Target> targets = gui.ui.sess.glob.oc.stream()
-	    .filter(has(GobTag.GATE))
-	    .filter(gob -> !gob.isVisitorGate())
-	    .filter(gob -> distanceToPlayer(gob) <= 35)
-	    .sorted(byDistance)
-	    .limit(1)
-	    .map(Target::new)
-	    .collect(Collectors.toList());
-	
-	start(new Bot(targets, Target::rclick), gui.ui, true);
-    }
-    
-    public static void refillDrinks(GameUI gui) {
-	if(gui.hand() != null || gui.cursor != null) {
-	    gui.error("You must have empty cursor to refill drinks!");
-	    return;
-	}
-	
-	Coord2d waterTile = null;
-	Gob barrel = null;
-	boolean needWalk = false;
-	Gob player = gui.map.player();
-	BotAction interact;
-	
-	if(MapHelper.isPlayerOnFreshWaterTile(gui)) {
-	    waterTile = player.rc;
-	} else {
-	    needWalk = true;
-	    List<Target> objs = getNearestTargets(gui, GobTag.HAS_WATER, 1, 32);
-	    if(!objs.isEmpty()) {
-		barrel = objs.get(0).gob;
-	    }
-	    if(barrel == null) {
-		waterTile = MapHelper.nearbyWaterTile(gui);
-	    } 
-	}
-	
-	final Coord2d tile = barrel != null ? barrel.rc : waterTile;
-	
-	if(waterTile != null) {
-	    interact = (t, b) -> gui.map.wdgmsg("itemact", Coord.z, tile.floor(OCache.posres), 0);
-	} else if(barrel != null) {
-	    final Gob gob = barrel;
-	    interact = (t, b) -> gui.map.wdgmsg("itemact", Coord.z, Coord.z, UI.MOD_META, 0, (int) gob.id, gob.rc.floor(OCache.posres), 0, -1);
-	    
-	} else {
-	    gui.error("You must be near tile or barrel with fresh water to refill drinks!");
-	    return;
-	}
-	
-	List<Target> targets = Stream.of(INVENTORY_CONTAINED(gui), BELT_CONTAINED(gui))
-	    .flatMap(x -> x.get().stream())
-	    .filter(InvHelper::isDrinkContainer)
-	    .filter(InvHelper::isNotFull)
-	    .map(Target::new)
-	    .collect(Collectors.toList());
-	
-	if(targets.isEmpty()) {
-	    gui.error("No non-full drink containers to refill!");
-	    return;
-	}
-	
-	Bot refillBot = new Bot(targets,
-	    Target::take,
-	    (t, b) -> waitHeldChanged(gui),
-	    interact,
-	    doWait(70),
-	    Target::putBack,
-	    (t, b) -> waitHeldChanged(gui)
-	);
-	if(needWalk) {
-	    start(new Bot(
-		(t, b) -> gui.map.click(tile, 1, Coord.z, tile.floor(OCache.posres), 1, 0),
-		waitGobPose(player, 1500,"/walking", "/running"),
-		waitGobNoPose(player, 1500,"/walking", "/running"),
-		(t, b) -> start(refillBot, gui.ui, true)
-	    ), gui.ui, true);
-	} else {
-	    start(refillBot, gui.ui, true);
-	}
-    }
-    
-    public static void selectFlower(GameUI gui, long gobid, String option) {
-	List<Target> targets = gui.ui.sess.glob.oc.stream()
-	    .filter(gob -> gob.id == gobid)
-	    .map(Target::new)
-	    .collect(Collectors.toList());
-	
-	selectFlower(gui, option, targets);
-    }
-    
-    public static void selectFlowerOnItems(GameUI gui, String option, List<WItem> items) {
-	List<Target> targets = items.stream()
-	    .map(Target::new)
-	    .collect(Collectors.toList());
-    
-	selectFlower(gui, option, targets);
-    }
-    
-    public static void selectFlower(GameUI gui, String option, List<Target> targets) {
-	start(new Bot(targets, Target::rclick, selectFlower(option)), gui.ui);
-    }
-    
-    public static void drink(GameUI gui) {
-	Collection<Supplier<List<WItem>>> everywhere = Arrays.asList(HANDS(gui), INVENTORY(gui), BELT(gui));
-	ClientUtils.chainOptionals(
-	    () -> findFirstThatContains("Tea", everywhere),
-	    () -> findFirstThatContains("Water", everywhere)
-	).ifPresent(Bot::drink);
-    }
-    
-    public static void drink(WItem item) {
-	start(new Bot(Collections.singletonList(new Target(item)), Target::rclick, selectFlower("Drink")), item.ui, true);
-    }
-    
-    public static void fuelGob(GameUI gui, String name, String fuel, int count) {
-	List<Target> targets = getNearestTargets(gui, name, 1, 33);
-	
-	if(!targets.isEmpty()) {
-	    start(new Bot(targets, fuelWith(gui, fuel, count)), gui.ui);
-	} else {
-	    gui.error("Cannot find target to add fuel to");
-	}
-    }
-    
-    public static void aggro(GameUI gui) {
-	mapPosOfMouse(gui).thenAccept(mc -> {
-	    List<Target> targets = getNearestTargets(gui, GobTag.AGGRO_TARGET, 1, mc, 150);
-	    aggro(gui, targets);
-	});
-    }
-    
-    public static void aggro(GameUI gui, List<Target> targets) {
-	if(!targets.isEmpty()) {
-	    start(new Bot(targets, (target, bot) -> {
-		gui.menu.paginafor("paginae/act/atk").button().use();
-		target.click(1, 0);
-		rclick(gui);
-	    }), gui.ui);
-	} else {
-	    gui.error("No targets to aggro");
-	}
-    }
-    
-    private static List<Target> getNearestTargets(GameUI gui, String name, int limit, double distance) {
-	return gui.ui.sess.glob.oc.stream()
-	    .filter(gobIs(name))
-	    .filter(gob -> distanceToPlayer(gob) <= distance)
-	    .sorted(byDistance)
-	    .limit(limit)
-	    .map(Target::new)
-	    .collect(Collectors.toList());
-    }
-    
-    private static List<Target> getNearestTargets(GameUI gui, GobTag tag, int limit, double distance) {
-	return getNearestTargets(gui, tag, limit, Bot::distanceToPlayer, distance);
-    }
-    
-    private static List<Target> getNearestTargets(GameUI gui, GobTag tag, int limit, Coord2d pos, double distance) {
-	return getNearestTargets(gui, tag, limit, g -> distanceToCoord(pos, g), distance);
-    }
-    
-    private static List<Target> getNearestTargets(GameUI gui, GobTag tag, int limit, Function<Gob, Double> meter, double distance) {
-	return gui.ui.sess.glob.oc.stream()
-	    .filter(gobIs(tag))
-	    .filter(gob -> meter.apply(gob) <= distance)
-	    .sorted(Comparator.comparingDouble(meter::apply))
-	    .limit(limit)
-	    .map(Target::new)
-	    .collect(Collectors.toList());
-    }
-    
-    private static CompletableFuture<Coord2d> mapPosOfMouse(GameUI gui) {
+    static CompletableFuture<Coord2d> mapPosOfMouse(GameUI gui) {
 	return gui.map.hit(gui.ui.mc);
-    }
-    
-    private static BotAction fuelWith(GameUI gui, String fuel, int count) {
-	return (target, bot) -> {
-	    Supplier<List<WItem>> inventory = unstacked(INVENTORY(gui));
-	    float has = countItems(fuel, inventory);
-	    if(has < count) {
-		bot.cancel(String.format("Not enough '%s' in inventory: found %d, need: %d", fuel, (int) has, count));
-		return;
-	    }
-	    for (int i = 0; i < count; i++) {
-		Optional<WItem> w = findFirstItem(fuel, inventory);
-		if(!w.isPresent()) {
-		    bot.cancel("no fuel in inventory");
-		    return;
-		}
-		w.get().take();
-		if(!waitHeld(gui, fuel)) {
-		    bot.cancel("no fuel on cursor");
-		    return;
-		}
-		target.interact();
-		if(!waitHeld(gui, null)) {
-		    bot.cancel("cursor is not empty");
-		    return;
-		}
-	    }
-	};
-    }
-    
-    private static BotAction waitGobNoPose(Gob gob, long timeout, String... poses) {
-	return (t, b) -> {
-	    final long started = System.currentTimeMillis();
-	    while (System.currentTimeMillis() - started < timeout
-		&& gob != null && !gob.disposed() && gob.hasPose(poses)) {
-		pause(100);
-	    }
-	};
-    }
-    
-    private static BotAction waitGobPose(Gob gob, long timeout, String... poses) {
-	return (t, b) -> {
-	    final long started = System.currentTimeMillis();
-	    while (System.currentTimeMillis() - started < timeout
-		&& gob != null && !gob.disposed() && !gob.hasPose(poses)) {
-		pause(100);
-	    }
-	};
     }
     
     private static boolean isHeld(GameUI gui, String what) throws Loading {
@@ -376,7 +117,7 @@ public class Bot implements Defer.Callable<Void> {
 	return false;
     }
     
-    private static boolean waitHeld(GameUI gui, String what) {
+    static boolean waitHeld(GameUI gui, String what) {
 	if(Boolean.TRUE.equals(doWaitLoad(() -> isHeld(gui, what)))) {
 	    return true;
 	}
@@ -386,7 +127,7 @@ public class Bot implements Defer.Callable<Void> {
 	return false;
     }
     
-    private static boolean waitHeldChanged(GameUI gui) {
+    static boolean waitHeldChanged(GameUI gui) {
 	boolean result = true;
 	try {
 	    synchronized (gui.heldNotifier) {
@@ -412,11 +153,11 @@ public class Bot implements Defer.Callable<Void> {
 	return result;
     }
     
-    private static BotAction doWait(long ms) {
+    static BotAction doWait(long ms) {
 	return (t, b) -> pause(ms);
     }
     
-    private static void pause(long ms) {
+    static void pause(long ms) {
 	synchronized (waiter) {
 	    try {
 		waiter.wait(ms);
@@ -429,34 +170,18 @@ public class Bot implements Defer.Callable<Void> {
 	synchronized (waiter) { waiter.notifyAll(); }
     }
     
-    private static Predicate<Gob> gobIs(String what) {
-	return g -> {
-	    if(g == null) { return false; }
-	    String id = g.resid();
-	    if(id == null) {return false;}
-	    return id.contains(what);
-	};
-    }
-    
-    private static Predicate<Gob> gobIs(GobTag what) {
-	return g -> {
-	    if(g == null) { return false; }
-	    return g.is(what);
-	};
-    }
-    
-    private static boolean isOnRadar(Gob gob) {
+    static boolean isOnRadar(Gob gob) {
 	if(!CFG.AUTO_PICK_ONLY_RADAR.get()) {return true;}
 	Boolean onRadar = gob.isOnRadar();
 	return onRadar == null || onRadar;
     }
     
-    private static double distanceToPlayer(Gob gob) {
+    static double distanceToPlayer(Gob gob) {
 	Gob p = gob.glob.oc.getgob(gob.glob.sess.ui.gui.plid);
 	return p.rc.dist(gob.rc);
     }
     
-    private static double distanceToCoord(Coord2d c, Gob gob) {
+    static double distanceToCoord(Coord2d c, Gob gob) {
 	if(c == null) {return Double.MAX_VALUE;}
 	return c.dist(gob.rc);
     }
@@ -477,7 +202,7 @@ public class Bot implements Defer.Callable<Void> {
 	gui.map.wdgmsg("click", Coord.z, gui.map.player().rc.floor(OCache.posres), btn, 0);
     }
     
-    private static BotAction selectFlower(String... options) {
+    static BotAction selectFlower(String... options) {
 	return (target, bot) -> {
 	    if(target.hasMenu()) {
 		FlowerMenu.lastTarget(target);
@@ -490,7 +215,7 @@ public class Bot implements Defer.Callable<Void> {
 	};
     }
     
-    private static Predicate<Gob> startsWith(String text) {
+    static Predicate<Gob> startsWith(String text) {
 	return gob -> {
 	    try {
 		return gob.getres().name.startsWith(text);
@@ -499,110 +224,8 @@ public class Bot implements Defer.Callable<Void> {
 	};
     }
     
-    private static Predicate<Gob> has(GobTag tag) {
-	return gob -> gob.is(tag);
-    }
-    
     public interface BotAction {
-	void call(Target target, Bot bot) throws InterruptedException;
+	void call(ITarget target, Bot bot) throws InterruptedException;
     }
     
-    //TODO: rework with inheritance?
-    public static class Target {
-	public static final Target EMPTY = new Target();
-	
-	public final Gob gob;
-	public final WItem item;
-	public final ContainedItem contained;
-	
-	private Target() {
-	    this.gob = null;
-	    this.item = null;
-	    this.contained = null;
-	}
-	
-	public Target(Gob gob) {
-	    this.gob = gob;
-	    this.item = null;
-	    this.contained = null;
-	}
-	
-	public Target(WItem item) {
-	    this.item = item;
-	    this.gob = null;
-	    this.contained = null;
-	}
-	
-	private Target(ContainedItem contained) {
-	    this.item = null;
-	    this.gob = null;
-	    this.contained = contained;
-	}
-	
-	public void rclick(Bot b) {rclick();}
-	
-	public void rclick() {
-	    rclick(0);
-	}
-	
-	public void rclick_shift(Bot b) {rclick_shift();}
-	
-	public void rclick_shift() {
-	    rclick(UI.MOD_SHIFT);
-	}
-    
-	public void rclick(int modflags) {
-	    if(!disposed()) {
-		if(gob != null) {gob.rclick(modflags);}
-		if(item != null) {item.rclick(modflags);}
-		if(contained != null) {contained.item.rclick(modflags);}
-	    }
-	}
-	
-	public void click(int button, int modflags) {
-	    if(!disposed()) {
-		if(gob != null) {gob.click(button, modflags);}
-		if(item != null) {item.mouseclick(Coord.z, button, modflags);}
-		if(contained != null) {contained.item.mouseclick(Coord.z, button, modflags);}
-	    }
-	}
-    
-	public void interact() {
-	    if(!disposed()) {
-		if(gob != null) {gob.itemact();}
-		if(item != null) {/*TODO: implement*/}
-	    }
-	}
-    
-	public void highlight() {
-	    if(!disposed()) {
-		if(gob != null) {gob.highlight();}
-	    }
-	}
-	
-	public void take(Bot b) {take();}
-	
-	public void take() {
-	    if(contained != null && !contained.itemDisposed()) {
-		contained.take();
-	    }
-	}
-	
-	public void putBack(Bot b) {putBack();}
-	
-	public void putBack() {
-	    if(contained != null && !contained.containerDisposed()) {
-		contained.putBack();
-	    }
-	}
-    
-	public boolean hasMenu() {
-	    if(gob != null) {return gob.is(GobTag.MENU);}
-	    return item != null || contained != null;
-	}
-    
-	public boolean disposed() {
-	    return (item != null && item.disposed()) || (gob != null && gob.disposed());
-	}
-    }
 }

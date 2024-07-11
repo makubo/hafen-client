@@ -1,6 +1,6 @@
 package haven;
 
-import auto.Bot;
+import auto.ITarget;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -55,10 +55,8 @@ public class PathQueue {
 	}
     }
     
-    public void click(Bot.Target target) {
-	if(target != null && target.gob != null) {
-	    click(target.gob);
-	}
+    public void click(ITarget target) {
+	click(target.gob());
     }
     
     public void click(Gob gob) {

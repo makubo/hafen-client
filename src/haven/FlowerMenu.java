@@ -26,7 +26,7 @@
 
 package haven;
 
-import auto.Bot;
+import auto.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import haven.rx.Reactor;
@@ -46,7 +46,7 @@ public class FlowerMenu extends Widget {
     public static final String PICK_ALL = "#Pick All";
     public static final FlowerList.AutoChooseCFG AUTOCHOOSE;
     private static final Gson gson;
-    private static Bot.Target target;
+    private static ITarget target;
     public final String[] options;
     private Petal autochoose;
     private String[] forceChoose;
@@ -75,14 +75,14 @@ public class FlowerMenu extends Widget {
     }
     
     public static void lastGob(Gob gob) {
-	target = new Bot.Target(gob);
+	target = new GobTarget(gob);
     }
     
     public static void lastItem(WItem item) {
-	target = new Bot.Target(item);
+	target = new ItemTarget(item);
     }
     
-    public static void lastTarget(Bot.Target target) {
+    public static void lastTarget(ITarget target) {
 	FlowerMenu.target = target;
     }
     
@@ -388,14 +388,15 @@ public class FlowerMenu extends Widget {
 	if(num != -1) {
 	    ui.pathQueue().ifPresent(pathQueue -> pathQueue.click(target));
 	    if(PICK_ALL.equals(options[num])) {
-		if(target != null && target.gob != null) {
+		Gob gob = target == null ? null : target.gob();
+		if(gob != null) {
 		    try {
-			Bot.pickup(ui.gui, target.gob.getres().name);
+			Actions.pickup(ui.gui, gob.getres().name);
 		    } catch (Exception ignored) {}
 		}
 		num = -1;
 	    } else if("Prospect".equals(options[num]) && target != null) {
-		ProspectingWnd.item(target.item);
+		ProspectingWnd.item(target.item());
 	    }
 	}
 	Choice choice = new Choice(num != -1 ? options[num] : null, target, forceChosen);
@@ -406,10 +407,10 @@ public class FlowerMenu extends Widget {
     
     public static class Choice {
 	public final String opt;
-	public final Bot.Target target;
+	public final ITarget target;
 	public final boolean forced;
 	
-	public Choice(String opt, Bot.Target target, boolean forced) {
+	public Choice(String opt, ITarget target, boolean forced) {
 	    this.opt = opt;
 	    this.target = target;
 	    this.forced = forced;

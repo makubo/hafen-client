@@ -1,0 +1,219 @@
+package auto;
+
+import haven.*;
+import me.ender.ClientUtils;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static auto.InvHelper.*;
+
+public class Actions {
+    public static void fuelGob(GameUI gui, String name, String fuel, int count) {
+	List<ITarget> targets = GobHelper.getNearestTargets(gui, name, 1, 33);
+	
+	if(!targets.isEmpty()) {
+	    Bot.start(new Bot(targets, fuelWith(gui, fuel, count)), gui.ui);
+	} else {
+	    gui.error("Cannot find target to add fuel to");
+	}
+    }
+    
+    public static void pickup(GameUI gui, String filter) {
+	pickup(gui, filter, Integer.MAX_VALUE);
+    }
+    
+    public static void pickup(GameUI gui, String filter, int limit) {
+	pickup(gui, Bot.startsWith(filter), limit);
+    }
+    
+    public static void pickup(GameUI gui, Predicate<Gob> filter) {
+	pickup(gui, filter, Integer.MAX_VALUE);
+    }
+    
+    public static void pickup(GameUI gui, Predicate<Gob> filter, int limit) {
+	List<ITarget> targets = gui.ui.sess.glob.oc.stream()
+	    .filter(filter)
+	    .filter(gob -> Bot.distanceToPlayer(gob) <= CFG.AUTO_PICK_RADIUS.get())
+	    .filter(Bot::isOnRadar)
+	    .sorted(Bot.byDistance)
+	    .limit(limit)
+	    .map(GobTarget::new)
+	    .collect(Collectors.toList());
+	
+	Bot.start(new Bot(targets,
+	    ITarget::rclick_shift,
+	    (target, bot) -> target.gob().waitRemoval()
+	), gui.ui);
+    }
+    
+    public static void pickup(GameUI gui) {
+	pickup(gui, GobHelper.has(GobTag.PICKUP));
+    }
+    
+    public static void openGate(GameUI gui) {
+	List<ITarget> targets = gui.ui.sess.glob.oc.stream()
+	    .filter(GobHelper.has(GobTag.GATE))
+	    .filter(gob -> !gob.isVisitorGate())
+	    .filter(gob -> Bot.distanceToPlayer(gob) <= 35)
+	    .sorted(Bot.byDistance)
+	    .limit(1)
+	    .map(GobTarget::new)
+	    .collect(Collectors.toList());
+	
+	Bot.start(new Bot(targets, ITarget::rclick), gui.ui, true);
+    }
+    
+    public static void refillDrinks(GameUI gui) {
+	if(gui.hand() != null || gui.cursor != null) {
+	    gui.error("You must have empty cursor to refill drinks!");
+	    return;
+	}
+	
+	Coord2d waterTile = null;
+	Gob barrel = null;
+	boolean needWalk = false;
+	Gob player = gui.map.player();
+	Bot.BotAction interact;
+	
+	if(MapHelper.isPlayerOnFreshWaterTile(gui)) {
+	    waterTile = player.rc;
+	} else {
+	    needWalk = true;
+	    List<ITarget> objs = GobHelper.getNearestTargets(gui, GobTag.HAS_WATER, 1, 32);
+	    if(!objs.isEmpty()) {
+		barrel = objs.get(0).gob();
+	    }
+	    if(barrel == null) {
+		waterTile = MapHelper.nearbyWaterTile(gui);
+	    }
+	}
+	
+	final Coord2d tile = barrel != null ? barrel.rc : waterTile;
+	
+	if(waterTile != null) {
+	    interact = (t, b) -> gui.map.wdgmsg("itemact", Coord.z, tile.floor(OCache.posres), 0);
+	} else if(barrel != null) {
+	    final Gob gob = barrel;
+	    interact = (t, b) -> gui.map.wdgmsg("itemact", Coord.z, Coord.z, UI.MOD_META, 0, (int) gob.id, gob.rc.floor(OCache.posres), 0, -1);
+	    
+	} else {
+	    gui.error("You must be near tile or barrel with fresh water to refill drinks!");
+	    return;
+	}
+	
+	List<ITarget> targets = Stream.of(INVENTORY_CONTAINED(gui), BELT_CONTAINED(gui))
+	    .flatMap(x -> x.get().stream())
+	    .filter(InvHelper::isDrinkContainer)
+	    .filter(InvHelper::isNotFull)
+	    .map(ContainedTarget::new)
+	    .collect(Collectors.toList());
+	
+	if(targets.isEmpty()) {
+	    gui.error("No non-full drink containers to refill!");
+	    return;
+	}
+	
+	Bot refillBot = new Bot(targets,
+	    ITarget::take,
+	    (t, b) -> Bot.waitHeldChanged(gui),
+	    interact,
+	    Bot.doWait(70),
+	    ITarget::putBack,
+	    (t, b) -> Bot.waitHeldChanged(gui)
+	);
+	if(needWalk) {
+	    Bot.start(new Bot(
+		(t, b) -> gui.map.click(tile, 1, Coord.z, tile.floor(OCache.posres), 1, 0),
+		GobHelper.waitGobPose(player, 1500, "/walking", "/running"),
+		GobHelper.waitGobNoPose(player, 1500, "/walking", "/running"),
+		(t, b) -> Bot.start(refillBot, gui.ui, true)
+	    ), gui.ui, true);
+	} else {
+	    Bot.start(refillBot, gui.ui, true);
+	}
+    }
+    
+    public static void selectFlower(GameUI gui, long gobid, String option) {
+	List<ITarget> targets = gui.ui.sess.glob.oc.stream()
+	    .filter(gob -> gob.id == gobid)
+	    .map(GobTarget::new)
+	    .collect(Collectors.toList());
+	
+	selectFlower(gui, option, targets);
+    }
+    
+    public static void selectFlowerOnItems(GameUI gui, String option, List<WItem> items) {
+	List<ITarget> targets = items.stream()
+	    .map(ItemTarget::new)
+	    .collect(Collectors.toList());
+	
+	selectFlower(gui, option, targets);
+    }
+    
+    public static void selectFlower(GameUI gui, String option, List<ITarget> targets) {
+	Bot.start(new Bot(targets, ITarget::rclick, Bot.selectFlower(option)), gui.ui);
+    }
+    
+    public static void drink(GameUI gui) {
+	Collection<Supplier<List<WItem>>> everywhere = Arrays.asList(HANDS(gui), INVENTORY(gui), BELT(gui));
+	ClientUtils.chainOptionals(
+	    () -> findFirstThatContains("Tea", everywhere),
+	    () -> findFirstThatContains("Water", everywhere)
+	).ifPresent(Actions::drink);
+    }
+    
+    public static void drink(WItem item) {
+	Bot.start(new Bot(Collections.singletonList(new ItemTarget(item)), ITarget::rclick, Bot.selectFlower("Drink")), item.ui, true);
+    }
+    
+    public static void aggro(GameUI gui) {
+	Bot.mapPosOfMouse(gui).thenAccept(mc -> {
+	    List<ITarget> targets = GobHelper.getNearestTargets(gui, GobTag.AGGRO_TARGET, 1, mc, 150);
+	    aggro(gui, targets);
+	});
+    }
+    
+    public static void aggro(GameUI gui, List<ITarget> targets) {
+	if(!targets.isEmpty()) {
+	    Bot.start(new Bot(targets, (target, bot) -> {
+		gui.menu.paginafor("paginae/act/atk").button().use();
+		target.click(1, 0);
+		Bot.rclick(gui);
+	    }), gui.ui);
+	} else {
+	    gui.error("No targets to aggro");
+	}
+    }
+    
+    private static Bot.BotAction fuelWith(GameUI gui, String fuel, int count) {
+	return (target, bot) -> {
+	    Supplier<List<WItem>> inventory = unstacked(INVENTORY(gui));
+	    float has = countItems(fuel, inventory);
+	    if(has < count) {
+		bot.cancel(String.format("Not enough '%s' in inventory: found %d, need: %d", fuel, (int) has, count));
+		return;
+	    }
+	    for (int i = 0; i < count; i++) {
+		Optional<WItem> w = findFirstItem(fuel, inventory);
+		if(!w.isPresent()) {
+		    bot.cancel("no fuel in inventory");
+		    return;
+		}
+		w.get().take();
+		if(!Bot.waitHeld(gui, fuel)) {
+		    bot.cancel("no fuel on cursor");
+		    return;
+		}
+		target.interact();
+		if(!Bot.waitHeld(gui, null)) {
+		    bot.cancel("cursor is not empty");
+		    return;
+		}
+	    }
+	};
+    }
+}
