@@ -13,7 +13,7 @@ import static auto.InvHelper.*;
 
 public class Actions {
     public static void fuelGob(GameUI gui, String name, String fuel, int count) {
-	List<ITarget> targets = GobHelper.getNearestTargets(gui, name, 1, 33);
+	List<ITarget> targets = GobHelper.getNearest(gui, name, 1, 33);
 	
 	if(!targets.isEmpty()) {
 	    Bot.start(new Bot(targets, fuelWith(gui, fuel, count)), gui.ui);
@@ -37,9 +37,9 @@ public class Actions {
     public static void pickup(GameUI gui, Predicate<Gob> filter, int limit) {
 	List<ITarget> targets = gui.ui.sess.glob.oc.stream()
 	    .filter(filter)
-	    .filter(gob -> Bot.distanceToPlayer(gob) <= CFG.AUTO_PICK_RADIUS.get())
+	    .filter(gob -> PositionHelper.distanceToPlayer(gob) <= CFG.AUTO_PICK_RADIUS.get())
 	    .filter(Bot::isOnRadar)
-	    .sorted(Bot.byDistance)
+	    .sorted(PositionHelper.byDistanceToPlayer)
 	    .limit(limit)
 	    .map(GobTarget::new)
 	    .collect(Collectors.toList());
@@ -51,15 +51,15 @@ public class Actions {
     }
     
     public static void pickup(GameUI gui) {
-	pickup(gui, GobHelper.has(GobTag.PICKUP));
+	pickup(gui, GobHelper.gobIs(GobTag.PICKUP));
     }
     
     public static void openGate(GameUI gui) {
 	List<ITarget> targets = gui.ui.sess.glob.oc.stream()
-	    .filter(GobHelper.has(GobTag.GATE))
+	    .filter(GobHelper.gobIs(GobTag.GATE))
 	    .filter(gob -> !gob.isVisitorGate())
-	    .filter(gob -> Bot.distanceToPlayer(gob) <= 35)
-	    .sorted(Bot.byDistance)
+	    .filter(gob -> PositionHelper.distanceToPlayer(gob) <= 35)
+	    .sorted(PositionHelper.byDistanceToPlayer)
 	    .limit(1)
 	    .map(GobTarget::new)
 	    .collect(Collectors.toList());
@@ -83,7 +83,7 @@ public class Actions {
 	    waterTile = player.rc;
 	} else {
 	    needWalk = true;
-	    List<ITarget> objs = GobHelper.getNearestTargets(gui, GobTag.HAS_WATER, 1, 32);
+	    List<ITarget> objs = GobHelper.getNearest(gui, GobTag.HAS_WATER, 1, 32);
 	    if(!objs.isEmpty()) {
 		barrel = objs.get(0).gob();
 	    }
@@ -171,8 +171,8 @@ public class Actions {
     }
     
     public static void aggro(GameUI gui) {
-	Bot.mapPosOfMouse(gui).thenAccept(mc -> {
-	    List<ITarget> targets = GobHelper.getNearestTargets(gui, GobTag.AGGRO_TARGET, 1, mc, 150);
+	PositionHelper.mapPosOfMouse(gui).thenAccept(mc -> {
+	    List<ITarget> targets = GobHelper.getNearestToPoint(gui, GobTag.AGGRO_TARGET, 1, mc, 33);
 	    aggro(gui, targets);
 	});
     }

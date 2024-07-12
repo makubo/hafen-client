@@ -5,7 +5,6 @@ import haven.rx.Reactor;
 import rx.functions.Action2;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -102,10 +101,6 @@ public class Bot implements Defer.Callable<Void> {
 	});
     }
     
-    static CompletableFuture<Coord2d> mapPosOfMouse(GameUI gui) {
-	return gui.map.hit(gui.ui.mc);
-    }
-    
     private static boolean isHeld(GameUI gui, String what) throws Loading {
 	GameUI.DraggedItem drag = gui.hand();
 	if(drag == null && what == null) {
@@ -175,24 +170,6 @@ public class Bot implements Defer.Callable<Void> {
 	Boolean onRadar = gob.isOnRadar();
 	return onRadar == null || onRadar;
     }
-    
-    static double distanceToPlayer(Gob gob) {
-	Gob p = gob.glob.oc.getgob(gob.glob.sess.ui.gui.plid);
-	return p.rc.dist(gob.rc);
-    }
-    
-    static double distanceToCoord(Coord2d c, Gob gob) {
-	if(c == null) {return Double.MAX_VALUE;}
-	return c.dist(gob.rc);
-    }
-    
-    public static Comparator<Gob> byDistance = (o1, o2) -> {
-	try {
-	    Gob p = o1.glob.oc.getgob(o1.glob.sess.ui.gui.plid);
-	    return Double.compare(p.rc.dist(o1.rc), p.rc.dist(o2.rc));
-	} catch (Exception ignored) {}
-	return Long.compare(o1.id, o2.id);
-    };
     
     public static void rclick(GameUI gui) {
 	click(3, gui);

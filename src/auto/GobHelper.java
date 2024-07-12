@@ -10,31 +10,33 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GobHelper {
-    static List<ITarget> getNearestTargets(GameUI gui, String name, int limit, double distance) {
-	return gui.ui.sess.glob.oc.stream()
-	    .filter(gobIs(name))
-	    .filter(gob -> Bot.distanceToPlayer(gob) <= distance)
-	    .sorted(Bot.byDistance)
-	    .limit(limit)
-	    .map(GobTarget::new)
-	    .collect(Collectors.toList());
+    static List<ITarget> getNearest(GameUI gui, String name, int limit, double distance) {
+	return getGobs(gui, limit, PositionHelper.byDistanceToPlayer, gobIs(name), gob -> PositionHelper.distanceToPlayer(gob) <= distance);
     }
     
-    static List<ITarget> getNearestTargets(GameUI gui, GobTag tag, int limit, double distance) {
-	return getNearestTargets(gui, tag, limit, Bot::distanceToPlayer, distance);
+    static List<ITarget> getNearest(GameUI gui, GobTag tag, int limit, double distance) {
+	return getGobs(gui, limit, PositionHelper.byDistanceToPlayer, gobIs(tag), gob -> PositionHelper.distanceToPlayer(gob) <= distance);
     }
     
-    static List<ITarget> getNearestTargets(GameUI gui, GobTag tag, int limit, Coord2d pos, double distance) {
-	return getNearestTargets(gui, tag, limit, g -> Bot.distanceToCoord(pos, g), distance);
+    static List<ITarget> getNearestToPoint(GameUI gui, GobTag tag, int limit, Coord2d pos, double distance) {
+	return getNearest(gui, tag, limit, g -> PositionHelper.distanceToCoord(pos, g), distance);
     }
     
-    private static List<ITarget> getNearestTargets(GameUI gui, GobTag tag, int limit, Function<Gob, Double> meter, double distance) {
-	return gui.ui.sess.glob.oc.stream()
-	    .filter(gobIs(tag))
-	    .filter(gob -> meter.apply(gob) <= distance)
-	    .sorted(Comparator.comparingDouble(meter::apply))
+    private static List<ITarget> getNearest(GameUI gui, GobTag tag, int limit, Function<Gob, Double> meter, double distance) {
+	return getGobs(gui, limit, Comparator.comparingDouble(meter::apply), gobIs(tag), gob -> meter.apply(gob) <= distance);
+    }
+    
+    @SafeVarargs
+    private static List<ITarget> getGobs(GameUI gui, int limit, Comparator<Gob> sort, Predicate<Gob>... filters) {
+	Stream<Gob> stream = gui.ui.sess.glob.oc.stream();
+	for (Predicate<Gob> filter : filters) {
+	    stream = stream.filter(filter);
+	}
+	return stream
+	    .sorted(sort)
 	    .limit(limit)
 	    .map(GobTarget::new)
 	    .collect(Collectors.toList());
@@ -69,14 +71,10 @@ public class GobHelper {
 	};
     }
     
-    private static Predicate<Gob> gobIs(GobTag what) {
+    public static Predicate<Gob> gobIs(GobTag what) {
 	return g -> {
 	    if(g == null) {return false;}
 	    return g.is(what);
 	};
-    }
-    
-    static Predicate<Gob> has(GobTag tag) {
-	return gob -> gob.is(tag);
     }
 }
