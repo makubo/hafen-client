@@ -186,9 +186,11 @@ public enum GobTag {
             Party.Member member = glob.party.memb.get(gob.id);
             if(member != null) {
                 tags.add(PARTY);
-                if(glob.party.leader.gobid == gob.id) {
-                    tags.add(LEADER);
-                }
+            }
+            
+            Party.Member leader = glob.party.leader;
+            if(leader != null && leader.gobid == gob.id) {
+                tags.add(LEADER);
             }
             
             if(fight != null) {
@@ -204,7 +206,7 @@ public enum GobTag {
                 }
             }
             
-            if(anyOf(tags, PLAYER, ANIMAL) && !anyOf(tags, ME, FRIEND, PARTY, IN_COMBAT)) {
+            if(anyOf(tags, PLAYER, ANIMAL) && !anyOf(tags, ME, PARTY, IN_COMBAT)) {
                 tags.add(AGGRO_TARGET);
             }
     
