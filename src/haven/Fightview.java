@@ -285,8 +285,10 @@ public class Fightview extends Widget {
 	if(rel != null) {
 	    add(curdisp = new Mainrel(rel));
 	}
+	Relation tmp = current;
 	current = rel;
-	Gob.tagsUpdated(ui, current.gobid);
+	if(tmp != null) {Gob.tagsUpdated(ui, tmp.gobid);}
+	if(rel != null) {Gob.tagsUpdated(ui, rel.gobid);}
 	layout();
 	updrel();
     }
