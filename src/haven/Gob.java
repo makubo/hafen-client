@@ -719,9 +719,16 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     public void itemact() {
 	try {
 	    UI ui = glob.sess.ui;
+	    itemact(ui.modflags());
+	} catch (Exception ignored) {}
+    }
+    
+    public void itemact(int modflags) {
+	try {
+	    UI ui = glob.sess.ui;
 	    Coord mc = rc.floor(posres);
 	    MapView map = ui.gui.map;
-	    map.wdgmsg("itemact", ui.mc, mc, ui.modflags(), 0, (int)id, mc, 0, -1);
+	    map.wdgmsg("itemact", ui.mc, mc, modflags, 0, (int)id, mc, 0, -1);
 	} catch (Exception ignored) {}
     }
     
