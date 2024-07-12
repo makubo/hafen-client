@@ -10,47 +10,53 @@ public class Bot implements Defer.Callable<Void> {
     private static final Object lock = new Object();
     private static Bot current;
     private final List<ITarget> targets;
-    private final BotAction[] actions;
+    private BotAction[] actions;
     private Defer.Future<Void> task;
     private boolean cancelled = false;
     private String message = null;
-    List<Runnable> setup = null;
-    List<Runnable> cleanup = null;
+    BotAction[] setup = null;
+    BotAction[] cleanup = null;
     
-    public Bot(List<ITarget> targets, BotAction... actions) {
+    private Bot(List<ITarget> targets) {
 	this.targets = targets;
+    }
+    
+    public Bot actions(BotAction... actions) {
 	this.actions = actions;
-    }
-    
-    public Bot(BotAction... actions) {
-	this(Collections.singletonList(Targets.EMPTY), actions);
-    }
-    
-    public Bot setup(Runnable... actions) {
-	setup = Arrays.asList(actions);
 	return this;
     }
     
-    public Bot cleanup(Runnable... actions) {
-	cleanup = Arrays.asList(actions);
+    public Bot setup(BotAction... actions) {
+	setup = actions;
+	return this;
+    }
+    
+    public Bot cleanup(BotAction... actions) {
+	cleanup = actions;
 	return this;
     }
     
     @Override
     public Void call() throws InterruptedException {
 	if(setup != null) {
-	    setup.forEach(Runnable::run);
+	    for (BotAction action : setup) {
+		action.call(null, this);
+	    }
 	}
-	targets.forEach(ITarget::highlight);
-	for (ITarget target : targets) {
-	    for (BotAction action : actions) {
-		if(target.disposed()) {break;}
-		action.call(target, this);
-		checkCancelled();
+	if(actions != null) {
+	    targets.forEach(ITarget::highlight);
+	    for (ITarget target : targets) {
+		for (BotAction action : actions) {
+		    if(target.disposed()) {break;}
+		    action.call(target, this);
+		    checkCancelled();
+		}
 	    }
 	}
 	if(cleanup != null) {
-	    cleanup.forEach(Runnable::run);
+	    for (BotAction action : cleanup) {
+		action.call(null, this);
+	    }
 	}
 	synchronized (lock) {
 	    if(current == this) {current = null;}
@@ -60,7 +66,7 @@ public class Bot implements Defer.Callable<Void> {
     
     private void run(Action2<Boolean, String> callback) {
 	task = Defer.later(this);
-	task.callback(() -> callback.call(task.cancelled(),  message));
+	task.callback(() -> callback.call(task.cancelled(), message));
     }
     
     private void checkCancelled() throws InterruptedException {
@@ -86,6 +92,7 @@ public class Bot implements Defer.Callable<Void> {
     public static void cancelCurrent() {
 	setCurrent(null);
     }
+    
     private static void setCurrent(Bot bot) {
 	synchronized (lock) {
 	    if(current != null) {
@@ -95,11 +102,21 @@ public class Bot implements Defer.Callable<Void> {
 	}
     }
     
-    static void start(Bot bot, UI ui) {
-	start(bot, ui, false);
+    public static Bot process(List<ITarget> targets) {
+	return new Bot(targets);
     }
     
-    static void start(Bot bot, UI ui, boolean silent) {
+    public static Bot execute(BotAction... actions) {
+	return new Bot(Targets.EMPTY).actions(actions);
+    }
+    
+    public void start(UI ui) {start(ui, false);}
+    
+    public void start(UI ui, boolean silent) {
+	doStart(this, ui, silent);
+    }
+    
+    private static void doStart(Bot bot, UI ui, boolean silent) {
 	setCurrent(bot);
 	bot.run((error, message) -> {
 	    if(!silent && CFG.SHOW_BOT_MESSAGES.get() || error) {

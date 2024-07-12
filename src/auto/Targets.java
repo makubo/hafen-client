@@ -4,11 +4,12 @@ import haven.Gob;
 import haven.WItem;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Targets {
-    public static final ITarget EMPTY = new EmptyTarget();
+    public static final List<ITarget> EMPTY = Collections.singletonList(new EmptyTarget());
     
     public static List<ITarget> of(WItem... items) {
 	return Arrays.stream(items).map(ItemTarget::new).collect(Collectors.toList());

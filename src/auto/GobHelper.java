@@ -44,9 +44,9 @@ public class GobHelper {
     
     static Bot.BotAction waitGobNoPose(Gob gob, long timeout, String... poses) {
 	return (t, b) -> {
+	    if(gob == null) {return;}
 	    final long started = System.currentTimeMillis();
-	    while (System.currentTimeMillis() - started < timeout
-		&& gob != null && !gob.disposed() && gob.hasPose(poses)) {
+	    while (System.currentTimeMillis() - started < timeout && !gob.disposed() && gob.hasPose(poses)) {
 		BotUtil.pause(100);
 	    }
 	};
@@ -54,9 +54,9 @@ public class GobHelper {
     
     static Bot.BotAction waitGobPose(Gob gob, long timeout, String... poses) {
 	return (t, b) -> {
+	    if(gob == null) {return;}
 	    final long started = System.currentTimeMillis();
-	    while (System.currentTimeMillis() - started < timeout
-		&& gob != null && !gob.disposed() && !gob.hasPose(poses)) {
+	    while (System.currentTimeMillis() - started < timeout && !gob.disposed() && !gob.hasPose(poses)) {
 		BotUtil.pause(100);
 	    }
 	};

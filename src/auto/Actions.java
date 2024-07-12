@@ -16,7 +16,7 @@ public class Actions {
 	List<ITarget> targets = GobHelper.getNearest(gui, name, 1, 33);
 	
 	if(!targets.isEmpty()) {
-	    Bot.start(new Bot(targets, fuelWith(gui, fuel, count)), gui.ui);
+	    Bot.process(targets).actions(fuelWith(gui, fuel, count)).start(gui.ui);
 	} else {
 	    gui.error("Cannot find target to add fuel to");
 	}
@@ -44,10 +44,10 @@ public class Actions {
 	    .map(GobTarget::new)
 	    .collect(Collectors.toList());
 	
-	Bot.start(new Bot(targets,
+	Bot.process(targets).actions(
 	    ITarget::rclick_shift,
 	    (target, bot) -> Targets.gob(target).waitRemoval()
-	), gui.ui);
+	).start(gui.ui);
     }
     
     public static void pickup(GameUI gui) {
@@ -64,7 +64,7 @@ public class Actions {
 	    .map(GobTarget::new)
 	    .collect(Collectors.toList());
 	
-	Bot.start(new Bot(targets, ITarget::rclick), gui.ui, true);
+	Bot.process(targets).actions(ITarget::rclick).start(gui.ui, true);
     }
     
     public static void refillDrinks(GameUI gui) {
@@ -98,8 +98,7 @@ public class Actions {
 	    interact = (t, b) -> gui.map.wdgmsg("itemact", Coord.z, tile.floor(OCache.posres), 0);
 	} else if(barrel != null) {
 	    final Gob gob = barrel;
-	    interact = (t, b) -> gui.map.wdgmsg("itemact", Coord.z, Coord.z, UI.MOD_META, 0, (int) gob.id, gob.rc.floor(OCache.posres), 0, -1);
-	    
+	    interact = (t, b) -> gob.itemact(UI.MOD_META);
 	} else {
 	    gui.error("You must be near tile or barrel with fresh water to refill drinks!");
 	    return;
@@ -117,24 +116,23 @@ public class Actions {
 	    return;
 	}
 	
-	Bot refillBot = new Bot(targets,
+	Bot.BotAction waitHeldChanged = (t, b) -> BotUtil.waitHeldChanged(gui);
+	Bot refillBot = Bot.process(targets).actions(
 	    ITarget::take,
-	    (t, b) -> BotUtil.waitHeldChanged(gui),
+	    waitHeldChanged,
 	    interact,
 	    BotUtil.doWait(70),
 	    ITarget::putBack,
-	    (t, b) -> BotUtil.waitHeldChanged(gui)
+	    waitHeldChanged
 	);
 	if(needWalk) {
-	    Bot.start(new Bot(
+	    refillBot.setup(
 		(t, b) -> gui.map.click(tile, 1, Coord.z, tile.floor(OCache.posres), 1, 0),
 		GobHelper.waitGobPose(player, 1500, "/walking", "/running"),
-		GobHelper.waitGobNoPose(player, 1500, "/walking", "/running"),
-		(t, b) -> Bot.start(refillBot, gui.ui, true)
-	    ), gui.ui, true);
-	} else {
-	    Bot.start(refillBot, gui.ui, true);
+		GobHelper.waitGobNoPose(player, 1500, "/walking", "/running")
+	    );
 	}
+	refillBot.start(gui.ui, true);
     }
     
     public static void selectFlower(GameUI gui, long gobid, String option) {
@@ -155,7 +153,9 @@ public class Actions {
     }
     
     public static void selectFlower(GameUI gui, String option, List<ITarget> targets) {
-	Bot.start(new Bot(targets, ITarget::rclick, BotUtil.selectFlower(option)), gui.ui);
+	Bot.process(targets)
+	    .actions(ITarget::rclick, BotUtil.selectFlower(option))
+	    .start(gui.ui);
     }
     
     public static void drink(GameUI gui) {
@@ -167,7 +167,9 @@ public class Actions {
     }
     
     public static void drink(WItem item) {
-	Bot.start(new Bot(Targets.of(item), ITarget::rclick, BotUtil.selectFlower("Drink")), item.ui, true);
+	Bot.process(Targets.of(item))
+	    .actions(ITarget::rclick, BotUtil.selectFlower("Drink"))
+	    .start(item.ui, true);
     }
     
     public static void aggro(GameUI gui) {
@@ -178,13 +180,15 @@ public class Actions {
     }
     
     public static void aggro(GameUI gui, List<ITarget> targets) {
-	if(!targets.isEmpty()) {
-	    Bot.start(new Bot(targets, (target, bot) -> target.click(1, 0))
-		.setup(() -> gui.menu.paginafor("paginae/act/atk").button().use())
-		.cleanup(() -> BotUtil.rclick(gui)), gui.ui);
-	} else {
+	if(targets.isEmpty()) {
 	    gui.error("No targets to aggro");
+	    return;
 	}
+	Bot.process(targets)
+	    .setup((t, b) -> gui.menu.paginafor("paginae/act/atk").button().use())
+	    .actions((target, bot) -> target.click(1, 0))
+	    .cleanup((t, b) -> BotUtil.rclick(gui))
+	    .start(gui.ui);
     }
     
     private static Bot.BotAction fuelWith(GameUI gui, String fuel, int count) {
