@@ -287,8 +287,8 @@ public class Fightview extends Widget {
 	}
 	Relation tmp = current;
 	current = rel;
-	if(tmp != null) {Gob.tagsUpdated(ui, tmp.gobid);}
-	if(rel != null) {Gob.tagsUpdated(ui, rel.gobid);}
+	if(tmp != null) {Gob.gobTagsUpdated(ui, tmp.gobid);}
+	if(rel != null) {Gob.gobTagsUpdated(ui, rel.gobid);}
 	layout();
 	updrel();
     }
@@ -332,11 +332,11 @@ public class Fightview extends Widget {
 	    if(rel.gst == 0 && CFG.COMBAT_AUTO_PEACE.get()) {
 		wdgmsg("give", (int)rel.gobid, 1);
 	    }
-	    Gob.tagsUpdated(ui, rel.gobid);
+	    Gob.gobTagsUpdated(ui, rel.gobid);
             return;
         } else if(msg == "del") {
             Relation rel = getrel(Utils.uiv(args[0]));
-	    Gob.tagsUpdated(ui, rel.gobid);
+	    Gob.gobTagsUpdated(ui, rel.gobid);
 	    GobCombatInfo.del(rel, ui);
 	    rel.remove();
             lsrel.remove(rel);

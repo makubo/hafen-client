@@ -81,6 +81,7 @@ public class OCache implements Iterable<Gob> {
 	CFG.DISPLAY_GOB_INFO.observe(cfg -> gobAction(Gob::infoUpdated));
 	CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.observe(cfg -> gobAction(Gob::infoUpdated));
 	CFG.DISPLAY_GOB_INFO_SHORT.observe(cfg -> gobAction(Gob::infoUpdated));
+	CFG.HIGHLIGHT_PARTY_IN_COMBAT.observe(cfg -> gobAction(Gob::tagsUpdated));
 	CFG.SHOW_CONTAINER_FULLNESS.observe(cfg -> gobAction(Gob::infoUpdated));
 	CFG.SHOW_PROGRESS_COLOR.observe(cfg -> gobAction(Gob::infoUpdated));
     }

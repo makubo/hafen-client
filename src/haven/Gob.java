@@ -47,6 +47,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     private static final Color COL_READY = new Color(16, 255, 16, 128);
     private static final Color COL_FULL = new Color(215, 63, 250, 64);
     private static final Color COL_EMPTY = new Color(104, 213, 253, 64);
+    private static final Color COL_PARTY = new Color(16, 255, 16, 128);
+    private static final Color COL_LEADER = new Color(16, 64, 255, 128);
     public Coord2d rc;
     public double a;
     public boolean virtual = false;
@@ -1486,16 +1488,16 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	gob.status.update(type);
     }
     
-    public static void tagsUpdated(UI ui, long gobId) {updateStatus(ui, gobId, StatusType.tags);}
+    public static void gobTagsUpdated(UI ui, long gobId) {updateStatus(ui, gobId, StatusType.tags);}
     
-    public static void tagsUpdated(Gob gob) {if(gob != null) {gob.tagsUpdated();}}
+    public static void gobTagsUpdated(Gob gob) {if(gob != null) {gob.tagsUpdated();}}
     
     private void updateState() {
 	if(updateseq == 0 || !status.updated()) {return;}
 	StatusUpdates status = this.status;
 	this.status = new StatusUpdates();
     
-	if(status.updated(StatusType.drawable, StatusType.kin, StatusType.id, StatusType.pose, StatusType.tags, StatusType.overlay)) {
+	if(status.updated(StatusType.drawable, StatusType.kin, StatusType.id, StatusType.pose, StatusType.tags, StatusType.overlay, StatusType.combat)) {
 	    updateTags();
 	    status.update(StatusType.tags);
 	}
@@ -1557,6 +1559,15 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 		c = COL_EMPTY;
 	    } else if(is(GobTag.FULL)) {
 		c = COL_FULL;
+	    }
+	}
+	
+	GameUI gui = context(GameUI.class);
+	if(gui != null && CFG.HIGHLIGHT_PARTY_IN_COMBAT.get() && gui.isInCombat() && !is(GobTag.ME)) {
+	    if(is(GobTag.LEADER)) {
+		c = COL_LEADER;
+	    } else if(is(GobTag.PARTY)) {
+		c = COL_PARTY;
 	    }
 	}
 	customColor.color(c);

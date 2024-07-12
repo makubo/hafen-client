@@ -197,6 +197,6 @@ public class Partyview extends Widget {
     
     private static void updateTags(Member member) {
 	if(member == null) {return;}
-	Gob.tagsUpdated(member.getgob());
+	Gob.gobTagsUpdated(member.getgob());
     }
 }
