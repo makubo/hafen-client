@@ -195,7 +195,7 @@ public class Actions {
 		(target, bot) -> target.click(1, 0),
 		BotUtil.doWait(65)//TODO: wait for relations change?
 	    )
-	    .cleanup((t, b) -> BotUtil.rclick(gui))
+	    .cleanup((t, b) -> BotUtil.rclick(gui), ((t, b) -> gui.pathQueue.clear()))
 	    .start(gui.ui, true);
     }
     
