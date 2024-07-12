@@ -26,19 +26,19 @@ public class Actions {
 	pickup(gui, filter, Integer.MAX_VALUE);
     }
     
-    public static void pickup(GameUI gui, String filter, int limit) {
-	pickup(gui, Bot.startsWith(filter), limit);
+    static void pickup(GameUI gui, String filter, int limit) {
+	pickup(gui, GobHelper.resIdStartsWith(filter), limit);
     }
     
-    public static void pickup(GameUI gui, Predicate<Gob> filter) {
+    static void pickup(GameUI gui, Predicate<Gob> filter) {
 	pickup(gui, filter, Integer.MAX_VALUE);
     }
     
-    public static void pickup(GameUI gui, Predicate<Gob> filter, int limit) {
+    static void pickup(GameUI gui, Predicate<Gob> filter, int limit) {
 	List<ITarget> targets = gui.ui.sess.glob.oc.stream()
 	    .filter(filter)
 	    .filter(gob -> PositionHelper.distanceToPlayer(gob) <= CFG.AUTO_PICK_RADIUS.get())
-	    .filter(Bot::isOnRadar)
+	    .filter(BotUtil::isOnRadar)
 	    .sorted(PositionHelper.byDistanceToPlayer)
 	    .limit(limit)
 	    .map(GobTarget::new)
@@ -46,7 +46,7 @@ public class Actions {
 	
 	Bot.start(new Bot(targets,
 	    ITarget::rclick_shift,
-	    (target, bot) -> target.gob().waitRemoval()
+	    (target, bot) -> Targets.gob(target).waitRemoval()
 	), gui.ui);
     }
     
@@ -85,7 +85,7 @@ public class Actions {
 	    needWalk = true;
 	    List<ITarget> objs = GobHelper.getNearest(gui, GobTag.HAS_WATER, 1, 32);
 	    if(!objs.isEmpty()) {
-		barrel = objs.get(0).gob();
+		barrel = Targets.gob(objs.get(0));
 	    }
 	    if(barrel == null) {
 		waterTile = MapHelper.nearbyWaterTile(gui);
@@ -119,11 +119,11 @@ public class Actions {
 	
 	Bot refillBot = new Bot(targets,
 	    ITarget::take,
-	    (t, b) -> Bot.waitHeldChanged(gui),
+	    (t, b) -> BotUtil.waitHeldChanged(gui),
 	    interact,
-	    Bot.doWait(70),
+	    BotUtil.doWait(70),
 	    ITarget::putBack,
-	    (t, b) -> Bot.waitHeldChanged(gui)
+	    (t, b) -> BotUtil.waitHeldChanged(gui)
 	);
 	if(needWalk) {
 	    Bot.start(new Bot(
@@ -155,7 +155,7 @@ public class Actions {
     }
     
     public static void selectFlower(GameUI gui, String option, List<ITarget> targets) {
-	Bot.start(new Bot(targets, ITarget::rclick, Bot.selectFlower(option)), gui.ui);
+	Bot.start(new Bot(targets, ITarget::rclick, BotUtil.selectFlower(option)), gui.ui);
     }
     
     public static void drink(GameUI gui) {
@@ -167,7 +167,7 @@ public class Actions {
     }
     
     public static void drink(WItem item) {
-	Bot.start(new Bot(Collections.singletonList(new ItemTarget(item)), ITarget::rclick, Bot.selectFlower("Drink")), item.ui, true);
+	Bot.start(new Bot(Targets.of(item), ITarget::rclick, BotUtil.selectFlower("Drink")), item.ui, true);
     }
     
     public static void aggro(GameUI gui) {
@@ -182,7 +182,7 @@ public class Actions {
 	    Bot.start(new Bot(targets, (target, bot) -> {
 		gui.menu.paginafor("paginae/act/atk").button().use();
 		target.click(1, 0);
-		Bot.rclick(gui);
+		BotUtil.rclick(gui);
 	    }), gui.ui);
 	} else {
 	    gui.error("No targets to aggro");
@@ -204,12 +204,12 @@ public class Actions {
 		    return;
 		}
 		w.get().take();
-		if(!Bot.waitHeld(gui, fuel)) {
+		if(!BotUtil.waitHeld(gui, fuel)) {
 		    bot.cancel("no fuel on cursor");
 		    return;
 		}
 		target.interact();
-		if(!Bot.waitHeld(gui, null)) {
+		if(!BotUtil.waitHeld(gui, null)) {
 		    bot.cancel("cursor is not empty");
 		    return;
 		}

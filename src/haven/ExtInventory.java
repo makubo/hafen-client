@@ -1,6 +1,7 @@
 package haven;
 
 import auto.Actions;
+import auto.Targets;
 import haven.render.Pipe;
 import haven.resutil.Curiosity;
 import haven.rx.Reactor;
@@ -479,7 +480,7 @@ public class ExtInventory extends Widget {
 	}
     
 	private void flowerChoice(FlowerMenu.Choice choice) {
-	    if(extInventory.chb_repeat.a && !choice.forced && choice.opt != null && choice.target != null && choice.target.item == sample) {
+	    if(extInventory.chb_repeat.a && !choice.forced && choice.opt != null && Targets.item(choice.target) == sample) {
 		flowerSubscription.unsubscribe();
 		List<WItem> targets = items.stream().filter(wItem -> wItem != sample).collect(Collectors.toList());
 		Actions.selectFlowerOnItems(ui.gui, choice.opt, targets);

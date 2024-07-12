@@ -35,18 +35,4 @@ public interface ITarget {
     boolean hasMenu();
     
     boolean disposed();
-    
-    default Gob gob() {
-	if(this instanceof GobTarget) {
-	    return this.disposed() ? null : ((GobTarget) this).gob;
-	}
-	return null;
-    }
-    
-    default WItem item() {
-	if(this instanceof ItemTarget) {
-	    return this.disposed() ? null : ((ItemTarget) this).item;
-	}
-	return null;
-    }
 }

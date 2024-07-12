@@ -1,6 +1,7 @@
 package haven;
 
 import auto.ITarget;
+import auto.Targets;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class PathQueue {
     }
     
     public void click(ITarget target) {
-	click(target.gob());
+	click(Targets.gob(target));
     }
     
     public void click(Gob gob) {

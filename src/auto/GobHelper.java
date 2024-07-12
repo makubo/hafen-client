@@ -47,7 +47,7 @@ public class GobHelper {
 	    final long started = System.currentTimeMillis();
 	    while (System.currentTimeMillis() - started < timeout
 		&& gob != null && !gob.disposed() && gob.hasPose(poses)) {
-		Bot.pause(100);
+		BotUtil.pause(100);
 	    }
 	};
     }
@@ -57,7 +57,7 @@ public class GobHelper {
 	    final long started = System.currentTimeMillis();
 	    while (System.currentTimeMillis() - started < timeout
 		&& gob != null && !gob.disposed() && !gob.hasPose(poses)) {
-		Bot.pause(100);
+		BotUtil.pause(100);
 	    }
 	};
     }
@@ -75,6 +75,15 @@ public class GobHelper {
 	return g -> {
 	    if(g == null) {return false;}
 	    return g.is(what);
+	};
+    }
+    
+    static Predicate<Gob> resIdStartsWith(String text) {
+	return gob -> {
+	    try {
+		return gob.resid().startsWith(text);
+	    } catch (Exception ignored) {}
+	    return false;
 	};
     }
 }

@@ -388,15 +388,15 @@ public class FlowerMenu extends Widget {
 	if(num != -1) {
 	    ui.pathQueue().ifPresent(pathQueue -> pathQueue.click(target));
 	    if(PICK_ALL.equals(options[num])) {
-		Gob gob = target == null ? null : target.gob();
+		Gob gob = Targets.gob(target);
 		if(gob != null) {
 		    try {
-			Actions.pickup(ui.gui, gob.getres().name);
+			Actions.pickup(ui.gui, gob.resid());
 		    } catch (Exception ignored) {}
 		}
 		num = -1;
 	    } else if("Prospect".equals(options[num]) && target != null) {
-		ProspectingWnd.item(target.item());
+		ProspectingWnd.item(Targets.item(target));
 	    }
 	}
 	Choice choice = new Choice(num != -1 ? options[num] : null, target, forceChosen);
