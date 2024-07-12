@@ -1488,6 +1488,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     
     public static void tagsUpdated(UI ui, long gobId) {updateStatus(ui, gobId, StatusType.tags);}
     
+    public static void tagsUpdated(Gob gob) {if(gob != null) {gob.tagsUpdated();}}
+    
     private void updateState() {
 	if(updateseq == 0 || !status.updated()) {return;}
 	StatusUpdates status = this.status;
