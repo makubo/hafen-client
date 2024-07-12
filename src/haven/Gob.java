@@ -47,8 +47,11 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     private static final Color COL_READY = new Color(16, 255, 16, 128);
     private static final Color COL_FULL = new Color(215, 63, 250, 64);
     private static final Color COL_EMPTY = new Color(104, 213, 253, 64);
-    private static final Color COL_PARTY = new Color(16, 255, 16, 128);
-    private static final Color COL_LEADER = new Color(16, 64, 255, 128);
+    private static final Color COL_PARTY = new Color(16, 255, 16, 200);
+    private static final Color COL_LEADER = new Color(16, 64, 255, 200);
+    private static final Color COL_SELF = new Color(2, 253, 177, 200);
+    private static final Color COL_IN_COMBAT = new Color(246, 86, 153, 200);
+    private static final Color COL_COMBAT_TARGET = new Color(255, 0, 0, 200);
     public Coord2d rc;
     public double a;
     public boolean virtual = false;
@@ -1563,11 +1566,27 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	}
 	
 	GameUI gui = context(GameUI.class);
-	if(gui != null && CFG.HIGHLIGHT_PARTY_IN_COMBAT.get() && gui.isInCombat() && !is(GobTag.ME)) {
-	    if(is(GobTag.LEADER)) {
-		c = COL_LEADER;
-	    } else if(is(GobTag.PARTY)) {
-		c = COL_PARTY;
+	if(gui != null && gui.isInCombat()) {
+	    boolean inParty = is(GobTag.PARTY);
+	    boolean isMe = Boolean.TRUE.equals(isMe());
+	    if(!isMe && CFG.HIGHLIGHT_PARTY_IN_COMBAT.get()) {
+		if(is(GobTag.LEADER)) {
+		    c = COL_LEADER;
+		} else if(inParty) {
+		    c = COL_PARTY;
+		}
+	    }
+	    
+	    if(isMe && CFG.HIGHLIGHT_SELF_IN_COMBAT.get()) {
+		c = COL_SELF;
+	    }
+	    
+	    if(!inParty && !isMe && CFG.HIGHLIGHT_ENEMY_IN_COMBAT.get()) {
+		if(is(GobTag.COMBAT_TARGET)) {
+		    c = COL_COMBAT_TARGET;
+		} else if(is(GobTag.IN_COMBAT)) {
+		    c = COL_IN_COMBAT;
+		}
 	    }
 	}
 	customColor.color(c);

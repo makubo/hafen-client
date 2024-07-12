@@ -1370,6 +1370,12 @@ public class OptWnd extends WindowX {
 	
 	y += STEP;
 	panel.add(new CFGBox("Highlight party members in combat", CFG.HIGHLIGHT_PARTY_IN_COMBAT), x, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Highlight self in combat", CFG.HIGHLIGHT_SELF_IN_COMBAT), x, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Highlight enemies in combat", CFG.HIGHLIGHT_ENEMY_IN_COMBAT), x, y);
     
 	y += STEP;
 	panel.add(new CFGBox("Auto peace on combat start", CFG.COMBAT_AUTO_PEACE , "Automatically enter peaceful mode on combat start id enemy is aggressive - useful for taming"), x, y);

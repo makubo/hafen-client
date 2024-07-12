@@ -56,6 +56,8 @@ public class CFG<T> {
     public static final CFG<Boolean> SIMPLE_COMBAT_OPENINGS = new CFG<>("ui.combat.simple_openings", true);
     public static final CFG<Boolean> ALWAYS_MARK_COMBAT_TARGET = new CFG<>("ui.combat.always_mark_target", false);
     public static final CFG<Boolean> HIGHLIGHT_PARTY_IN_COMBAT = new CFG<>("ui.combat.highlight_party_in_combat", false);
+    public static final CFG<Boolean> HIGHLIGHT_SELF_IN_COMBAT = new CFG<>("ui.combat.highlight_self_in_combat", false);
+    public static final CFG<Boolean> HIGHLIGHT_ENEMY_IN_COMBAT = new CFG<>("ui.combat.highlight_enemies_in_combat", false);
     public static final CFG<Boolean> SHOW_COMBAT_INFO = new CFG<>("ui.combat.show_info", false);
     public static final CFG<Boolean> SHOW_COMBAT_DMG = new CFG<>("ui.combat.show_dmg", true);
     public static final CFG<Boolean> CLEAR_PLAYER_DMG_AFTER_COMBAT = new CFG<>("ui.combat.clear_player_damage_after", true);
