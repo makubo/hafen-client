@@ -12,14 +12,12 @@ public class ContainedTarget implements ITarget {
     
     @Override
     public void rclick(int modflags) {
-	if(disposed()) {return;}
-	contained.item.rclick(modflags);
+	if(contained != null) {contained.item.rclick(modflags);}
     }
     
     @Override
     public void click(int button, int modflags) {
-	if(disposed()) {return;}
-	contained.item.mouseclick(Coord.z, button, modflags);
+	if(contained != null) {contained.item.mouseclick(Coord.z, button, modflags);}
     }
     
     @Override
@@ -32,14 +30,16 @@ public class ContainedTarget implements ITarget {
     
     @Override
     public void take() {
-	if(disposed()) {return;}
-	contained.take();
+	if(contained != null && !contained.itemDisposed()) {
+	    contained.take();
+	}
     }
     
     @Override
     public void putBack() {
-	if(disposed()) {return;}
-	contained.putBack();
+	if(contained != null && !contained.containerDisposed()) {
+	    contained.putBack();
+	}
     }
     
     @Override
@@ -50,6 +50,6 @@ public class ContainedTarget implements ITarget {
     
     @Override
     public boolean disposed() {
-	return contained == null || contained.itemDisposed();
+	return false;
     }
 }
