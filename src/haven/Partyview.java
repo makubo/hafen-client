@@ -156,13 +156,18 @@ public class Partyview extends Widget {
 	    for(int a = 0; a < args.length; a++) {
 		long id = Utils.uiv(args[a]);
 		Member m = cmemb.get(id);
-		if(m == null)
+		if(m == null) {
 		    m = party.new Member(id);
+		    Gob.tagsUpdated(ui, m.gobid);
+		}
 		nmemb.put(id, m);
 	    }
 	    party.memb = nmemb;
 	} else if(msg == "ldr") {
 	    party.leader = party.memb.get(Utils.uiv(args[0]));
+	    if(party.leader != null) {
+		Gob.tagsUpdated(ui, party.leader.gobid);
+	    }
 	} else if(msg == "m") {
 	    int a = 0;
 	    Member m = party.memb.get(Utils.uiv(args[a++]));

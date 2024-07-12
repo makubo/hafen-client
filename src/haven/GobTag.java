@@ -183,14 +183,15 @@ public enum GobTag {
                 tags.add(MENU);
             }
             
-            //TODO: need to refresh tags on fight changes
             Party.Member member = glob.party.memb.get(gob.id);
             if(member != null) {
                 tags.add(PARTY);
-                //TODO: check for leader
+                if(glob.party.leader.gobid == gob.id) {
+                    tags.add(LEADER);
+                }
             }
             
-            if(fight != null) {//TODO: need to refresh tags on fight changes
+            if(fight != null) {
                 for (Fightview.Relation relation : fight.lsrel) {
                     if(relation.gobid == gob.id) {
                         tags.add(IN_COMBAT);

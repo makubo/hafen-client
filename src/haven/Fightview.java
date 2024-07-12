@@ -286,6 +286,7 @@ public class Fightview extends Widget {
 	    add(curdisp = new Mainrel(rel));
 	}
 	current = rel;
+	Gob.tagsUpdated(ui, current.gobid);
 	layout();
 	updrel();
     }
@@ -329,9 +330,11 @@ public class Fightview extends Widget {
 	    if(rel.gst == 0 && CFG.COMBAT_AUTO_PEACE.get()) {
 		wdgmsg("give", (int)rel.gobid, 1);
 	    }
+	    Gob.tagsUpdated(ui, rel.gobid);
             return;
         } else if(msg == "del") {
             Relation rel = getrel(Utils.uiv(args[0]));
+	    Gob.tagsUpdated(ui, rel.gobid);
 	    GobCombatInfo.del(rel, ui);
 	    rel.remove();
             lsrel.remove(rel);
