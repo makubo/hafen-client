@@ -2145,7 +2145,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		synchronized(ui) {
 		    if(mapcl != null) {
 			if(Config.center_tile) { mapcl = mapcl.floor(tilesz).mul(tilesz).add(5, 5); }
-			ui.pathQueue().ifPresent(pathQueue -> pathQueue.click(mapcl, objcl));
 			if(objcl == null)
 			    hit(pc, mapcl, null);
 			else
@@ -2229,12 +2228,18 @@ public class MapView extends PView implements DTarget, Console.Directory {
     
     public void click(Coord2d mc, int button, Object... args) {
 	boolean send = true;
-	if(button == 1 && CFG.QUEUE_PATHS.get()) {
-	    if(ui.modmeta) {
-		args[3] = 0;
-		send = ui.gui.pathQueue.add(mc);
-	    } else {
-		ui.gui.pathQueue.start(mc);
+	Coord2d cc = args.length > 6 && args[6] instanceof Coord ? ((Coord)args[6]).mul(posres) : mc;
+	
+	if(CFG.QUEUE_PATHS.get()) {
+	    if(button == 1) {
+		if(ui.modmeta) {
+		    args[3] = 0;
+		    send = ui.gui.pathQueue.add(cc);
+		} else {
+		    ui.gui.pathQueue.start(cc);
+		}
+	    } else if(button == 3) {
+		ui.gui.pathQueue.click(cc);
 	    }
 	}
 	if(send)
