@@ -196,6 +196,7 @@ public class Actions {
 		BotUtil.doWait(65)//TODO: wait for relations change?
 	    )
 	    .cleanup((t, b) -> BotUtil.rclick(gui), ((t, b) -> gui.pathQueue.clear()))
+	    .highlight(false)
 	    .start(gui.ui, true);
     }
     

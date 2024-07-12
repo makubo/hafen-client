@@ -12,6 +12,7 @@ public class Bot implements Defer.Callable<Void> {
     private final List<ITarget> targets;
     private BotAction[] actions;
     private Defer.Future<Void> task;
+    private boolean highlight = true;
     private boolean cancelled = false;
     private String message = null;
     BotAction[] setup = null;
@@ -41,6 +42,11 @@ public class Bot implements Defer.Callable<Void> {
 	return this;
     }
     
+    public Bot highlight(boolean value) {
+	highlight = value;
+	return this;
+    }
+    
     @Override
     public Void call() throws InterruptedException {
 	if(setup != null) {
@@ -49,7 +55,7 @@ public class Bot implements Defer.Callable<Void> {
 	    }
 	}
 	if(actions != null) {
-	    targets.forEach(ITarget::highlight);
+	    if(highlight) {targets.forEach(ITarget::highlight);}
 	    for (ITarget target : targets) {
 		for (BotAction action : actions) {
 		    if(target.disposed()) {break;}
