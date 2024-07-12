@@ -16,10 +16,15 @@ public class Bot implements Defer.Callable<Void> {
     private String message = null;
     BotAction[] setup = null;
     BotAction[] cleanup = null;
+    UI ui;
     
     private Bot(List<ITarget> targets) {
 	this.targets = targets;
     }
+    
+    public UI ui() {return ui;}
+    
+    public GameUI gui() {return ui != null ? ui.gui : null;}
     
     public Bot actions(BotAction... actions) {
 	this.actions = actions;
@@ -113,6 +118,7 @@ public class Bot implements Defer.Callable<Void> {
     public void start(UI ui) {start(ui, false);}
     
     public void start(UI ui, boolean silent) {
+	this.ui = ui;
 	doStart(this, ui, silent);
     }
     

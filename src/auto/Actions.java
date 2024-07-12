@@ -116,14 +116,13 @@ public class Actions {
 	    return;
 	}
 	
-	Bot.BotAction waitHeldChanged = (t, b) -> BotUtil.waitHeldChanged(gui);
 	Bot refillBot = Bot.process(targets).actions(
 	    ITarget::take,
-	    waitHeldChanged,
+	    BotUtil.WaitHeldChanged,
 	    interact,
 	    BotUtil.doWait(70),
 	    ITarget::putBack,
-	    waitHeldChanged
+	    BotUtil.WaitHeldChanged
 	);
 	if(needWalk) {
 	    refillBot.setup(

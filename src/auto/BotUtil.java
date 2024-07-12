@@ -29,7 +29,12 @@ public class BotUtil {
 	return false;
     }
     
-    static boolean waitHeldChanged(GameUI gui) {
+    static final Bot.BotAction WaitHeldChanged = (t, b) -> {
+	boolean result = waitHeldChanged(b.gui());
+	if(!result) {b.cancel();}
+    };
+    
+    private static boolean waitHeldChanged(GameUI gui) {
 	boolean result = true;
 	try {
 	    synchronized (gui.heldNotifier) {
