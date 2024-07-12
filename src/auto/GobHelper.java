@@ -17,16 +17,16 @@ public class GobHelper {
 	return getGobs(gui, limit, PositionHelper.byDistanceToPlayer, gobIs(name), gob -> PositionHelper.distanceToPlayer(gob) <= distance);
     }
     
-    static List<ITarget> getNearest(GameUI gui, GobTag tag, int limit, double distance) {
-	return getGobs(gui, limit, PositionHelper.byDistanceToPlayer, gobIs(tag), gob -> PositionHelper.distanceToPlayer(gob) <= distance);
+    static List<ITarget> getNearest(GameUI gui, int limit, double distance, GobTag... tags) {
+	return getGobs(gui, limit, PositionHelper.byDistanceToPlayer, gobIsAny(tags), gob -> PositionHelper.distanceToPlayer(gob) <= distance);
     }
     
-    static List<ITarget> getNearestToPoint(GameUI gui, GobTag tag, int limit, Coord2d pos, double distance) {
-	return getNearest(gui, tag, limit, g -> PositionHelper.distanceToCoord(pos, g), distance);
+    static List<ITarget> getNearestToPoint(GameUI gui, int limit, Coord2d pos, double distance, GobTag... tags) {
+	return getNearest(gui, limit, g -> PositionHelper.distanceToCoord(pos, g), distance, tags);
     }
     
-    private static List<ITarget> getNearest(GameUI gui, GobTag tag, int limit, Function<Gob, Double> meter, double distance) {
-	return getGobs(gui, limit, Comparator.comparingDouble(meter::apply), gobIs(tag), gob -> meter.apply(gob) <= distance);
+    private static List<ITarget> getNearest(GameUI gui, int limit, Function<Gob, Double> meter, double distance, GobTag... tags) {
+	return getGobs(gui, limit, Comparator.comparingDouble(meter::apply), gobIsAny(tags), gob -> meter.apply(gob) <= distance);
     }
     
     @SafeVarargs
@@ -75,6 +75,13 @@ public class GobHelper {
 	return g -> {
 	    if(g == null) {return false;}
 	    return g.is(what);
+	};
+    }
+    
+    public static Predicate<Gob> gobIsAny(GobTag... what) {
+	return g -> {
+	    if(g == null) {return false;}
+	    return g.anyOf(what);
 	};
     }
     

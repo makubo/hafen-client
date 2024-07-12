@@ -83,7 +83,7 @@ public class Actions {
 	    waterTile = player.rc;
 	} else {
 	    needWalk = true;
-	    List<ITarget> objs = GobHelper.getNearest(gui, GobTag.HAS_WATER, 1, 32);
+	    List<ITarget> objs = GobHelper.getNearest(gui, 1, 32, GobTag.HAS_WATER);
 	    if(!objs.isEmpty()) {
 		barrel = Targets.gob(objs.get(0));
 	    }
@@ -171,11 +171,17 @@ public class Actions {
 	    .start(item.ui, true);
     }
     
-    public static void aggro(GameUI gui) {
-	PositionHelper.mapPosOfMouse(gui).thenAccept(mc -> {
-	    List<ITarget> targets = GobHelper.getNearestToPoint(gui, GobTag.AGGRO_TARGET, 1, mc, 33);
-	    aggro(gui, targets);
-	});
+    public static void aggroOne(GameUI gui) {aggro(gui, 1, false);}
+    
+    public static void aggroAll(GameUI gui) {aggro(gui, Integer.MAX_VALUE, true);}
+    
+    public static void aggro(GameUI gui, int limit, boolean nearPlayer) {
+	if(nearPlayer) {
+	    aggro(gui, GobHelper.getNearest(gui, limit, 165, GobTag.AGGRO_TARGET));
+	} else {
+	    PositionHelper.mapPosOfMouse(gui)
+		.thenAccept(mc -> aggro(gui, GobHelper.getNearestToPoint(gui, limit, mc, 33, GobTag.AGGRO_TARGET, GobTag.IN_COMBAT)));
+	}
     }
     
     public static void aggro(GameUI gui, List<ITarget> targets) {
@@ -185,9 +191,12 @@ public class Actions {
 	}
 	Bot.process(targets)
 	    .setup((t, b) -> gui.menu.paginafor("paginae/act/atk").button().use())
-	    .actions((target, bot) -> target.click(1, 0))
+	    .actions(
+		(target, bot) -> target.click(1, 0),
+		BotUtil.doWait(65)//TODO: wait for relations change?
+	    )
 	    .cleanup((t, b) -> BotUtil.rclick(gui))
-	    .start(gui.ui);
+	    .start(gui.ui, true);
     }
     
     private static Bot.BotAction fuelWith(GameUI gui, String fuel, int count) {
