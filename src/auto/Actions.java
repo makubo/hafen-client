@@ -179,11 +179,9 @@ public class Actions {
     
     public static void aggro(GameUI gui, List<ITarget> targets) {
 	if(!targets.isEmpty()) {
-	    Bot.start(new Bot(targets, (target, bot) -> {
-		gui.menu.paginafor("paginae/act/atk").button().use();
-		target.click(1, 0);
-		BotUtil.rclick(gui);
-	    }), gui.ui);
+	    Bot.start(new Bot(targets, (target, bot) -> target.click(1, 0))
+		.setup(() -> gui.menu.paginafor("paginae/act/atk").button().use())
+		.cleanup(() -> BotUtil.rclick(gui)), gui.ui);
 	} else {
 	    gui.error("No targets to aggro");
 	}

@@ -14,6 +14,8 @@ public class Bot implements Defer.Callable<Void> {
     private Defer.Future<Void> task;
     private boolean cancelled = false;
     private String message = null;
+    List<Runnable> setup = null;
+    List<Runnable> cleanup = null;
     
     public Bot(List<ITarget> targets, BotAction... actions) {
 	this.targets = targets;
@@ -24,8 +26,21 @@ public class Bot implements Defer.Callable<Void> {
 	this(Collections.singletonList(Targets.EMPTY), actions);
     }
     
+    public Bot setup(Runnable... actions) {
+	setup = Arrays.asList(actions);
+	return this;
+    }
+    
+    public Bot cleanup(Runnable... actions) {
+	cleanup = Arrays.asList(actions);
+	return this;
+    }
+    
     @Override
     public Void call() throws InterruptedException {
+	if(setup != null) {
+	    setup.forEach(Runnable::run);
+	}
 	targets.forEach(ITarget::highlight);
 	for (ITarget target : targets) {
 	    for (BotAction action : actions) {
@@ -33,6 +48,9 @@ public class Bot implements Defer.Callable<Void> {
 		action.call(target, this);
 		checkCancelled();
 	    }
+	}
+	if(cleanup != null) {
+	    cleanup.forEach(Runnable::run);
 	}
 	synchronized (lock) {
 	    if(current == this) {current = null;}
