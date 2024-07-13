@@ -235,6 +235,7 @@ public class MCache implements MapSource {
     public class Overlay {
 	private Area a;
 	private OverlayInfo id;
+	private Function<Coord, Boolean> mask;
 
 	public Overlay(Area a, OverlayInfo id) {
 	    this.a = a;
@@ -254,6 +255,10 @@ public class MCache implements MapSource {
 		this.a = a;
 	    }
 	}
+	
+	public void mask(Function<Coord, Boolean> mask) {this.mask = mask;}
+	
+	public boolean mask(Coord c) {return mask == null || Boolean.TRUE.equals(mask.apply(c));}
     }
 
     private void cktileid(int id) {
@@ -985,7 +990,7 @@ public class MCache implements MapSource {
 	    Area la = lol.a.overlap(a);
 	    if(la != null) {
 		for(Coord lc : la)
-		    buf[a.ri(lc)] = true;
+		    if(lol.mask(lc)) {buf[a.ri(lc)] = true;}
 	    }
 	}
     }
