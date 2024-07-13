@@ -101,6 +101,7 @@ public class Window extends Widget implements DTarget {
     protected WidgetCfg cfg = null;
     public boolean justclose = false;
     public boolean skipInitPos = false;
+    public boolean skipSavePos = false;
     private String title;
     protected Text.Furnace rcf = cf;
 
@@ -170,6 +171,7 @@ public class Window extends Widget implements DTarget {
     }
 
     protected void setCfg() {
+	if(skipSavePos) {return;}
 	if(cfg == null) {
 	    cfg = new WidgetCfg();
 	}
