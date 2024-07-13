@@ -6,6 +6,9 @@ import haven.render.*;
 import haven.render.Model.Indices;
 import java.nio.*;
 import java.awt.Color;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /* >spr: BPRad */
 @haven.FromResource(name = "gfx/fx/bprad", version = 9)
@@ -19,8 +22,25 @@ public class BPRad extends Sprite {
     private Coord2d lc;
     float[] barda;
     
+    public static final String OL_TAG = "show";
+    private static final Color col = new Color(251, 28, 95);
+    private static final List<String> tags = Collections.singletonList(OL_TAG);
+    private final SquareRadiiOverlay overlay;
+    private static final MCache.OverlayInfo bpol = new MCache.OverlayInfo() {
+	final Material mat = new Material(BaseColor.fromColorAndAlpha(col, 0.25f), States.maskdepth);
+	final Material omat = new Material(BaseColor.fromColorAndAlpha(col, 0.75f), States.maskdepth);
+	
+	public Collection<String> tags() {return tags;}
+	
+	public Material mat() {return(mat);}
+	
+	@Override
+	public Material omat() {return omat;}
+    };
+    
     public BPRad(Owner owner, Resource res, float r) {
 	super(owner, res);
+	overlay = new SquareRadiiOverlay((Gob) owner, r, bpol);
 	int n = Math.max(24, (int)(2 * Math.PI * r / 11.0));
 	FloatBuffer posb = Utils.wfbuf(n * 3 * 2);
 	FloatBuffer nrmb = Utils.wfbuf(n * 3 * 2);
@@ -86,15 +106,26 @@ public class BPRad extends Sprite {
 	if((lc == null) || !lc.equals(cc)) {
 	    setz(g, owner.context(Glob.class), cc);
 	    lc = cc;
+	    overlay.update();
 	}
     }
     
     public void added(RenderTree.Slot slot) {
+	if(CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.get()) {
+	    overlay.add();
+	    return;
+	}
 	// XXXRENDER rl.prepo(Rendered.eyesort);
 	slot.ostate(Pipe.Op.compose(Rendered.postpfx,
 	    new States.Facecull(States.Facecull.Mode.NONE),
 	    Location.goback("gobx")));
 	slot.add(smod, smat);
 	slot.add(emod, emat);
+    }
+    
+    @Override
+    public void removed(RenderTree.Slot slot) {
+	super.removed(slot);
+	overlay.rem();
     }
 }
