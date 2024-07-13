@@ -14,12 +14,16 @@ import haven.render.*;
 public class MSRad extends Sprite {
     public static boolean show = false;
     public static Collection<MSRad> current = new WeakList<>();
-    final ColoredRadius fx;
+    final RenderTree.Node square;
+    final ColoredRadius circle;
     final Collection<RenderTree.Slot> slots = new ArrayList<>(1);
     
     public MSRad(Owner owner, Resource res, float r, Color color1, Color color2) {
 	super(owner, res);
-	fx = new ColoredRadius((Gob) owner, r, color1, color2);
+	Gob gob = (Gob) owner;
+	circle = new ColoredRadius(gob, r, color1, color2);
+	square = new BaseColor(FColor.fromColorAndAlpha(color2, 0.5f))
+	    .apply(SquareRadiiMesh.getMesh(r), false);
     }
     
     public MSRad(Owner owner, Resource res, float r, Color color) {
@@ -46,7 +50,11 @@ public class MSRad extends Sprite {
     
     public void show1(boolean show) {
 	if(show) {
-	    Loading.waitfor(() -> RUtils.multiadd(slots, fx));
+	    if(useSquares(((Gob) owner).resid())) {
+		Loading.waitfor(() -> RUtils.multiadd(slots, square));
+	    } else {
+		Loading.waitfor(() -> RUtils.multiadd(slots, circle));
+	    }
 	} else {
 	    for (RenderTree.Slot slot : slots)
 		slot.clear();
@@ -54,8 +62,13 @@ public class MSRad extends Sprite {
     }
     
     public void added(RenderTree.Slot slot) {
-	if(show)
-	    slot.add(fx);
+	if(show) {
+	    if(useSquares(((Gob) owner).resid())) {
+		slot.add(square);
+	    } else {
+		slot.add(circle);
+	    }
+	}
 	if(slots.isEmpty())
 	    current.add(this);
 	slots.add(slot);
@@ -63,13 +76,27 @@ public class MSRad extends Sprite {
     
     @Override
     public void gtick(Render g) {
-	fx.gtick(g);
+	circle.gtick(g);
     }
     
     public void removed(RenderTree.Slot slot) {
 	slots.remove(slot);
 	if(slots.isEmpty())
 	    current.remove(this);
+    }
+    
+    private boolean useSquares(String resid){
+	if(resid == null) {return false;}
+	switch (resid) {
+	    case "gfx/terobjs/minesupport":
+	    case "gfx/terobjs/column":
+	    case "gfx/terobjs/map/naturalminesupport":
+	    case "gfx/terobjs/ladder":
+	    case "gfx/terobjs/minebeam":
+		return true;
+	}
+	
+	return false;
     }
 }
 
