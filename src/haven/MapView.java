@@ -43,6 +43,7 @@ import haven.render.*;
 import haven.MCache.OverlayInfo;
 import haven.render.sl.Uniform;
 import haven.render.sl.Type;
+import haven.res.gfx.fx.msrad.MSRad;
 import haven.rx.Reactor;
 
 public class MapView extends PView implements DTarget, Console.Directory {
@@ -679,11 +680,23 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	setcanfocus(true);
 	CFG.DISPLAY_GOB_HITBOX.observe(cfg -> updatePlobDrawable());
 	CFG.DISPLAY_GOB_HITBOX_TOP.observe(cfg -> updatePlobDrawable());
+	CFG.SHOW_GOB_RADIUS.observe(cfg -> updateSupportOverlay());
+	CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.observe(cfg -> updateSupportOverlay());
+	updateSupportOverlay();
     }
     
     private void updatePlobDrawable() {
 	if(placing != null && placing.done()) {
 	    placing.get().drawableUpdated();
+	}
+    } 
+    
+    private void updateSupportOverlay() {
+	boolean show = CFG.SHOW_GOB_RADIUS.get() && CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.get();
+	if(show && !visol(MSRad.OL_TAG)) {
+	    enol(MSRad.OL_TAG);
+	} else if(!show && visol(MSRad.OL_TAG)) {
+	    disol(MSRad.OL_TAG);
 	}
     }
     
@@ -723,7 +736,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		oltags.remove(tag);;
 	}
     }
-
+    
     private final Gobs gobs;
     private class Gobs implements RenderTree.Node, OCache.ChangeCallback {
 	final OCache oc = glob.oc;

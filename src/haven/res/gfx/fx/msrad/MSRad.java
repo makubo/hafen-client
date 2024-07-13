@@ -6,6 +6,8 @@ package haven.res.gfx.fx.msrad;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
+
 import haven.*;
 import haven.render.*;
 
@@ -14,16 +16,26 @@ import haven.render.*;
 public class MSRad extends Sprite {
     public static boolean show = false;
     public static Collection<MSRad> current = new WeakList<>();
-    final RenderTree.Node square;
+    public static final String OL_TAG = "mine_support";
+    private static final Color col = new Color(149, 246, 194, 64);
+    private static final List<String> tags = Collections.singletonList(OL_TAG);
     final ColoredRadius circle;
+    final SquareRadiiOverlay overlay;
     final Collection<RenderTree.Slot> slots = new ArrayList<>(1);
+    
+    private static final MCache.OverlayInfo safeol = new MCache.OverlayInfo() {
+	final Material mat = new Material(new BaseColor(col), States.maskdepth);
+	
+	public Collection<String> tags() {return tags;}
+	
+	public Material mat() {return(mat);}
+    };
     
     public MSRad(Owner owner, Resource res, float r, Color color1, Color color2) {
 	super(owner, res);
 	Gob gob = (Gob) owner;
 	circle = new ColoredRadius(gob, r, color1, color2);
-	square = new BaseColor(FColor.fromColorAndAlpha(color2, 0.5f))
-	    .apply(SquareRadiiMesh.getMesh(r), false);
+	overlay = new SquareRadiiOverlay(gob, r, safeol);
     }
     
     public MSRad(Owner owner, Resource res, float r, Color color) {
@@ -50,9 +62,7 @@ public class MSRad extends Sprite {
     
     public void show1(boolean show) {
 	if(show) {
-	    if(useSquares(((Gob) owner).resid())) {
-		Loading.waitfor(() -> RUtils.multiadd(slots, square));
-	    } else {
+	    if(useRadii()) {
 		Loading.waitfor(() -> RUtils.multiadd(slots, circle));
 	    }
 	} else {
@@ -63,14 +73,14 @@ public class MSRad extends Sprite {
     
     public void added(RenderTree.Slot slot) {
 	if(show) {
-	    if(useSquares(((Gob) owner).resid())) {
-		slot.add(square);
-	    } else {
+	    if(useRadii()) {
 		slot.add(circle);
 	    }
 	}
-	if(slots.isEmpty())
+	if(slots.isEmpty()) {
 	    current.add(this);
+	    overlay.add();
+	}
 	slots.add(slot);
     }
     
@@ -81,22 +91,26 @@ public class MSRad extends Sprite {
     
     public void removed(RenderTree.Slot slot) {
 	slots.remove(slot);
-	if(slots.isEmpty())
+	if(slots.isEmpty()) {
 	    current.remove(this);
+	    overlay.rem();
+	}
     }
     
-    private boolean useSquares(String resid){
-	if(resid == null) {return false;}
+    private boolean useRadii() {
+	String resid = ((Gob)owner).resid();
+	if(resid == null || !CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.get()) {return true;}
 	switch (resid) {
 	    case "gfx/terobjs/minesupport":
 	    case "gfx/terobjs/column":
+	    case "gfx/terobjs/trees/towercap":
 	    case "gfx/terobjs/map/naturalminesupport":
 	    case "gfx/terobjs/ladder":
 	    case "gfx/terobjs/minebeam":
-		return true;
+		return false;
 	}
 	
-	return false;
+	return true;
     }
 }
 

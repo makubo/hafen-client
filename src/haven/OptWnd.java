@@ -1145,6 +1145,9 @@ public class OptWnd extends WindowX {
 	
 	y += 35;
 	panel.add(new CFGBox("Show object radius", CFG.SHOW_GOB_RADIUS, "Shows radius of mine supports, beehives etc.", true), x, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Show mine support radius as overlay", CFG.SHOW_MINE_SUPPORT_AS_OVERLAY, "Shows radius of mine supports as map overlay"), x, y);
 
 	y += STEP;
 	panel.add(new Button(UI.scale(150), "Show as buffs", false) {
