@@ -9,8 +9,10 @@ import me.ender.ClientUtils;
 import me.ender.GobInfoOpts;
 import me.ender.Reflect;
 
+import java.awt.*;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.List;
 
 public class CFG<T> {
     public static final CFG<String> VERSION = new CFG<>("version", "");
@@ -122,7 +124,9 @@ public class CFG<T> {
     private final List<Observer<T>> observers = new LinkedList<>();
 
     static {
-	gson = (new GsonBuilder()).setPrettyPrinting().create();
+	gson = new GsonBuilder().setPrettyPrinting()
+	    .registerTypeAdapter(Color.class, new ClientUtils.ColorSerializer())
+	    .create();
 	Map<Object, Object> tmp = null;
 	try {
 	    Type type = new TypeToken<Map<Object, Object>>() {
@@ -202,6 +206,10 @@ public class CFG<T> {
 		    } else if(Number.class.isAssignableFrom(defClass)) {
 			Number n = (Number) data;
 			value = (E) ClientUtils.num2value(n, (Class<? extends Number>)defClass);
+		    } else if(Color.class.isAssignableFrom(defClass)) {
+			String hex = data instanceof String ? (String) data : null;
+			Color def = (Color) name.def;
+			value = (E) ClientUtils.hex2color(hex, def);
 		    } else if(Enum.class.isAssignableFrom(defClass)) {
 			@SuppressWarnings("rawtypes") Class<? extends Enum> enumType = Reflect.getEnumSuperclass(defClass);
 			if(enumType != null) {

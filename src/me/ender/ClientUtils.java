@@ -1,7 +1,6 @@
 package me.ender;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import haven.*;
 
@@ -10,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -270,6 +270,13 @@ public class ClientUtils {
 	    return String.format("%d:%02d", time / 60, time % 60);
 	} else {
 	    return String.format("%02d", time);
+	}
+    }
+    
+    public static class ColorSerializer implements JsonSerializer<Color> {
+	@Override
+	public JsonElement serialize(Color color, Type type, JsonSerializationContext serializer) {
+	    return new JsonPrimitive(color2hex(color));
 	}
     }
 }
