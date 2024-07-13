@@ -59,6 +59,7 @@ public class MSRad extends Sprite {
     }
     
     public static void show(boolean show) {
+	if(MSRad.show == show) {return;}
 	for (MSRad spr : current)
 	    spr.show1(show);
 	MSRad.show = show;
@@ -83,7 +84,7 @@ public class MSRad extends Sprite {
 	}
 	if(slots.isEmpty()) {
 	    current.add(this);
-	    overlay.add();
+	    if(!useRadii()) {overlay.add();}
 	}
 	slots.add(slot);
     }
