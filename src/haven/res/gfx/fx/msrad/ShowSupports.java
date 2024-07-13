@@ -4,11 +4,9 @@
 
 package haven.res.gfx.fx.msrad;
 
-import java.util.*;
 import haven.*;
-import haven.render.*;
 import haven.MenuGrid.Pagina;
-import haven.res.ui.pag.toggle.*;
+import haven.res.ui.pag.toggle.Toggle;
 
 /* >spr: MSRad */
 @haven.FromResource(name = "gfx/fx/msrad", version = 16)
@@ -24,7 +22,7 @@ public class ShowSupports extends MenuGrid.PagButton {
     }
 
     public void use(MenuGrid.Interaction iact) {
-	MSRad.show(!MSRad.show);
+	CFG.SHOW_GOB_RADIUS.set(!CFG.SHOW_GOB_RADIUS.get());
 	pag.scm.ui.msg("Mine-support display is now turned " + (MSRad.show ? "on" : "off") + ".", null,
 		       Audio.resclip(MSRad.show ? Toggle.sfxon : Toggle.sfxoff));
     }
