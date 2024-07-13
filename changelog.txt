@@ -1,3 +1,11 @@
+$size[14]{$u{Update for 13.07.24:}
+  * added action to aggro creature nearest to cursor that is not in your party (eXtra -> Automation -> Aggro one). Also, can be bound in global hotkey settings.
+  * added action to aggro all non-party members near you (eXtra -> Automation -> Aggro all). Also, can be bound in global hotkey settings.
+  * added option to highlight party members during combat
+  * added option to highlight self during combat
+  * added option to highlight enemies during combat
+  * added option (Display -> Show mine support radius as overlay) that will highlight tiles covered by mine supports, instead of drawing radius around supports. Turned on by default.
+ 
 $size[14]{$u{Update for 30.06.24:}
   * fixed startup buffs not working
   * fixed chat losing focus when items stack in inventory 
