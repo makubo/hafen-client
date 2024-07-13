@@ -3,7 +3,7 @@ package haven;
 import java.util.function.Function;
 
 public class SquareRadiiOverlay {
-    private final Area area;
+    private Area area;
     private final MCache map;
     private final MCache.OverlayInfo info;
     private MCache.Overlay ol;
@@ -18,9 +18,8 @@ public class SquareRadiiOverlay {
 	
 	this.gob = gob;
 	this.radius = radius;
-	int k = (int) (radius / MCache.tilesz.x) + 1;//add 1 tile border
-	Coord c = gob.rc.floor(MCache.tilesz);
-	area = Area.sized(c.sub(k, k), Coord.of(2 * k + 1));
+	
+	update();
     }
     
     private Boolean mask(Coord c) {
@@ -37,5 +36,13 @@ public class SquareRadiiOverlay {
 	if(ol == null) {return;}
 	ol.destroy();
 	ol = null;
+    }
+    
+    public void update() {
+	int k = (int) (radius / MCache.tilesz.x) + 1;//add 1 tile border
+	Coord c = gob.rc.floor(MCache.tilesz);
+	area = Area.sized(c.sub(k, k), Coord.of(2 * k + 1));
+	
+	if(ol != null) {ol.update(area);}
     }
 }
