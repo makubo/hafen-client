@@ -179,6 +179,7 @@ public class Window extends Widget implements DTarget {
     }
 
     protected void storeCfg() {
+	if(skipSavePos) {return;}
 	WidgetCfg.set(cfgName(caption()), cfg);
     }
 
