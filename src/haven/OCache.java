@@ -27,6 +27,7 @@
 package haven;
 
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 import java.lang.annotation.*;
 import java.lang.reflect.*;
@@ -73,6 +74,7 @@ public class OCache implements Iterable<Gob> {
 
     public OCache(Glob glob) {
 	this.glob = glob;
+	//TODO: add disposal in case OCache (session) is destroyed?
 	callback(Gob.CHANGED);
 	CFG.DISPLAY_GOB_HITBOX.observe(cfg -> gobAction(Gob::hitboxUpdated));
 	CFG.DISPLAY_GOB_HITBOX_TOP.observe(cfg -> gobAction(Gob::hitboxUpdated));
@@ -88,6 +90,15 @@ public class OCache implements Iterable<Gob> {
 	CFG.HIGHLIGHT_ENEMY_IN_COMBAT.observe(cfg -> gobAction(Gob::tagsUpdated));
 	CFG.SHOW_CONTAINER_FULLNESS.observe(cfg -> gobAction(Gob::infoUpdated));
 	CFG.SHOW_PROGRESS_COLOR.observe(cfg -> gobAction(Gob::infoUpdated));
+	
+	CFG.COLOR_GOB_READY.observe(cfg -> gobAction(Gob::colorUpdated));
+	CFG.COLOR_GOB_FULL.observe(cfg -> gobAction(Gob::colorUpdated));
+	CFG.COLOR_GOB_EMPTY.observe(cfg -> gobAction(Gob::colorUpdated));
+	CFG.COLOR_GOB_PARTY.observe(cfg -> gobAction(Gob::colorUpdated));
+	CFG.COLOR_GOB_LEADER.observe(cfg -> gobAction(Gob::colorUpdated));
+	CFG.COLOR_GOB_SELF.observe(cfg -> gobAction(Gob::colorUpdated));
+	CFG.COLOR_GOB_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated));
+	CFG.COLOR_GOB_COMBAT_TARGET.observe(cfg -> gobAction(Gob::colorUpdated));
     }
     
     public void gobAction(Consumer<Gob> action) {

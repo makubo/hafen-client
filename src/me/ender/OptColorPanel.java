@@ -29,6 +29,37 @@ public class OptColorPanel {
 	
 	my = Math.max(my, y);
 	
+	x += UI.scale(250);
+	y = START;
+	
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_READY, "Workstation ready", true), x, y);
+	
+	y+= STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_FULL, "Container: Full", true), x, y);
+	
+	y+= STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_EMPTY, "Container: Empty", true), x, y);
+	
+	y+= STEP;
+	
+	//combat
+	y+= STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_SELF, "Combat highlight: Self", true), x, y);
+	
+	y+= STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_LEADER, "Combat highlight: Leader", true), x, y);
+	
+	y+= STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_PARTY, "Combat highlight: Party", true), x, y);
+	
+	y+= STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_IN_COMBAT, "Combat highlight: Enemy", true), x, y);
+	
+	y+= STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_COMBAT_TARGET, "Combat highlight: Current target", true), x, y);
+	
+	my = Math.max(my, y);
+	
 	panel.add(wnd.new PButton(UI.scale(200), "Back", 27, wnd.main), new Coord(0, my + UI.scale(35)));
 	panel.pack();
 	title.c.x = (panel.sz.x - title.sz.x) / 2;

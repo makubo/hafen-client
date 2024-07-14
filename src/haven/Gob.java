@@ -44,14 +44,6 @@ import java.util.function.Supplier;
 import static haven.OCache.*;
 
 public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, EquipTarget, RandomSource {
-    private static final Color COL_READY = new Color(16, 255, 16, 128);
-    private static final Color COL_FULL = new Color(215, 63, 250, 64);
-    private static final Color COL_EMPTY = new Color(104, 213, 253, 64);
-    private static final Color COL_PARTY = new Color(16, 255, 16, 200);
-    private static final Color COL_LEADER = new Color(16, 64, 255, 200);
-    private static final Color COL_SELF = new Color(2, 253, 177, 200);
-    private static final Color COL_IN_COMBAT = new Color(246, 86, 153, 200);
-    private static final Color COL_COMBAT_TARGET = new Color(255, 0, 0, 200);
     public Coord2d rc;
     public double a;
     public boolean virtual = false;
@@ -1485,6 +1477,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     
     public void tagsUpdated() {status.update(StatusType.tags);}
     
+    public void colorUpdated() {status.update(StatusType.color);}
+    
     private static void updateStatus(UI ui, long gobId, StatusType type) {
 	Gob gob = ui.sess.glob.oc.getgob(gobId);
 	if(gob == null) {return;}
@@ -1541,7 +1535,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    info.clean();
 	}
     
-	if(status.updated(StatusType.tags, StatusType.info)) {
+	if(status.updated(StatusType.tags, StatusType.info, StatusType.color)) {
 	    updateColor();
 	}
 	
@@ -1554,14 +1548,14 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	Color c = null;
 	if(CFG.SHOW_PROGRESS_COLOR.get() && is(GobTag.PROGRESSING)) {
 	    if(is(GobTag.READY)) {
-		c = COL_READY;
+		c = CFG.COLOR_GOB_READY.get();
 	    }
 	}
 	if(CFG.SHOW_CONTAINER_FULLNESS.get() && is(GobTag.CONTAINER)) {
 	    if(is(GobTag.EMPTY)) {
-		c = COL_EMPTY;
+		c = CFG.COLOR_GOB_EMPTY.get();
 	    } else if(is(GobTag.FULL)) {
-		c = COL_FULL;
+		c = CFG.COLOR_GOB_FULL.get();
 	    }
 	}
 	
@@ -1571,21 +1565,21 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    boolean isMe = Boolean.TRUE.equals(isMe());
 	    if(!isMe && CFG.HIGHLIGHT_PARTY_IN_COMBAT.get()) {
 		if(is(GobTag.LEADER)) {
-		    c = COL_LEADER;
+		    c = CFG.COLOR_GOB_LEADER.get();
 		} else if(inParty) {
-		    c = COL_PARTY;
+		    c = CFG.COLOR_GOB_PARTY.get();
 		}
 	    }
 	    
 	    if(isMe && CFG.HIGHLIGHT_SELF_IN_COMBAT.get()) {
-		c = COL_SELF;
+		c = CFG.COLOR_GOB_SELF.get();
 	    }
 	    
 	    if(!inParty && !isMe && CFG.HIGHLIGHT_ENEMY_IN_COMBAT.get()) {
 		if(is(GobTag.COMBAT_TARGET)) {
-		    c = COL_COMBAT_TARGET;
+		    c = CFG.COLOR_GOB_COMBAT_TARGET.get();
 		} else if(is(GobTag.IN_COMBAT)) {
-		    c = COL_IN_COMBAT;
+		    c = CFG.COLOR_GOB_IN_COMBAT.get();
 		}
 	    }
 	}
@@ -1626,7 +1620,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     }
     
     private enum StatusType {
-	drawable, overlay, tags, pose, id, info, kin, hitbox, icon, visibility, marker, combat
+	drawable, overlay, tags, pose, id, info, kin, hitbox, icon, visibility, marker, combat, color
     }
     
     private void updateMovingInfo(GAttrib a, GAttrib prev) {

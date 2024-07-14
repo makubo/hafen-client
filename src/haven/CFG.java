@@ -103,6 +103,15 @@ public class CFG<T> {
     public static final CFG<Color> COLOR_HBOX_SOLID = new CFG<>("colors.hit_box_solid", new Color(178, 71, 178, 255));
     public static final CFG<Color> COLOR_HBOX_PASSABLE = new CFG<>("colors.hit_box_passable", new Color(105, 207, 124, 255));
     
+    public static final CFG<Color> COLOR_GOB_READY = new CFG<>("colors.gob.ready", new Color(16, 255, 16, 128));
+    public static final CFG<Color> COLOR_GOB_FULL = new CFG<>("colors.gob.full", new Color(215, 63, 250, 64));
+    public static final CFG<Color> COLOR_GOB_EMPTY = new CFG<>("colors.gob.empty", new Color(104, 213, 253, 64));
+    public static final CFG<Color> COLOR_GOB_PARTY = new CFG<>("colors.gob.party", new Color(16, 255, 16, 200));
+    public static final CFG<Color> COLOR_GOB_LEADER = new CFG<>("colors.gob.leader", new Color(16, 64, 255, 200));
+    public static final CFG<Color> COLOR_GOB_SELF = new CFG<>("colors.gob.self", new Color(2, 253, 177, 200));
+    public static final CFG<Color> COLOR_GOB_IN_COMBAT = new CFG<>("colors.gob.in_combat", new Color(246, 86, 153, 200));
+    public static final CFG<Color> COLOR_GOB_COMBAT_TARGET = new CFG<>("colors.gob.combat_target", new Color(255, 0, 0, 200));
+    
     /**Show stack's hover inventory widgets only if SHIFT is pressed*/
     public static final CFG<Boolean> UI_STACK_SUB_INV_ON_SHIFT = new CFG<>("ui.stack.sub_inv_on_shift", false);
     /**Unpack stacks into single items for extra inventory's list*/
