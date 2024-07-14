@@ -16,7 +16,7 @@ public class OptColorPanel {
 	
 	x = 0;
 	y = START;
-	panel.add(new CFGColorBtn(CFG.COLOR_MINE_SUPPORT_OVERLAY, "Mine support overlay"), x, y);
+	panel.add(new CFGColorBtn(CFG.COLOR_MINE_SUPPORT_OVERLAY, "Mine support overlay", false), x, y);
 	
 	y+= STEP;
 	

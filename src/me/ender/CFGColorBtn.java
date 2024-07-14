@@ -8,12 +8,17 @@ import java.awt.image.BufferedImage;
 public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
     private static final BufferedImage box = Resource.loadsimg("gfx/hud/color/box");
     private static final Coord isz = Coord.of(box.getWidth(), box.getHeight());
+    private static final Coord pad = UI.scale(Coord.of(2));
+    private static final Coord csz = isz.sub(pad.mul(2));
     private final CFG<Color> cfg;
     private final String title;
+    private final boolean hasAlpha;
+    private boolean dis;
     
-    public CFGColorBtn(CFG<Color> cfg, String title) {
+    public CFGColorBtn(CFG<Color> cfg, String title, boolean hasAlpha) {
 	super(drawUp(cfg, title), drawDown(cfg, title), drawHover(cfg, title));
 	this.title = title;
+	this.hasAlpha = hasAlpha;
 	recthit = true;
 	
 	this.cfg = cfg;
@@ -21,13 +26,32 @@ public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
     }
     
     @Override
+    public boolean mousedown(Coord c, int button) {
+	if(dis) {return false;}
+	return super.mousedown(c, button);
+    }
+    
+    @Override
+    public boolean mouseup(Coord c, int button) {
+	if(dis) {return false;}
+	return super.mouseup(c, button);
+    }
+    
+    @Override
+    public void mousemove(Coord c) {
+	if(dis) {return;}
+	super.mousemove(c);
+    }
+    
+    @Override
     public void click() {
+	if(dis) {return;}
 	Widget root = ui.gui;
 	if(root == null) {
 	    root = ui.root;
 	}
-	//TODO: disable button while window is open
-	root.add(new CFGColorWnd(cfg), 100, 100); //TODO: set position close to button?
+	dis = true;
+	root.add(new CFGColorWnd(cfg, hasAlpha), ui.mc.add(10, -45)).onDestroyed(widget -> dis = false);
     }
     
     @Override
@@ -41,9 +65,9 @@ public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
 	Graphics g = ret.getGraphics();
 	
 	g.setColor(cfg.get());
-	g.fillRect(2, 2, isz.x-4, isz.y-4);
+	g.fillRect(pad.x, pad.y, csz.x, csz.y);
 	
-	g.setColor(Color.WHITE);
+	g.setColor(textColor);
 	g.drawImage(box, 0,0, null);
 	
 	g.dispose();

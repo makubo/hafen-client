@@ -127,9 +127,33 @@ public class ClientUtils {
 	return c;
     }
     
+    public static int clamp(int value, int min, int max) {
+	return Math.max(Math.min(max, value), min);
+    }
+    
+    public static int str2cc(String value) {
+	return clamp(str2int(value), 0, 255);
+    }
+    
+    public static int str2int(String value) {
+	int result = 0;
+	if(value != null) {
+	    try {
+		result = Integer.parseInt(value);
+	    } catch (Exception ignored) {}
+	}
+	return result;
+    }
+    
     public static String color2hex(Color col) {
+	return color2hex(col, true);
+    }
+    
+    public static String color2hex(Color col, boolean hasAlpha) {
 	if(col != null) {
-	    return Integer.toHexString(col.getRGB());
+	    int rgb = col.getRGB();
+	    if(!hasAlpha) {rgb = rgb & 0xffffff;}
+	    return Integer.toHexString(rgb);
 	}
 	return null;
     }
