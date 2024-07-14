@@ -686,6 +686,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	disposables.add(CFG.COLOR_MINE_SUPPORT_OVERLAY.observe(this::updateSupportOverlayColor));
 	disposables.add(CFG.COLOR_TILE_GRID.observe(this::updateGridMat));
 	updateSupportOverlay(null);
+	updateGridMat(null);
     }
     
     @Override
