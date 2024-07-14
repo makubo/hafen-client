@@ -64,7 +64,8 @@ public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
 	BufferedImage ret = TexI.mkbuf(isz);
 	Graphics g = ret.getGraphics();
 	
-	g.setColor(cfg.get());
+	Color col = cfg.get();
+	g.setColor(new Color(col.getRed(), col.getGreen(), col.getBlue(), 255));
 	g.fillRect(pad.x, pad.y, csz.x, csz.y);
 	
 	g.setColor(textColor);
