@@ -1,5 +1,6 @@
 $size[14]{$u{Update for 14.07.24:}
   * added Options -> Colors panel - allows to tweak various colors used by client
+  * added Options -> Display -> Colorize ridge tiles
  
 $size[14]{$u{Update for 13.07.24:}
   * added action to aggro creature nearest to cursor that is not in your party (eXtra -> Automation -> Aggro one). Also, can be bound in global hotkey settings.
