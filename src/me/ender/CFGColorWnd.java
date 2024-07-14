@@ -10,16 +10,19 @@ public class CFGColorWnd extends WindowX {
     private static final Coord BOX = UI.scale(Coord.of(45));
     private static final Coord HALF = Coord.of(BOX.x, BOX.y / 2);
     private static final int PAD = UI.scale(5);
-    private static final int BTN_W = UI.scale(50);
+    private static final int BTN_PAD = UI.scale(15);
+    private static final int BTN_W = UI.scale(55);
     private static final int HEX_W = UI.scale(70);
     private static final int TEXT_W = UI.scale(30);
     
     private final TextEntry txtHex, txtR, txtG, txtB, txtA;
+    private final CFG<Color> cfg;
     private Color col;
     private final boolean hasAlpha;
     
     public CFGColorWnd(CFG<Color> cfg, boolean hasAlpha) {
 	super(Coord.z, "Set Color");
+	this.cfg = cfg;
 	justclose = true;
 	skipInitPos = skipSavePos = true;
 	this.hasAlpha = hasAlpha;
@@ -46,18 +49,25 @@ public class CFGColorWnd extends WindowX {
 	    txtA = null;
 	    composer.addr(label, txtHex);
 	}
-	composer.hpad(0);
+	composer.hpad(0).hmrgn(BTN_PAD).add(PAD);
 	
 	composer.addr(
-	    new Button(BTN_W, "Apply", () -> {
-		cfg.set(col);
-	    }),
-	    new Button(BTN_W, "Save", () -> {
-		cfg.set(col);
-		close();
-	    }));
+	    new Button(BTN_W, "Apply", () -> update(col, false)),
+	    new Button(BTN_W, "Save", () -> update(col, true)),
+	    new Button(BTN_W, "Reset", () -> update(cfg.def, false))
+	);
 	
 	pack();
+    }
+    
+    private void update(Color c, boolean close) {
+	if(col != c) {
+	    col = c;
+	    updateHEX();
+	    updateRGB();
+	}
+	cfg.set(c);
+	if(close) {close();}
     }
     
     private void rgbUpdated() {
@@ -67,11 +77,19 @@ public class CFGColorWnd extends WindowX {
 	    ClientUtils.str2cc(txtB.text()),
 	    hasAlpha ? ClientUtils.str2cc(txtA.text()) : 255
 	);
-	txtHex.settext(ClientUtils.color2hex(col, hasAlpha).toUpperCase());
+	updateHEX();
     }
     
     private void hexUpdated() {
 	col = ClientUtils.hex2color(txtHex.text(), col);
+	updateRGB();
+    }
+    
+    private void updateHEX() {
+	txtHex.settext(ClientUtils.color2hex(col, hasAlpha).toUpperCase());
+    }
+    
+    private void updateRGB() {
 	txtR.settext(Integer.toString(col.getRed()));
 	txtG.settext(Integer.toString(col.getGreen()));
 	txtB.settext(Integer.toString(col.getBlue()));
