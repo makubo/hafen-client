@@ -180,7 +180,7 @@ public class PathQueue {
 		if(id.contains("/vehicle/snekkja")) {
 		    passenger = !pos.equals("m0");
 		} else if(id.contains("/vehicle/knarr")) {
-		    passenger = !pos.equals("m0"); //TODO: check if knarr works properly
+		    passenger = !pos.equals("m9");
 		} else if(id.contains("/vehicle/rowboat")) {
 		    passenger = !pos.equals("d");
 		} else if(id.contains("/vehicle/spark")) {
