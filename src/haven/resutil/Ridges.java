@@ -56,8 +56,8 @@ public class Ridges implements MapMesh.ConsHooks {
 	CFG.COLOR_RIDGE_BOX.observe(cfg -> RIDGE_MAT = makeRidgeMat());
     }
     
-    private static Pipe.Op makeRidgeMat(){
-	return new MixColor(CFG.COLOR_RIDGE_BOX.get());
+    private static Pipe.Op makeRidgeMat() {
+	return Pipe.Op.compose(new MixColor(CFG.COLOR_RIDGE_BOX.get()), States.maskdepth);
     }
 
     public interface RidgeTile {
