@@ -30,8 +30,8 @@ package haven;
 import java.util.HashSet;
 import java.util.LinkedList;
 import haven.render.*;
-import me.ender.CFGColorBtn;
 import me.ender.GobInfoOpts;
+import me.ender.OptColorPanel;
 
 import java.awt.event.KeyEvent;
 import java.util.Set;
@@ -42,8 +42,9 @@ public class OptWnd extends WindowX {
     public static final Coord PANEL_POS = new Coord(220, 30);
     public static final Coord Q_TYPE_PADDING = new Coord(3, 0);
     private final Panel display, general, camera, shortcuts, mapping, uipanel, combat;
+    private final Panel color;
     public final Panel main;
-    private static final Text.Foundry LBL_FNT = new Text.Foundry(sans, 14);
+    public static final Text.Foundry LBL_FNT = new Text.Foundry(sans, 14);
     public Panel current;
     private WidgetList<KeyBinder.ShortcutWidget> shortcutList;
     
@@ -789,6 +790,7 @@ public class OptWnd extends WindowX {
 	camera = add(new Panel());
 	shortcuts = add(new Panel());
 	mapping = add(new Panel());
+	color = add(new Panel());
 
 	int row = 0, colum = 0, mrow = 1;
     
@@ -806,6 +808,7 @@ public class OptWnd extends WindowX {
 	addPanelButton("General", 'g', general, colum, row++);
 	addPanelButton("UI", 'u', uipanel, colum, row++);
 	addPanelButton("Display", 'd', display, colum, row++);
+	addPanelButton("Colors", 'o', color, colum, row++);
 	addPanelButton("Combat", 'b', combat, colum, row++);
 	addPanelButton("Map upload", 'm', mapping, colum, row++);
 
@@ -837,6 +840,7 @@ public class OptWnd extends WindowX {
 	initGeneralPanel(general);
 	initCameraPanel();
 	initMappingPanel(mapping);
+	OptColorPanel.init(this, color);
 	main.pack();
 	chpanel(main);
     }
@@ -1148,8 +1152,7 @@ public class OptWnd extends WindowX {
 	panel.add(new CFGBox("Show object radius", CFG.SHOW_GOB_RADIUS, "Shows radius of mine supports, beehives etc.", true), x, y);
 	
 	y += STEP;
-	tx = panel.add(new CFGBox("Show mine support radius as overlay", CFG.SHOW_MINE_SUPPORT_AS_OVERLAY, "Will highlight tiles covered by mine supports, instead of drawing radius around supports."), x, y).sz.x;
-	panel.add(new CFGColorBtn(CFG.COLOR_MINE_SUPPORT_OVERLAY), tx + 10, y);
+	panel.add(new CFGBox("Show mine support radius as overlay", CFG.SHOW_MINE_SUPPORT_AS_OVERLAY, "Will highlight tiles covered by mine supports, instead of drawing radius around supports."), x, y);
 
 	y += STEP;
 	panel.add(new Button(UI.scale(150), "Show as buffs", false) {

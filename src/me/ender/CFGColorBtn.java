@@ -9,9 +9,11 @@ public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
     private static final BufferedImage box = Resource.loadsimg("gfx/hud/color/box");
     private static final Coord isz = Coord.of(box.getWidth(), box.getHeight());
     private final CFG<Color> cfg;
+    private final String title;
     
-    public CFGColorBtn(CFG<Color> cfg) {
-	super(drawUp(cfg), drawDown(cfg), drawHover(cfg));
+    public CFGColorBtn(CFG<Color> cfg, String title) {
+	super(drawUp(cfg, title), drawDown(cfg, title), drawHover(cfg, title));
+	this.title = title;
 	recthit = true;
 	
 	this.cfg = cfg;
@@ -34,7 +36,7 @@ public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
 	super.destroy();
     }
     
-    private static BufferedImage drawUp(CFG<Color> cfg) {
+    private static BufferedImage draw(CFG<Color> cfg, String title, Color textColor) {
 	BufferedImage ret = TexI.mkbuf(isz);
 	Graphics g = ret.getGraphics();
 	
@@ -46,22 +48,26 @@ public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
 	
 	g.dispose();
 	
-	return ret;
+	return ItemInfo.catimgsh(UI.scale(5), ret, Text.render(title, textColor).img);
     }
     
-    private static BufferedImage drawDown(CFG<Color> cfg) {
-	return drawUp(cfg);
+    private static BufferedImage drawUp(CFG<Color> cfg, String title) {
+	return draw(cfg, title, Color.WHITE);
     }
     
-    private static BufferedImage drawHover(CFG<Color> cfg) {
-	return drawUp(cfg);
+    private static BufferedImage drawDown(CFG<Color> cfg, String title) {
+	return draw(cfg, title, Color.LIGHT_GRAY);
+    }
+    
+    private static BufferedImage drawHover(CFG<Color> cfg, String title) {
+	return draw(cfg, title, Color.YELLOW);
     }
     
     @Override
     public void updated(CFG<Color> cfg) {
-	up = drawUp(cfg);
-	down = drawDown(cfg);
-	hover = drawHover(cfg);
+	up = drawUp(cfg, title);
+	down = drawDown(cfg, title);
+	hover = drawHover(cfg, title);
 	redraw();
     }
 }
