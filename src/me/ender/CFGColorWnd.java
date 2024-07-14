@@ -54,7 +54,7 @@ public class CFGColorWnd extends WindowX {
 	composer.addr(
 	    new Button(BTN_W, "Apply", () -> update(col, false)),
 	    new Button(BTN_W, "Save", () -> update(col, true)),
-	    new Button(BTN_W, "Reset", () -> update(cfg.def, false))
+	    new Button(BTN_W, "Reset", () -> update(this.cfg.def, false))
 	);
 	
 	pack();
@@ -86,15 +86,15 @@ public class CFGColorWnd extends WindowX {
     }
     
     private void updateHEX() {
-	txtHex.settext(ClientUtils.color2hex(col, hasAlpha).toUpperCase());
+	txtHex.rsettext(ClientUtils.color2hex(col, hasAlpha).toUpperCase());
     }
     
     private void updateRGB() {
-	txtR.settext(Integer.toString(col.getRed()));
-	txtG.settext(Integer.toString(col.getGreen()));
-	txtB.settext(Integer.toString(col.getBlue()));
+	txtR.rsettext(Integer.toString(col.getRed()));
+	txtG.rsettext(Integer.toString(col.getGreen()));
+	txtB.rsettext(Integer.toString(col.getBlue()));
 	if(txtA != null) {
-	    txtA.settext(Integer.toString(col.getAlpha()));
+	    txtA.rsettext(Integer.toString(col.getAlpha()));
 	}
     }
     
