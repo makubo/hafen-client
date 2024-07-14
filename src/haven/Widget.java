@@ -63,6 +63,7 @@ public class Widget {
     public boolean invisibleKeys = false;
     private final List<Action1<Widget>> boundListeners = new LinkedList<>();
     private final List<Action2<Widget, Boolean>> focusListeners = new LinkedList<>();
+    private final List<Action1<Widget>> destroyListeners = new LinkedList<>();
     
     @dolda.jglob.Discoverable
     @Target(ElementType.TYPE)
@@ -534,6 +535,7 @@ public class Widget {
     public void dispose() {
 	synchronized (boundListeners) {boundListeners.clear();}
 	synchronized (focusListeners) {focusListeners.clear();}
+	synchronized (destroyListeners) {destroyListeners.clear();}
         disposed = true;
     }
     
@@ -566,6 +568,7 @@ public class Widget {
     }
 
     public void destroy() {
+	synchronized (destroyListeners) {destroyListeners.forEach(action -> action.call(this));}
 	remove();
 	rdispose();
     }
@@ -1600,6 +1603,9 @@ public class Widget {
     
     public void onFocused(Action2<Widget, Boolean> action) {
 	synchronized (focusListeners) { focusListeners.add(action); }
+    }
+    public void onDestroyed(Action1<Widget> action) {
+	synchronized (destroyListeners) { destroyListeners.add(action); }
     }
     public void i10n(boolean on) {
 	i10n = on;
