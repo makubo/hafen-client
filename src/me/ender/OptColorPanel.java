@@ -21,6 +21,12 @@ public class OptColorPanel {
 	y+= STEP;
 	panel.add(new CFGColorBtn(CFG.COLOR_TILE_GRID, "Tile grid", true), x, y);
 	
+	y+= STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_HBOX_SOLID, "Hit box: Solid", true), x, y);
+	
+	y+= STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_HBOX_PASSABLE, "Hit box: Passable", true), x, y);
+	
 	my = Math.max(my, y);
 	
 	panel.add(wnd.new PButton(UI.scale(200), "Back", 27, wnd.main), new Coord(0, my + UI.scale(35)));

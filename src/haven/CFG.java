@@ -100,6 +100,8 @@ public class CFG<T> {
     //Color settings
     public static final CFG<Color> COLOR_MINE_SUPPORT_OVERLAY = new CFG<>("colors.mine_support_overlay", new Color(149, 246, 194));
     public static final CFG<Color> COLOR_TILE_GRID = new CFG<>("colors.tile_grid", new Color(255, 255, 255, 48));
+    public static final CFG<Color> COLOR_HBOX_SOLID = new CFG<>("colors.hit_box_solid", new Color(178, 71, 178, 255));
+    public static final CFG<Color> COLOR_HBOX_PASSABLE = new CFG<>("colors.hit_box_passable", new Color(105, 207, 124, 255));
     
     /**Show stack's hover inventory widgets only if SHIFT is pressed*/
     public static final CFG<Boolean> UI_STACK_SUB_INV_ON_SHIFT = new CFG<>("ui.stack.sub_inv_on_shift", false);

@@ -13,16 +13,27 @@ public class Hitbox extends SlottedNode implements Rendered {
     private final Gob gob;
     private static final Map<Resource, Model> MODEL_CACHE = new HashMap<>();
     private static final float Z = 0.1f;
-    private static final Color SOLID_COLOR = new Color(178, 71, 178, 255);
-    private static final Color PASSABLE_COLOR = new Color(105, 207, 124, 255);
     private static final float PASSABLE_WIDTH = 1.5f;
     private static final float SOLID_WIDTH = 3f;
     private static final Pipe.Op TOP = Pipe.Op.compose(Rendered.last, States.Depthtest.none, States.maskdepth);
-    private static final Pipe.Op SOLID = Pipe.Op.compose(new BaseColor(SOLID_COLOR), new States.LineWidth(SOLID_WIDTH));
-    private static final Pipe.Op PASSABLE = Pipe.Op.compose(new BaseColor(PASSABLE_COLOR), new States.LineWidth(PASSABLE_WIDTH));
-    private static final Pipe.Op SOLID_TOP = Pipe.Op.compose(SOLID, TOP);
-    private static final Pipe.Op PASSABLE_TOP = Pipe.Op.compose(PASSABLE, TOP);
+    private static Pipe.Op SOLID;
+    private static Pipe.Op PASSABLE;
+    private static Pipe.Op SOLID_TOP;
+    private static Pipe.Op PASSABLE_TOP;
     private Pipe.Op state = SOLID;
+    
+    static {
+	CFG.COLOR_HBOX_SOLID.observe(Hitbox::updateColors);
+	CFG.COLOR_HBOX_PASSABLE.observe(Hitbox::updateColors);
+	updateColors(null);
+    }
+    
+    private static void updateColors(CFG<Color> cfg) {
+	SOLID = Pipe.Op.compose(new BaseColor(CFG.COLOR_HBOX_SOLID.get()), new States.LineWidth(SOLID_WIDTH));
+	PASSABLE = Pipe.Op.compose(new BaseColor(CFG.COLOR_HBOX_PASSABLE.get()), new States.LineWidth(PASSABLE_WIDTH));
+	SOLID_TOP = Pipe.Op.compose(SOLID, TOP);
+	PASSABLE_TOP = Pipe.Op.compose(PASSABLE, TOP);
+    }
     
     private Hitbox(Gob gob) {
 	model = getModel(gob);
