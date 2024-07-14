@@ -38,6 +38,7 @@ public class CFG<T> {
     public static final CFG<Boolean> SIMPLE_CROPS = new CFG<>("display.simple_crops", false);
     public static final CFG<Boolean> NO_TILE_TRANSITION = new CFG<>("display.no_tile_transition", false);
     public static final CFG<Boolean> FLAT_TERRAIN = new CFG<>("display.flat_terrain", false);
+    public static final CFG<Boolean> DISPLAY_RIDGE_BOX = new CFG<>("display.ridge_box", false);
     public static final CFG<Boolean> COLORIZE_DEEP_WATER = new CFG<>("display.colored_deep_water", false);
     public static final CFG<Integer> DISPLAY_SCALE_CUPBOARDS = new CFG<>("display.scale.cupboards", 100);
     public static final CFG<Integer> DISPLAY_SCALE_WALLS = new CFG<>("display.scale.walls", 100);
@@ -102,6 +103,7 @@ public class CFG<T> {
     public static final CFG<Color> COLOR_TILE_GRID = new CFG<>("colors.tile_grid", new Color(255, 255, 255, 48));
     public static final CFG<Color> COLOR_HBOX_SOLID = new CFG<>("colors.hit_box_solid", new Color(178, 71, 178, 255));
     public static final CFG<Color> COLOR_HBOX_PASSABLE = new CFG<>("colors.hit_box_passable", new Color(105, 207, 124, 255));
+    public static final CFG<Color> COLOR_RIDGE_BOX = new CFG<>("colors.ridge_box", new Color(255, 32, 64, 128));
     
     public static final CFG<Color> COLOR_GOB_READY = new CFG<>("colors.gob.ready", new Color(16, 255, 16, 128));
     public static final CFG<Color> COLOR_GOB_FULL = new CFG<>("colors.gob.full", new Color(215, 63, 250, 64));

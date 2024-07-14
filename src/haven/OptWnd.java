@@ -1104,6 +1104,9 @@ public class OptWnd extends WindowX {
 	panel.add(new CFGBox("Make terrain flat", CFG.FLAT_TERRAIN), x, y);
 	
 	y += STEP;
+	panel.add(new CFGBox("Colorize ridge tiles", CFG.DISPLAY_RIDGE_BOX, "Makes it easier to properly approach ridge for climbing"), x, y);
+	
+	y += STEP;
 	panel.add(new CFGBox("Darken deep ocean tiles", CFG.COLORIZE_DEEP_WATER), x, y);
 	
 	y += STEP;

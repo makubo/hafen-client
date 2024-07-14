@@ -31,6 +31,9 @@ public class OptColorPanel {
 	tx += panel.add(new CFGColorBtn(CFG.COLOR_HBOX_SOLID, "Solid", true), tx, y).sz.x;
 	panel.add(new CFGColorBtn(CFG.COLOR_HBOX_PASSABLE, "Passable", true), tx + H_STEP, y);
 	
+	y += STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_RIDGE_BOX, "Ridge highlight", true), x, y);
+	
 	my = Math.max(my, y);
 	
 	x += UI.scale(200);
