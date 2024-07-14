@@ -67,6 +67,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
     private static final Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
     private long mapupdate = 0;
     String ttip = null;
+    private final List<Disposable> disposables = new LinkedList<>();
 
     private boolean showgrid;
 
@@ -678,20 +679,27 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	this.clickmap = new ClickMap();
 	clmaptree.add(clickmap);
 	setcanfocus(true);
-	CFG.DISPLAY_GOB_HITBOX.observe(cfg -> updatePlobDrawable());
-	CFG.DISPLAY_GOB_HITBOX_TOP.observe(cfg -> updatePlobDrawable());
-	CFG.SHOW_GOB_RADIUS.observe(cfg -> updateSupportOverlay());
-	CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.observe(cfg -> updateSupportOverlay());
-	updateSupportOverlay();
+	disposables.add(CFG.DISPLAY_GOB_HITBOX.observe(this::updatePlobDrawable));
+	disposables.add(CFG.DISPLAY_GOB_HITBOX_TOP.observe(this::updatePlobDrawable));
+	disposables.add(CFG.SHOW_GOB_RADIUS.observe(this::updateSupportOverlay));
+	disposables.add(CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.observe(this::updateSupportOverlay));
+	updateSupportOverlay(null);
     }
     
-    private void updatePlobDrawable() {
+    @Override
+    public void destroy() {
+	disposables.forEach(Disposable::dispose);
+	disposables.clear();
+	super.destroy();
+    }
+    
+    private void updatePlobDrawable(CFG<Boolean> cfg) {
 	if(placing != null && placing.done()) {
 	    placing.get().drawableUpdated();
 	}
     } 
     
-    private void updateSupportOverlay() {
+    private void updateSupportOverlay(CFG<Boolean> cfg) {
 	boolean show = CFG.SHOW_GOB_RADIUS.get() && CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.get();
 	if(show && !visol(MSRad.OL_TAG)) {
 	    enol(MSRad.OL_TAG);

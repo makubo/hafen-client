@@ -173,8 +173,9 @@ public class CFG<T> {
 	if(observe) {observe();}
     }
 
-    public void observe(Observer<T> observer) {
+    public Disposable observe(Observer<T> observer) {
 	this.observers.add(observer);
+	return new ObserverHolder<>(this, observer);
     }
 
     public void unobserve(Observer<T> observer) {
@@ -270,5 +271,24 @@ public class CFG<T> {
 	    }
 	}
 	return cur;
+    }
+    
+    private static class ObserverHolder<T> implements Disposable {
+	private CFG<T> cfg;
+	private Observer<T> observer;
+	
+	private ObserverHolder(CFG<T> cfg, Observer<T> observer) {
+	    this.cfg = cfg;
+	    this.observer = observer;
+	}
+	
+	@Override
+	public void dispose() {
+	    if(cfg != null) {
+		cfg.unobserve(observer);
+		cfg = null;
+		observer = null;
+	    }
+	}
     }
 }
