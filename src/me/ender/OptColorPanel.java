@@ -19,6 +19,7 @@ public class OptColorPanel {
 	panel.add(new CFGColorBtn(CFG.COLOR_MINE_SUPPORT_OVERLAY, "Mine support overlay", false), x, y);
 	
 	y+= STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_TILE_GRID, "Tile grid", true), x, y);
 	
 	my = Math.max(my, y);
 	

@@ -684,6 +684,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	disposables.add(CFG.SHOW_GOB_RADIUS.observe(this::updateSupportOverlay));
 	disposables.add(CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.observe(this::updateSupportOverlay));
 	disposables.add(CFG.COLOR_MINE_SUPPORT_OVERLAY.observe(this::updateSupportOverlayColor));
+	disposables.add(CFG.COLOR_TILE_GRID.observe(this::updateGridMat));
 	updateSupportOverlay(null);
     }
     
@@ -698,7 +699,15 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	if(placing != null && placing.done()) {
 	    placing.get().drawableUpdated();
 	}
-    } 
+    }
+    
+    private void updateGridMat(CFG<Color> cfg) {
+	gridmat = makeGridMat();
+	if(gridlines != null) {
+	    showgrid(false);
+	    showgrid(true);
+	}
+    }
     
     private void updateSupportOverlayColor(CFG<Color> cfg) {
 	Overlay o = ols.remove(MSRad.safeol);
@@ -1072,9 +1081,13 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    ol.tick();
     }
 
-    private static final Material gridmat = new Material(new BaseColor(255, 255, 255, 48), States.maskdepth, new MapMesh.OLOrder(null),
-							 Location.xlate(new Coord3f(0, 0, 0.5f))   /* Apparently, there is no depth bias for lines. :P */
-							 );
+    private static Material gridmat = makeGridMat();
+    private static Material makeGridMat() {
+	return new Material(new BaseColor(CFG.COLOR_TILE_GRID.get()), States.maskdepth, new MapMesh.OLOrder(null),
+	    Location.xlate(new Coord3f(0, 0, 0.5f))   /* Apparently, there is no depth bias for lines. :P */
+	);
+    }
+    
     private class GridLines extends MapRaster {
 	final Grid grid = new Grid<RenderTree.Node>() {
 		RenderTree.Node getcut(Coord cc) {
