@@ -683,6 +683,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	disposables.add(CFG.DISPLAY_GOB_HITBOX_TOP.observe(this::updatePlobDrawable));
 	disposables.add(CFG.SHOW_GOB_RADIUS.observe(this::updateSupportOverlay));
 	disposables.add(CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.observe(this::updateSupportOverlay));
+	disposables.add(CFG.COLOR_MINE_SUPPORT_OVERLAY.observe(this::updateSupportOverlayColor));
 	updateSupportOverlay(null);
     }
     
@@ -698,6 +699,11 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    placing.get().drawableUpdated();
 	}
     } 
+    
+    private void updateSupportOverlayColor(CFG<Color> cfg) {
+	Overlay o = ols.remove(MSRad.safeol);
+	if(o != null) {o.remove();}
+    }
     
     private void updateSupportOverlay(CFG<Boolean> cfg) {
 	boolean show = CFG.SHOW_GOB_RADIUS.get() && CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.get();

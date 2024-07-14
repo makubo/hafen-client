@@ -30,6 +30,7 @@ package haven;
 import java.util.HashSet;
 import java.util.LinkedList;
 import haven.render.*;
+import me.ender.CFGColorBtn;
 import me.ender.GobInfoOpts;
 
 import java.awt.event.KeyEvent;
@@ -1147,7 +1148,8 @@ public class OptWnd extends WindowX {
 	panel.add(new CFGBox("Show object radius", CFG.SHOW_GOB_RADIUS, "Shows radius of mine supports, beehives etc.", true), x, y);
 	
 	y += STEP;
-	panel.add(new CFGBox("Show mine support radius as overlay", CFG.SHOW_MINE_SUPPORT_AS_OVERLAY, "Will highlight tiles covered by mine supports, instead of drawing radius around supports."), x, y);
+	tx = panel.add(new CFGBox("Show mine support radius as overlay", CFG.SHOW_MINE_SUPPORT_AS_OVERLAY, "Will highlight tiles covered by mine supports, instead of drawing radius around supports."), x, y).sz.x;
+	panel.add(new CFGColorBtn(CFG.COLOR_MINE_SUPPORT_OVERLAY), tx + 10, y);
 
 	y += STEP;
 	panel.add(new Button(UI.scale(150), "Show as buffs", false) {

@@ -6,10 +6,10 @@ package haven.res.gfx.fx.msrad;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 import haven.*;
 import haven.render.*;
+import me.ender.CFGOverlayId;
 
 /* >spr: MSRad */
 @haven.FromResource(name = "gfx/fx/msrad", version = 16)
@@ -17,23 +17,11 @@ public class MSRad extends Sprite {
     public static boolean show = false;
     public static Collection<MSRad> current = new WeakList<>();
     public static final String OL_TAG = "mine_support";
-    private static final Color col = new Color(149, 246, 194);
-    private static final List<String> tags = Collections.singletonList(OL_TAG);
     final ColoredRadius circle;
     final SquareRadiiOverlay overlay;
     final Collection<RenderTree.Slot> slots = new ArrayList<>(1);
     
-    private static final MCache.OverlayInfo safeol = new MCache.OverlayInfo() {
-	final Material mat = new Material(BaseColor.fromColorAndAlpha(col, 0.25f), States.maskdepth);
-	final Material omat = new Material(BaseColor.fromColorAndAlpha(col, 0.75f), States.maskdepth);
-	
-	public Collection<String> tags() {return tags;}
-	
-	public Material mat() {return(mat);}
-	
-	@Override
-	public Material omat() {return omat;}
-    };
+    public static final MCache.OverlayInfo safeol = new CFGOverlayId(CFG.COLOR_MINE_SUPPORT_OVERLAY, OL_TAG);
     
     public MSRad(Owner owner, Resource res, float r, Color color1, Color color2) {
 	super(owner, res);

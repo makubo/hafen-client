@@ -97,6 +97,9 @@ public class CFG<T> {
     public static final CFG<Boolean> HUNGER_METER = new CFG<>("ui.hunger_meter", false);
     public static final CFG<Boolean> SHOW_BOT_MESSAGES = new CFG<>("ui.hide_bot_messages", true);
     
+    //Color settings
+    public static final CFG<Color> COLOR_MINE_SUPPORT_OVERLAY = new CFG<>("colors.mine_support_overlay", new Color(149, 246, 194));
+    
     /**Show stack's hover inventory widgets only if SHIFT is pressed*/
     public static final CFG<Boolean> UI_STACK_SUB_INV_ON_SHIFT = new CFG<>("ui.stack.sub_inv_on_shift", false);
     /**Unpack stacks into single items for extra inventory's list*/
