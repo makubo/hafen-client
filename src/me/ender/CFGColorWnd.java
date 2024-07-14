@@ -64,7 +64,7 @@ public class CFGColorWnd extends WindowX {
 	    ClientUtils.str2cc(txtR.text()),
 	    ClientUtils.str2cc(txtG.text()),
 	    ClientUtils.str2cc(txtB.text()),
-	    hasAlpha ? ClientUtils.str2cc(txtB.text()) : 255
+	    hasAlpha ? ClientUtils.str2cc(txtA.text()) : 255
 	);
 	txtHex.settext(ClientUtils.color2hex(col, hasAlpha).toUpperCase());
     }
