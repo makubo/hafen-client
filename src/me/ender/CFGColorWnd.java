@@ -8,6 +8,7 @@ import java.awt.*;
 
 public class CFGColorWnd extends WindowX {
     private static final Coord BOX = UI.scale(Coord.of(45));
+    private static final Coord HALF = Coord.of(BOX.x, BOX.y / 2);
     private static final int PAD = UI.scale(5);
     private static final int BTN_W = UI.scale(50);
     private static final int HEX_W = UI.scale(70);
@@ -83,7 +84,13 @@ public class CFGColorWnd extends WindowX {
     public void cdraw(GOut og) {
 	super.cdraw(og);
 	og.chcolor(col);
-	og.frect2(Coord.z, BOX);
+	if(hasAlpha) {
+	    og.frect2(Coord.of(0, HALF.y), BOX);
+	    og.chcolor(col.getRed(), col.getGreen(), col.getBlue(), 255);
+	    og.frect2(Coord.z, HALF);
+	} else {
+	    og.frect2(Coord.z, BOX);
+	}
 	og.chcolor();
     }
     
