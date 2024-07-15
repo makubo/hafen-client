@@ -75,7 +75,7 @@ public class GobTimerData {
     
     public boolean update() {
 	if(wnd != null) {
-	    if(wnd.disposed()) {
+	    if(wnd.disposed() || wnd.closed()) {
 		wnd = null;
 	    } else {
 		lastUpdateTs = System.currentTimeMillis();

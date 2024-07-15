@@ -102,6 +102,7 @@ public class Window extends Widget implements DTarget {
     public boolean justclose = false;
     public boolean skipInitPos = false;
     public boolean skipSavePos = false;
+    private boolean closed = false;
     private String title;
     protected Text.Furnace rcf = cf;
 
@@ -740,8 +741,11 @@ public class Window extends Widget implements DTarget {
 	    throw(new AssertionError(animst));
 	}
     }
+    
+    public boolean closed() {return closed;}
 
     public void reqdestroy() {
+	closed = true;
 	if(parent == null) {
 	    super.reqdestroy();
 	    return;
