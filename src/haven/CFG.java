@@ -105,7 +105,7 @@ public class CFG<T> {
     public static final CFG<Color> COLOR_TILE_GRID = new CFG<>("colors.tile_grid", new Color(255, 255, 255, 48));
     public static final CFG<Color> COLOR_HBOX_SOLID = new CFG<>("colors.hit_box_solid", new Color(178, 71, 178, 255));
     public static final CFG<Color> COLOR_HBOX_PASSABLE = new CFG<>("colors.hit_box_passable", new Color(105, 207, 124, 255));
-    public static final CFG<Color> COLOR_RIDGE_BOX = new CFG<>("colors.ridge_box", new Color(255, 32, 64, 128));
+    public static final CFG<Color> COLOR_RIDGE_BOX = new CFG<>("colors.ridge_box", new Color(200, 0, 0, 128));
     
     public static final CFG<Color> COLOR_GOB_READY = new CFG<>("colors.gob.ready", new Color(16, 255, 16, 128));
     public static final CFG<Color> COLOR_GOB_FULL = new CFG<>("colors.gob.full", new Color(215, 63, 250, 64));
