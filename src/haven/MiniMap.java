@@ -730,14 +730,35 @@ public class MiniMap extends Widget {
 		if(ppc == null)
 		    continue;
 		g.chcolor(Color.WHITE);
-		g.aimage(Radar.Symbols.$circle.tex, p2c(ppc), 0.5, 0.5);
+		Coord c = p2c(ppc);
+		g.aimage(Radar.Symbols.$circle.tex, c, 0.5, 0.5);
 		g.chcolor(m.col.getRed(), m.col.getGreen(), m.col.getBlue(), 255);
-		g.rotimage(plp, p2c(ppc), plp.sz().div(2), -m.geta() - (Math.PI / 2));
+		g.rotimage(plp, c, plp.sz().div(2), -m.geta() - (Math.PI / 2));
+		if(CFG.MMAP_SHOW_PARTY_NAMES.get()) {drawPartyName(g, m, c);}
 		g.chcolor();
 	    } catch(Loading l) {}
 	}
     }
 
+    private static void drawPartyName(GOut g, Party.Member m, Coord c) {
+	Gob gob = m.getgob();
+	if(gob == null) {return;}
+	KinInfo ki = gob.kin();
+	if(ki == null || ki.name == null || ki.rname == null) {return;}
+	//0 - white, 1 - party, 2 - buddy
+	int style = CFG.MMAP_SHOW_PARTY_NAMES_STYLE.get();
+	
+	Tex tex;
+	if(style == 2) {
+	    g.chcolor(BuddyWnd.gc[ki.group]);
+	} else if(style != 1) {
+	    g.chcolor();
+	}
+	tex = Text.renderstroked(ki.name).tex();
+	
+	g.aimage(tex, c.addy(UI.scale(20)), 0.5, 1);
+    }
+    
     public void drawparts(GOut g){
 	drawmap(g);
 	drawmarkers(g);

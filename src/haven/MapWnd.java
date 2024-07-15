@@ -154,6 +154,12 @@ public class MapWnd extends WindowX implements Console.Directory {
 	    .set(CFG.MMAP_SHOW_MARKER_NAMES::set)
 	    .settip("Show marker names");
 	
+	btn = topbar.add(new ICheckBox("gfx/hud/mmap/partynames", "", "-d", "-h"), btn.pos("ur"))
+	    .state(CFG.MMAP_SHOW_PARTY_NAMES::get)
+	    .set(CFG.MMAP_SHOW_PARTY_NAMES::set)
+	    .rclick(() -> CFG.MMAP_SHOW_PARTY_NAMES_STYLE.set((CFG.MMAP_SHOW_PARTY_NAMES_STYLE.get() + 1) % 3))
+	    .settip("Show party names. Right-click to change name coloring");
+	
 	topbar.pack();
 	tool = add(new Toolbox2());;
 	compact(Utils.getprefb("compact-map", false));
