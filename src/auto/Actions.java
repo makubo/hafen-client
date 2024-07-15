@@ -177,10 +177,11 @@ public class Actions {
     
     public static void aggro(GameUI gui, int limit, boolean nearPlayer) {
 	if(nearPlayer) {
-	    aggro(gui, GobHelper.getNearest(gui, limit, 165, GobTag.AGGRO_TARGET));
+	    aggro(gui, GobHelper.getNearest(gui, limit, 165, GobHelper.gobIsAny(GobTag.AGGRO_TARGET), GobHelper::isNotFriendlySteed));
 	} else {
 	    PositionHelper.mapPosOfMouse(gui)
-		.thenAccept(mc -> aggro(gui, GobHelper.getNearestToPoint(gui, limit, mc, 33, GobTag.AGGRO_TARGET, GobTag.IN_COMBAT)));
+		.thenAccept(mc -> aggro(gui, GobHelper.getNearestToPoint(gui, limit, mc, 33, 
+		    GobHelper.gobIsAny(GobTag.AGGRO_TARGET, GobTag.IN_COMBAT), GobHelper::isNotFriendlySteed)));
 	}
     }
     

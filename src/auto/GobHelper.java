@@ -1,9 +1,6 @@
 package auto;
 
-import haven.Coord2d;
-import haven.GameUI;
-import haven.Gob;
-import haven.GobTag;
+import haven.*;
 
 import java.util.Comparator;
 import java.util.List;
@@ -21,8 +18,28 @@ public class GobHelper {
 	return getGobs(gui, limit, PositionHelper.byDistanceToPlayer, gobIsAny(tags), gob -> PositionHelper.distanceToPlayer(gob) <= distance);
     }
     
-    static List<ITarget> getNearestToPoint(GameUI gui, int limit, Coord2d pos, double distance, GobTag... tags) {
-	return getNearest(gui, limit, g -> PositionHelper.distanceToCoord(pos, g), distance, tags);
+    @SafeVarargs
+    static List<ITarget> getNearest(GameUI gui, int limit, double distance, Predicate<Gob>... filters) {
+	Predicate<Gob> distFilter = gob -> PositionHelper.distanceToPlayer(gob) <= distance;
+	if(filters == null || filters.length == 0) {
+	    filters = new Predicate[]{distFilter};
+	} else {
+	    filters = Utils.extend(filters, filters.length + 1);
+	    filters[filters.length - 1] = distFilter;
+	}
+	return getGobs(gui, limit, PositionHelper.byDistanceToPlayer, filters);
+    }
+    
+    @SafeVarargs
+    static List<ITarget> getNearestToPoint(GameUI gui, int limit, Coord2d pos, double distance, Predicate<Gob>... filters) {
+	Predicate<Gob> distFilter = g -> PositionHelper.distanceToCoord(pos, g) <= distance;
+	if(filters == null || filters.length == 0) {
+	    filters = new Predicate[]{distFilter};
+	} else {
+	    filters = Utils.extend(filters, filters.length + 1);
+	    filters[filters.length - 1] = distFilter;
+	}
+	return getGobs(gui, limit, Comparator.comparingDouble(g -> PositionHelper.distanceToCoord(pos, g)), filters);
     }
     
     private static List<ITarget> getNearest(GameUI gui, int limit, Function<Gob, Double> meter, double distance, GobTag... tags) {
@@ -60,6 +77,10 @@ public class GobHelper {
 		BotUtil.pause(100);
 	    }
 	};
+    }
+    
+    public static boolean isNotFriendlySteed(Gob gob) {
+	return !gob.occupants.stream().anyMatch(g -> g.anyOf(GobTag.ME, GobTag.PARTY));
     }
     
     private static Predicate<Gob> gobIs(String what) {

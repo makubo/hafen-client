@@ -204,13 +204,14 @@ public class PathQueue {
 	    if(DBG) Debug.log.printf("skip (%d) '%d' is null, %b%n", gob.id, map.plgob, skip);
 	    return skip;
 	}
-	if(me.drives == 0) {
+	long vehicleId = me.vehicleId();
+	if(vehicleId == 0) {
 	    boolean skip = me.id != gob.id;
-	    if(DBG) Debug.log.printf("skip (%d) '%d'<%d> not drives, %b%n", gob.id, map.plgob, me.drives, skip);
+	    if(DBG) Debug.log.printf("skip (%d) '%d'<%d> not drives, %b%n", gob.id, map.plgob, vehicleId, skip);
 	    return skip;
 	} else {
-	    boolean skip = gob.id != me.drives;
-	    if(DBG) Debug.log.printf("skip (%d) '%d'<%d> drives, %b%n", gob.id, map.plgob, me.drives, skip);
+	    boolean skip = gob.id != vehicleId;
+	    if(DBG) Debug.log.printf("skip (%d) '%d'<%d> drives, %b%n", gob.id, map.plgob, vehicleId, skip);
 	    return skip;
 	}
     }

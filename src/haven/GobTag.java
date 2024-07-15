@@ -42,20 +42,66 @@ public enum GobTag {
         "/fox", "/swan", "/bat", "/beaver", "/reddeer"
     };
     
+    //behave like herbs - r-click and select Pick from menu
     private static final String[] LIKE_HERB = {
         "/precioussnowflake"
     };
     
+    //behave like critters - can be picked up by r-clicking 
     private static final String[] LIKE_CRITTER = {
         "/terobjs/items/grub"
     };
     
+    //these one can be picked up by r-clicking
     private static final String[] CRITTERS = {
         "/rat/rat", "/swan", "/squirrel", "/silkmoth", "/frog", "/rockdove", "/quail", "/toad", "/grasshopper",
         "/ladybug", "/forestsnail", "/dragonfly", "/forestlizard", "/waterstrider", "/firefly", "/sandflea",
         "/rabbit", "/crab", "/cavemoth", "/hedgehog", "/stagbeetle", "jellyfish", "/mallard", "/chicken", "/irrbloss",
         "/cavecentipede", "/bogturtle", "/moonmoth", "/monarchbutterfly", "/items/grub", "/springbumblebee", "/bayshrimp",
         "/mole" , "/lobster", "/earthworm", "/whirlingsnowflake"
+    };
+    
+    //List of animals that player can aggro
+    private static final String[] CAN_AGGRO = {
+        "gfx/kritter/adder/",
+        "gfx/kritter/ants/", //all ant types
+        "gfx/kritter/badger/",
+        "gfx/kritter/bat/", //all bat types
+        "gfx/kritter/bear/",
+        "gfx/kritter/beaver/", //all beaver types
+        "gfx/kritter/bees/", //all bee types
+        "gfx/kritter/boar/",
+        "gfx/kritter/boreworm/",
+        "gfx/kritter/caveangler/",
+        "gfx/kritter/cavelouse/",
+        "gfx/kritter/chasmconch/",
+        "gfx/kritter/eagleowl/",
+        "gfx/kritter/fox/",
+        "gfx/kritter/goat/wildgoat",
+        "gfx/kritter/goldeneagle",
+        "gfx/kritter/greyseal",
+        "gfx/kritter/horse/", //all horse types
+        "gfx/kritter/lynx/",
+        "gfx/kritter/mammoth/",
+        "gfx/kritter/moose/",
+        "gfx/kritter/nidbane/",
+        "gfx/kritter/ooze/",
+        "gfx/kritter/orca/",
+        "gfx/kritter/otter/",
+        "gfx/kritter/pelican/",
+        "gfx/kritter/rat/caverat",
+        "gfx/kritter/reddeer/",
+        "gfx/kritter/reindeer/",
+        "gfx/kritter/roedeer/",
+        "gfx/kritter/spermwhale/",
+        "gfx/kritter/stoat/",
+        "gfx/kritter/swan/",
+        "gfx/kritter/troll/",
+        "gfx/kritter/walrus/",
+        "gfx/kritter/wolf/",
+        "gfx/kritter/wolverine/",
+        "gfx/kritter/woodgrouse/woodgrouse-m",
+        "gfx/kritter/wildbees/beeswarm",
     };
     
     private static final String[] VEHICLES = {"/wheelbarrow", "/plow", "/cart", "/dugout", "/rowboat", "/vehicle/snekkja", "/vehicle/knarr", "/vehicle/wagon", "/vehicle/coracle", "/horse/mare", "/horse/stallion", "/vehicle/spark"};
@@ -206,7 +252,7 @@ public enum GobTag {
                 }
             }
             
-            if(anyOf(tags, PLAYER, ANIMAL) && !anyOf(tags, ME, PARTY, IN_COMBAT)) {
+            if((anyOf(tags, PLAYER) || ofType(name, CAN_AGGRO)) && !anyOf(tags, ME, PARTY, IN_COMBAT, KO, DEAD)) {
                 tags.add(AGGRO_TARGET);
             }
     

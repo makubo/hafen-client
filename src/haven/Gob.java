@@ -73,7 +73,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     private final Set<GobTag> tags = new HashSet<>();
     public boolean drivenByPlayer = false;
     public boolean mapProcessed = false;
-    public long drives = 0;
+    private long vehicleId = 0;
+    public final Set<Gob> occupants = new HashSet<>();
     private GobRadius radius = null;
     private long eseq = 0;
     public static final ChangeCallback CHANGED = new ChangeCallback() {
@@ -747,6 +748,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     public boolean disposed() {return disposed;}
     
     public void dispose() {
+	setVehicle(0);
+	occupants.clear();
 	drawable = null;
 	moving = null;
 	synchronized (removalLock) {
@@ -1631,7 +1634,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	if(a instanceof LinMove || a instanceof Homing) {
 	    glob.oc.paths.addPath((Moving) a);
 	}
-	drives = 0;
+	long drives = 0;
 	if(prev instanceof Following) {
 	    Following follow = (Following) prev;
 	    if(me) {
@@ -1659,7 +1662,23 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 		}
 	    }
 	}
+	setVehicle(drives);
 	glob.sess.ui.pathQueue().ifPresent(pathQueue -> pathQueue.movementChange(this, prev, a));
+    }
+    
+    public long vehicleId() {return vehicleId;}
+    
+    private void setVehicle(long id) {
+	if(vehicleId == id) {return;}
+	Gob vehicle;
+	if(id == 0) {
+	    vehicle = glob.oc.getgob(vehicleId);
+	    if(vehicle != null) {vehicle.occupants.remove(this);}
+	} else {
+	    vehicle = glob.oc.getgob(id);
+	    if(vehicle != null) {vehicle.occupants.add(this);}
+	}
+	vehicleId = id;
     }
     
     private long eseq() {
