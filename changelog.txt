@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 15.07.24:}
+  * added button to show party member names on minimap
+  * fixed ridge highlight
+ 
 $size[14]{$u{Update for 14.07.24:}
   * added Options -> Colors panel - allows to tweak various colors used by client
   * added Options -> Display -> Colorize ridge tiles
