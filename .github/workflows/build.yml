@@ -5,6 +5,11 @@ name: Java CI
 
 on:
   workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Release tag'
+        required: true
+        type: string
 
 jobs:
   build:
