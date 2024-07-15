@@ -346,6 +346,7 @@ public class Session implements Resource.Resolver {
 
     public void close() {
 	conn.close();
+	glob.oc.destroy();
     }
 
     public void queuemsg(PMessage pmsg) {
