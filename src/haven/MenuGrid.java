@@ -893,7 +893,8 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	makeLocal("paginae/add/fsmelter9", Action.FUEL_SMELTER_9);
 	makeLocal("paginae/add/fsmelter12", Action.FUEL_SMELTER_12);
 	makeLocal("paginae/add/foven4", Action.FUEL_OVEN_4);
-	makeLocal("paginae/add/auto/aggro_one", Action.AGGRO_ONE);
+	makeLocal("paginae/add/auto/aggro_one", Action.AGGRO_ONE_PVE);
+	makeLocal("paginae/add/auto/aggro_one_pvp", Action.AGGRO_ONE_PVP);
 	makeLocal("paginae/add/auto/aggro_all", Action.AGGRO_ALL);
 	makeLocal("paginae/add/info/plant-growth", Action.TOGGLE_GOB_INFO_PLANTS, () -> GobInfoOpts.enabled(InfoPart.PLANT_GROWTH));
 	makeLocal("paginae/add/info/tree-growth", Action.TOGGLE_GOB_INFO_TREES, () -> GobInfoOpts.enabled(InfoPart.TREE_GROWTH));

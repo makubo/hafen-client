@@ -32,7 +32,8 @@ public enum Action {
     BOT_PICK_ALL_HERBS(Actions::pickup, "Auto-pick stuff", "Will automatically pickup all herbs/mussels/clay/frogs/grasshoppers etc. in radius that can be changed in Options->General."),
     BOT_OPEN_GATE(Actions::openGate, "Toggle closest gate", "Will right click on closest gate in 3 tile radius."),
     TOGGLE_PEACE(GameUI::togglePeace, "Toggle Peace", "Toggle peace for current target"),
-    AGGRO_ONE(Actions::aggroOne, "Aggro closest to cursor", "Will try to aggro one target closest to cursor"),
+    AGGRO_ONE_PVE(Actions::aggroOnePVE, "Aggro closest non-player to cursor", "Will try to aggro (or switch target to) one non-player target closest to cursor"),
+    AGGRO_ONE_PVP(Actions::aggroOnePVP, "Aggro closest player to cursor", "Will try to aggro (or switch target to) one player closest to cursor"),
     AGGRO_ALL(Actions::aggroAll, "Aggro all creatures near player", "Will try to aggro all creatures near player that are not in party"),
     
     //Camera controls
@@ -68,6 +69,7 @@ public enum Action {
     private final Do action;
     public final String description;
     
+    //TODO: add possibility to use Paginae for name and description
     Action(Do action, String name, String description) {
 	this.name = name;
 	this.action = action;

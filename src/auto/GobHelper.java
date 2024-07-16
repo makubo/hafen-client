@@ -99,6 +99,13 @@ public class GobHelper {
 	};
     }
     
+    public static Predicate<Gob> gobIsNot(GobTag what) {
+	return g -> {
+	    if(g == null) {return false;}
+	    return !g.is(what);
+	};
+    }
+    
     public static Predicate<Gob> gobIsAny(GobTag... what) {
 	return g -> {
 	    if(g == null) {return false;}

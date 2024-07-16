@@ -4,7 +4,7 @@ paginae/act/automation
 #uint16 pver
 2
 #String name
-Aggro closest non-player to cursor
+Aggro closest player to cursor
 #String preq
 
 #uint16 hk

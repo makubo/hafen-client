@@ -172,21 +172,25 @@ public class Actions {
 	    .start(item.ui, true);
     }
     
-    public static void aggroOne(GameUI gui) {aggro(gui, 1, false);}
+    public static void aggroOnePVE(GameUI gui) {aggroOne(gui, false);}
     
-    public static void aggroAll(GameUI gui) {aggro(gui, Integer.MAX_VALUE, true);}
+    public static void aggroOnePVP(GameUI gui) {aggroOne(gui, true);}
     
-    public static void aggro(GameUI gui, int limit, boolean nearPlayer) {
-	if(nearPlayer) {
-	    aggro(gui, getNearest(gui, limit, 165, gobIsAny(GobTag.AGGRO_TARGET), GobHelper::isNotFriendlySteed));
-	} else {
-	    PositionHelper.mapPosOfMouse(gui)
-		.thenAccept(mc -> aggro(gui, getNearestToPoint(gui, limit, mc, 33, 
-		    gobIsAny(GobTag.AGGRO_TARGET, GobTag.IN_COMBAT), GobHelper::isNotFriendlySteed)));
-	}
+    static void aggroOne(GameUI gui, boolean pvp) {
+	final Predicate<Gob> filter = pvp
+	    ? gobIs(GobTag.PLAYER)
+	    : gobIsNot(GobTag.PLAYER);
+	
+	PositionHelper.mapPosOfMouse(gui)
+	    .thenAccept(mc -> aggro(gui, getNearestToPoint(gui, 1, mc, 33,
+		gobIsAny(GobTag.AGGRO_TARGET, GobTag.IN_COMBAT), filter, GobHelper::isNotFriendlySteed)));
     }
     
-    public static void aggro(GameUI gui, List<ITarget> targets) {
+    public static void aggroAll(GameUI gui) {
+	aggro(gui, getNearest(gui, Integer.MAX_VALUE, 165, gobIs(GobTag.PLAYER), gobIs(GobTag.AGGRO_TARGET), GobHelper::isNotFriendlySteed));
+    }
+    
+    static void aggro(GameUI gui, List<ITarget> targets) {
 	if(targets.isEmpty()) {
 	    gui.error("No targets to aggro");
 	    return;

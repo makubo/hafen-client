@@ -2807,7 +2807,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    
 	    @Override
 	    protected void nohit(Coord pc) {
-		res.complete(null);
+		res.cancel(false);
 	    }
 	}.run();
 	return res;
