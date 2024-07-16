@@ -9,11 +9,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static auto.GobHelper.*;
 import static auto.InvHelper.*;
 
 public class Actions {
     public static void fuelGob(GameUI gui, String name, String fuel, int count) {
-	List<ITarget> targets = GobHelper.getNearest(gui, name, 1, 33);
+	List<ITarget> targets = getNearest(gui, name, 1, 33);
 	
 	if(!targets.isEmpty()) {
 	    Bot.process(targets).actions(fuelWith(gui, fuel, count)).start(gui.ui);
@@ -27,7 +28,7 @@ public class Actions {
     }
     
     static void pickup(GameUI gui, String filter, int limit) {
-	pickup(gui, GobHelper.resIdStartsWith(filter), limit);
+	pickup(gui, resIdStartsWith(filter), limit);
     }
     
     static void pickup(GameUI gui, Predicate<Gob> filter) {
@@ -51,12 +52,12 @@ public class Actions {
     }
     
     public static void pickup(GameUI gui) {
-	pickup(gui, GobHelper.gobIs(GobTag.PICKUP));
+	pickup(gui, gobIs(GobTag.PICKUP));
     }
     
     public static void openGate(GameUI gui) {
 	List<ITarget> targets = gui.ui.sess.glob.oc.stream()
-	    .filter(GobHelper.gobIs(GobTag.GATE))
+	    .filter(gobIs(GobTag.GATE))
 	    .filter(gob -> !gob.isVisitorGate())
 	    .filter(gob -> PositionHelper.distanceToPlayer(gob) <= 35)
 	    .sorted(PositionHelper.byDistanceToPlayer)
@@ -83,7 +84,7 @@ public class Actions {
 	    waterTile = player.rc;
 	} else {
 	    needWalk = true;
-	    List<ITarget> objs = GobHelper.getNearest(gui, 1, 32, GobTag.HAS_WATER);
+	    List<ITarget> objs = getNearest(gui, 1, 32, GobTag.HAS_WATER);
 	    if(!objs.isEmpty()) {
 		barrel = Targets.gob(objs.get(0));
 	    }
@@ -127,8 +128,8 @@ public class Actions {
 	if(needWalk) {
 	    refillBot.setup(
 		(t, b) -> gui.map.click(tile, 1, Coord.z, tile.floor(OCache.posres), 1, 0),
-		GobHelper.waitGobPose(player, 1500, "/walking", "/running"),
-		GobHelper.waitGobNoPose(player, 1500, "/walking", "/running")
+		waitGobPose(player, 1500, "/walking", "/running"),
+		waitGobNoPose(player, 1500, "/walking", "/running")
 	    );
 	}
 	refillBot.start(gui.ui, true);
@@ -177,11 +178,11 @@ public class Actions {
     
     public static void aggro(GameUI gui, int limit, boolean nearPlayer) {
 	if(nearPlayer) {
-	    aggro(gui, GobHelper.getNearest(gui, limit, 165, GobHelper.gobIsAny(GobTag.AGGRO_TARGET), GobHelper::isNotFriendlySteed));
+	    aggro(gui, getNearest(gui, limit, 165, gobIsAny(GobTag.AGGRO_TARGET), GobHelper::isNotFriendlySteed));
 	} else {
 	    PositionHelper.mapPosOfMouse(gui)
-		.thenAccept(mc -> aggro(gui, GobHelper.getNearestToPoint(gui, limit, mc, 33, 
-		    GobHelper.gobIsAny(GobTag.AGGRO_TARGET, GobTag.IN_COMBAT), GobHelper::isNotFriendlySteed)));
+		.thenAccept(mc -> aggro(gui, getNearestToPoint(gui, limit, mc, 33, 
+		    gobIsAny(GobTag.AGGRO_TARGET, GobTag.IN_COMBAT), GobHelper::isNotFriendlySteed)));
 	}
     }
     
