@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 16.07.24:}
+  * split aggro one into PVP and PVE versions and clarified all aggro descriptions a bit
+ 
 $size[14]{$u{Update for 15.07.24:}
   * added button to show party member names on minimap
   * fixed ridge highlight
