@@ -2275,9 +2275,9 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    if(button == 1) {
 		if(ui.modmeta) {
 		    args[3] = 0;
-		    send = ui.gui.pathQueue.add(cc);
+		    send = ui.gui.pathQueue.add(mc);
 		} else {
-		    ui.gui.pathQueue.start(cc);
+		    ui.gui.pathQueue.start(mc);
 		}
 	    } else if(button == 3) {
 		ui.gui.pathQueue.click(cc);
