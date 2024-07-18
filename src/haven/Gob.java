@@ -1336,7 +1336,9 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    if(onRadar != null && onRadar && CFG.SKIP_HIDING_RADAR_TREES.get()) {
 		needHide = false;
 	    }
+	    boolean changed = false;
 	    if(d != null && d.skipRender != needHide) {
+		changed = true;
 		d.skipRender = needHide;
 		if(needHide) {
 		    if(d.slots != null) {
@@ -1353,7 +1355,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    } else {
 	        untag(GobTag.HIDDEN);
 	    }
-	    return true;
+	    return changed;
 	}
 	return false;
     }
