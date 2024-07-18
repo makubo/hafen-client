@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import haven.render.*;
 import me.ender.GobInfoOpts;
-import me.ender.OptColorPanel;
+import me.ender.CustomOptPanels;
 
 import java.awt.event.KeyEvent;
 import java.util.Set;
@@ -840,7 +840,7 @@ public class OptWnd extends WindowX {
 	initGeneralPanel(general);
 	initCameraPanel();
 	initMappingPanel(mapping);
-	OptColorPanel.init(this, color);
+	CustomOptPanels.init(this, color);
 	main.pack();
 	chpanel(main);
     }

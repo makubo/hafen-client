@@ -4,7 +4,7 @@ import haven.*;
 
 import static haven.OptWnd.*;
 
-public class OptColorPanel {
+public class CustomOptPanels {
     public static void init(OptWnd wnd, OptWnd.Panel panel) {
 	int STEP = UI.scale(25);
 	int H_STEP = UI.scale(10);
