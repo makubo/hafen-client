@@ -51,7 +51,7 @@ public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
 	    root = ui.root;
 	}
 	dis = true;
-	root.add(new CFGColorWnd(cfg, hasAlpha), ui.mc.add(10, -45)).onDestroyed(widget -> dis = false);
+	root.add(CFGColorWnd.open(cfg, hasAlpha), ui.mc.add(10, -45)).onDestroyed(widget -> dis = false);
     }
     
     @Override

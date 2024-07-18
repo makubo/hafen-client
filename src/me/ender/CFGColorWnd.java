@@ -20,7 +20,25 @@ public class CFGColorWnd extends WindowX {
     private Color col;
     private final boolean hasAlpha;
     
-    public CFGColorWnd(CFG<Color> cfg, boolean hasAlpha) {
+    private static CFGColorWnd open;
+    
+    public static CFGColorWnd open(CFG<Color> cfg, boolean hasAlpha) {
+	if(open != null) {
+	    CFGColorWnd tmp = open;
+	    open = null;
+	    tmp.close();
+	}
+	open = new CFGColorWnd(cfg, hasAlpha);
+	return open;
+    }
+    
+    @Override
+    public void destroy() {
+	if(open == this) {open = null;}
+	super.destroy();
+    }
+    
+    private CFGColorWnd(CFG<Color> cfg, boolean hasAlpha) {
 	super(Coord.z, "Set Color");
 	this.cfg = cfg;
 	justclose = true;
