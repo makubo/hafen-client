@@ -89,6 +89,7 @@ public class OCache implements Iterable<Gob> {
 	disposables.add(CFG.HIGHLIGHT_PARTY_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
 	disposables.add(CFG.HIGHLIGHT_SELF_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
 	disposables.add(CFG.HIGHLIGHT_ENEMY_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
+	disposables.add(CFG.FLAT_TERRAIN.observe(cfg -> gobAction(Gob::markerUpdated)));
 	disposables.add(CFG.MARK_PARTY_IN_COMBAT.observe(cfg -> gobAction(Gob::markerUpdated)));
 	disposables.add(CFG.MARK_SELF_IN_COMBAT.observe(cfg -> gobAction(Gob::markerUpdated)));
 	disposables.add(CFG.MARK_ENEMY_IN_COMBAT.observe(cfg -> gobAction(Gob::markerUpdated)));

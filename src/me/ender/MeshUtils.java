@@ -16,7 +16,7 @@ public class MeshUtils {
     private static final Map<String, FastMesh> cache = new HashMap<>();
     
     public static Supplier<FastMesh> Circle(float radius) {
-	return () -> getCircle(radius, CFG.FLAT_TERRAIN.get());
+	return () -> getCircle(radius, !CFG.FLAT_TERRAIN.get());
     }
     
     private static FastMesh getCircle(float radius, boolean dynamic) {
