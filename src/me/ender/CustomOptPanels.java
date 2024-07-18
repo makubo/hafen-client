@@ -79,7 +79,6 @@ public class CustomOptPanels {
     }
     
     public static void initCombatPanel(OptWnd wnd, OptWnd.Panel panel) {
-	int STEP = UI.scale(25);
 	int START;
 	int x, y;
 	int my = 0, tx;
@@ -95,14 +94,9 @@ public class CustomOptPanels {
 	y += STEP;
 	panel.add(new CFGBox("Always mark current target", CFG.ALWAYS_MARK_COMBAT_TARGET , "Usually current target only marked when there's more than one"), x, y);
 	
-	y += STEP;
-	panel.add(new CFGBox("Highlight party members in combat", CFG.HIGHLIGHT_PARTY_IN_COMBAT), x, y);
-	
-	y += STEP;
-	panel.add(new CFGBox("Highlight self in combat", CFG.HIGHLIGHT_SELF_IN_COMBAT), x, y);
-	
-	y += STEP;
-	panel.add(new CFGBox("Highlight enemies in combat", CFG.HIGHLIGHT_ENEMY_IN_COMBAT), x, y);
+	y = AddCombatHighlight(panel, x, y, "Highlight party members in combat", CFG.HIGHLIGHT_PARTY_IN_COMBAT, CFG.MARK_PARTY_IN_COMBAT);
+	y = AddCombatHighlight(panel, x, y, "Highlight self in combat", CFG.HIGHLIGHT_SELF_IN_COMBAT, CFG.MARK_SELF_IN_COMBAT);
+	y = AddCombatHighlight(panel, x, y, "Highlight enemies in combat", CFG.HIGHLIGHT_ENEMY_IN_COMBAT, CFG.MARK_ENEMY_IN_COMBAT);
 	
 	y += STEP;
 	panel.add(new CFGBox("Auto peace on combat start", CFG.COMBAT_AUTO_PEACE , "Automatically enter peaceful mode on combat start id enemy is aggressive - useful for taming"), x, y);
@@ -136,5 +130,18 @@ public class CustomOptPanels {
 	panel.add(wnd.new PButton(UI.scale(200), "Back", 27, wnd.main), new Coord(0, my + UI.scale(35)));
 	panel.pack();
 	title.c.x = (panel.sz.x - title.sz.x) / 2;
+    }
+    
+    private static int AddCombatHighlight(OptWnd.Panel panel, int x, int y, String name, CFG<Boolean> highlight, CFG<Boolean> mark) {
+	y += STEP;
+	panel.add(new Label(name), x, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("By coloring", highlight), x + H_STEP, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("By marking", mark), x + H_STEP, y);
+	
+	return y;
     }
 }

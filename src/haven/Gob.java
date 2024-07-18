@@ -29,9 +29,7 @@ package haven;
 import haven.render.*;
 import haven.res.gfx.fx.msrad.MSRad;
 import integrations.mapv4.MappingClient;
-import me.ender.ClientUtils;
-import me.ender.Reflect;
-import me.ender.ResName;
+import me.ender.*;
 import me.ender.gob.KinInfo;
 import me.ender.gob.GobCombatInfo;
 import me.ender.minimap.AutoMarkers;
@@ -77,6 +75,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     public final Set<Gob> occupants = new HashSet<>();
     private GobRadius radius = null;
     private long eseq = 0;
+    private Overlay marker;
+    private MarkerSprite.Id markerId;
     public static final ChangeCallback CHANGED = new ChangeCallback() {
 	@Override
 	public void added(Gob ob) {
@@ -566,7 +566,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	}
 	if(!mapProcessed && context(MapWnd2.class) != null) {
 	    mapProcessed = true;
-	    status.update(StatusType.marker);
+	    status.update(StatusType.map_marker);
 	}
 	updateState();
     }
@@ -1484,6 +1484,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     
     public void colorUpdated() {status.update(StatusType.color);}
     
+    public void markerUpdated() {status.update(StatusType.marker);}
+    
     private static void updateStatus(UI ui, long gobId, StatusType type) {
 	Gob gob = ui.sess.glob.oc.getgob(gobId);
 	if(gob == null) {return;}
@@ -1539,12 +1541,16 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	if(status.updated(StatusType.info, StatusType.tags)) {
 	    info.clean();
 	}
+	
+	if(status.updated(StatusType.tags, StatusType.color, StatusType.marker)) {
+	    updateMarkerSprite();
+	}
     
 	if(status.updated(StatusType.tags, StatusType.info, StatusType.color)) {
 	    updateColor();
 	}
 	
-	if(status.updated(StatusType.marker, StatusType.id)) {
+	if(status.updated(StatusType.map_marker, StatusType.id)) {
 	    markGob();
 	}
     }
@@ -1591,6 +1597,50 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	customColor.color(c);
     }
     
+    private void updateMarkerSprite() {
+	MarkerSprite.Id id = null;
+	
+	GameUI gui = context(GameUI.class);
+	if(gui != null && gui.isInCombat()) {
+	    boolean inParty = is(GobTag.PARTY);
+	    boolean isMe = Boolean.TRUE.equals(isMe());
+	    if(!isMe && CFG.MARK_PARTY_IN_COMBAT.get()) {
+		if(is(GobTag.LEADER)) {
+		    id = MarkerSprite.LEADER;
+		} else if(inParty) {
+		    id = MarkerSprite.PARTY;
+		}
+	    }
+	    
+	    if(isMe && CFG.MARK_SELF_IN_COMBAT.get()) {
+		id = MarkerSprite.SELF;
+	    }
+	    
+	    if(!inParty && !isMe && CFG.MARK_ENEMY_IN_COMBAT.get()) {
+		if(is(GobTag.COMBAT_TARGET)) {
+		    id = MarkerSprite.ENEMY;
+		} else if(is(GobTag.IN_COMBAT)) {
+		    id = MarkerSprite.TARGET;
+		}
+	    }
+	}
+	
+	synchronized (ols) {
+	    if(id == markerId) {return;}
+	    if(marker != null) {
+		marker.remove();
+		marker.spr.dispose();
+		marker = null;
+		markerId = null;
+	    }
+	    if(id != null) {
+		markerId = id;
+		marker = new Overlay(this, new MarkerSprite(this, id));
+		addol(marker);
+	    }
+	}
+    }
+    
     public KinInfo kin() {
 	synchronized (attr) {
 	    return KinInfo.from(this, attr);
@@ -1625,7 +1675,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     }
     
     private enum StatusType {
-	drawable, overlay, tags, pose, id, info, kin, hitbox, icon, visibility, marker, combat, color
+	drawable, overlay, tags, pose, id, info, kin, hitbox, icon, visibility, map_marker, combat, color, marker
     }
     
     private void updateMovingInfo(GAttrib a, GAttrib prev) {

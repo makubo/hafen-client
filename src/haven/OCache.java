@@ -86,9 +86,12 @@ public class OCache implements Iterable<Gob> {
 	disposables.add(CFG.DISPLAY_GOB_INFO.observe(cfg -> gobAction(Gob::infoUpdated)));
 	disposables.add(CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.observe(cfg -> gobAction(Gob::infoUpdated)));
 	disposables.add(CFG.DISPLAY_GOB_INFO_SHORT.observe(cfg -> gobAction(Gob::infoUpdated)));
-	disposables.add(CFG.HIGHLIGHT_PARTY_IN_COMBAT.observe(cfg -> gobAction(Gob::tagsUpdated)));
-	disposables.add(CFG.HIGHLIGHT_SELF_IN_COMBAT.observe(cfg -> gobAction(Gob::tagsUpdated)));
-	disposables.add(CFG.HIGHLIGHT_ENEMY_IN_COMBAT.observe(cfg -> gobAction(Gob::tagsUpdated)));
+	disposables.add(CFG.HIGHLIGHT_PARTY_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
+	disposables.add(CFG.HIGHLIGHT_SELF_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
+	disposables.add(CFG.HIGHLIGHT_ENEMY_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
+	disposables.add(CFG.MARK_PARTY_IN_COMBAT.observe(cfg -> gobAction(Gob::markerUpdated)));
+	disposables.add(CFG.MARK_SELF_IN_COMBAT.observe(cfg -> gobAction(Gob::markerUpdated)));
+	disposables.add(CFG.MARK_ENEMY_IN_COMBAT.observe(cfg -> gobAction(Gob::markerUpdated)));
 	disposables.add(CFG.SHOW_CONTAINER_FULLNESS.observe(cfg -> gobAction(Gob::infoUpdated)));
 	disposables.add(CFG.SHOW_PROGRESS_COLOR.observe(cfg -> gobAction(Gob::infoUpdated)));
 	
