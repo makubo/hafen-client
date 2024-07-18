@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.function.Supplier;
 
 public class MarkerSprite extends Sprite {
-    private static final Supplier<FastMesh> COMBAT = MeshUtils.Circle(9);
+    private static final Supplier<FastMesh> COMBAT = MeshUtils.Ring(4f, 1.75f);
     public static Id SELF = Combat(CFG.COLOR_GOB_SELF);
     public static Id PARTY = Combat(CFG.COLOR_GOB_PARTY);
     public static Id LEADER = Combat(CFG.COLOR_GOB_LEADER);

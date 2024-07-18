@@ -19,6 +19,10 @@ public class MeshUtils {
 	return () -> getCircle(radius, !CFG.FLAT_TERRAIN.get());
     }
     
+    public static Supplier<FastMesh> Ring(float radius, float width) {
+	return () -> getRing(radius, width, !CFG.FLAT_TERRAIN.get());
+    }
+    
     private static FastMesh getCircle(float radius, boolean dynamic) {
 	if(dynamic) {return makeDynamicCircle(radius);}
 	
@@ -28,6 +32,19 @@ public class MeshUtils {
 	}
 	
 	FastMesh circle = makeStaticCircle(radius);
+	cache.put(key, circle);
+	return circle;
+    }
+    
+    private static FastMesh getRing(float radius, float width, boolean dynamic) {
+	if(dynamic) {return makeRing(radius, width, true);}
+	
+	String key = String.format("ring:%f:%f", radius, width);
+	if(cache.containsKey(key)) {
+	    return cache.get(key);
+	}
+	
+	FastMesh circle = makeRing(radius, width, false);
 	cache.put(key, circle);
 	return circle;
     }
@@ -59,7 +76,7 @@ public class MeshUtils {
     }
     
     private static FastMesh makeDynamicCircle(float radius) {
-	float h = 0.25f;
+	float h = 0.6f;
 	int total = 32; //TODO: calculate based on radius?
 	float step = MCache.tilesz2.x / 6f;
 	int steps = radius > 25 ? (int) (radius / step) : 0; //extra steps to make
@@ -92,6 +109,57 @@ public class MeshUtils {
 	
 	return new HeightFastMesh(Pipe.Op.compose(MapMesh.postmap, NoFacecull, Clickable.No, Location.nullrot),
 	    h, new VertexBuf(new VertexBuf.VertexData(vert), new VertexBuf.NormalData(vert)), ind);
+    }
+    
+    private static FastMesh makeRing(float r0, float width, boolean dynamic) {
+	float h = 0.25f;
+	int total = 32; //TODO: calculate based on radius?
+	float r1 = r0 + width;
+	int MAX_IND = 2 * total;
+	
+	FloatBuffer vert = Utils.mkfbuf(3 * total * 2);
+	ShortBuffer ind = Utils.mksbuf(3 * total * 2);
+	
+	for (int i = 0; i < total; i++) {
+	    float angle = (float) (Math.PI * 2 * i / total);
+	    float cos = (float) Math.cos(angle);
+	    float sin = (float) Math.sin(angle);
+	    float x0 = cos * r0;
+	    float y0 = sin * r0;
+	    float x1 = cos * r1;
+	    float y1 = sin * r1;
+	    
+	    vert.put(x0).put(y0).put(h); //i
+	    vert.put(x1).put(y1).put(h); //i+1
+	    
+	    short a = (short) (2 * i);
+	    short b = (short) ((2 * i + 1) % MAX_IND);
+	    short c = (short) ((2 * (i + 1) + 1) % MAX_IND);
+	    
+	    ind.put(a).put(b).put(c);
+	    b = (short) ((2 * (i + 1)) % MAX_IND);
+	    ind.put(a).put(b).put(c);
+	    
+	    /*
+	    //This produces a 'sun'
+	    short a = (short) (2 * i);
+	    short b = (short) ((2 * i + 1) % (2 * total));
+	    short c = (short) ((2 * i + 2) % (2 * total));
+	    
+	    ind.put(a).put(b).put(c);
+	    b = (short) ((2 * i + 3) % (2 * total));
+	    ind.put(a).put(b).put(c);
+	    */
+	}
+	
+	Pipe.Op state = Pipe.Op.compose(MapMesh.postmap, NoFacecull, Clickable.No, Location.nullrot);
+	VertexBuf buf = new VertexBuf(new VertexBuf.VertexData(vert), new VertexBuf.NormalData(vert));
+	
+	if(dynamic) {
+	    return new HeightFastMesh(state, h, buf, ind);
+	} else {
+	    return new StateFastMesh(state, buf, ind);
+	}
     }
     
     public static class StateFastMesh extends FastMesh {

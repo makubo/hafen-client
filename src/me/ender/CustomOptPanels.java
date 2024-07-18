@@ -140,7 +140,7 @@ public class CustomOptPanels {
 	panel.add(new CFGBox("By coloring", highlight), x + H_STEP, y);
 	
 	y += STEP;
-	panel.add(new CFGBox("By marking", mark), x + H_STEP, y);
+	panel.add(new CFGBox("By ring", mark), x + H_STEP, y);
 	
 	return y;
     }
