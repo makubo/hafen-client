@@ -65,6 +65,7 @@ public enum GobTag {
     private static final String[] CAN_AGGRO = {
         "gfx/kritter/adder/",
         "gfx/kritter/ants/", //all ant types
+        "gfx/kritter/aurochs/",
         "gfx/kritter/badger/",
         "gfx/kritter/bat/", //all bat types
         "gfx/kritter/bear/",
@@ -84,6 +85,7 @@ public enum GobTag {
         "gfx/kritter/lynx/",
         "gfx/kritter/mammoth/",
         "gfx/kritter/moose/",
+        "gfx/kritter/mouflon/",
         "gfx/kritter/nidbane/",
         "gfx/kritter/ooze/",
         "gfx/kritter/orca/",
