@@ -5,9 +5,11 @@ import haven.*;
 import static haven.OptWnd.*;
 
 public class CustomOptPanels {
+    private static final int STEP = UI.scale(25);
+    private static final int H_STEP = UI.scale(10);
+    private static final int COL_WIDTH = UI.scale(200);
+    
     public static void init(OptWnd wnd, OptWnd.Panel panel) {
-	int STEP = UI.scale(25);
-	int H_STEP = UI.scale(10);
 	int START;
 	int x, y;
 	int my = 0, tx;
@@ -36,7 +38,7 @@ public class CustomOptPanels {
 	
 	my = Math.max(my, y);
 	
-	x += UI.scale(200);
+	x += COL_WIDTH;
 	y = START;
 	
 	panel.add(new CFGColorBtn(CFG.COLOR_GOB_READY, "Workstation ready", true), x, y);
