@@ -276,6 +276,7 @@ public class Buff extends Widget implements ItemInfo.ResOwner, Bufflist.Managed 
 	}
     }
     
+    public int getNMeter() {return nmeter;}
     public int ameter() {return ameter;}
 
     public boolean mousedown(Coord c, int btn) {
