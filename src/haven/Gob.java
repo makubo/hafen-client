@@ -1618,9 +1618,9 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    
 	    if(!inParty && !isMe && CFG.MARK_ENEMY_IN_COMBAT.get()) {
 		if(is(GobTag.COMBAT_TARGET)) {
-		    id = MarkerSprite.ENEMY;
-		} else if(is(GobTag.IN_COMBAT)) {
 		    id = MarkerSprite.TARGET;
+		} else if(is(GobTag.IN_COMBAT)) {
+		    id = MarkerSprite.ENEMY;
 		}
 	    }
 	}
