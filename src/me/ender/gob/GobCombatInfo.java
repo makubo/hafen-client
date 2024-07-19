@@ -22,7 +22,7 @@ public class GobCombatInfo extends GAttrib implements RenderTree.Node, PView.Ren
     public static final int IP_HX = STANCE_SZ.x / 2 + UI.scale(3);
     public static final int OPENING_DY = UI.scale(8);
     private final Fightview.Relation rel;
-    private final Coord3f pos = new Coord3f(0, 0, 1);
+    private static final Coord3f pos = new Coord3f(0, 0, CFG.SHOW_COMBAT_INFO_HEIGHT.get());
     private static final Text.Furnace opIp = new PUtils.BlurFurn((new Text.Foundry(Text.monobold, 16, new Color(255, 150, 80))).aa(false), 2, 2, Color.DARK_GRAY);
     private static final Text.Furnace myIp = new PUtils.BlurFurn((new Text.Foundry(Text.monobold, 16, new Color(100, 220, 220))).aa(false), 2, 2, Color.DARK_GRAY);
     private static final RichText.Foundry fndOpen;
@@ -44,6 +44,8 @@ public class GobCombatInfo extends GAttrib implements RenderTree.Node, PView.Ren
 	a.put(TextAttribute.FOREGROUND, Color.WHITE);
 	a.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
 	fndOpen = new RichText.Foundry(new RichText.Parser(a));
+	
+	CFG.SHOW_COMBAT_INFO_HEIGHT.observe(cfg -> pos.z = cfg.get());
     }
     
     private final Text.UText<?> oip;

@@ -66,6 +66,7 @@ public class CFG<T> {
     public static final CFG<Boolean> MARK_SELF_IN_COMBAT = new CFG<>("ui.combat.mark_self_in_combat", false);
     public static final CFG<Boolean> MARK_ENEMY_IN_COMBAT = new CFG<>("ui.combat.mark_enemies_in_combat", false);
     public static final CFG<Boolean> SHOW_COMBAT_INFO = new CFG<>("ui.combat.show_info", false);
+    public static final CFG<Integer> SHOW_COMBAT_INFO_HEIGHT = new CFG<>("ui.combat.show_info_height", 1);
     public static final CFG<Boolean> SHOW_COMBAT_DMG = new CFG<>("ui.combat.show_dmg", true);
     public static final CFG<Boolean> CLEAR_PLAYER_DMG_AFTER_COMBAT = new CFG<>("ui.combat.clear_player_damage_after", true);
     public static final CFG<Boolean> CLEAR_ALL_DMG_AFTER_COMBAT = new CFG<>("ui.combat.clear_all_damage_after", false);

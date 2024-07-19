@@ -105,6 +105,16 @@ public class CustomOptPanels {
 	panel.add(new CFGBox("Show combat info", CFG.SHOW_COMBAT_INFO, "Will display initiative points and openings over gobs that you are fighting"), x, y);
 	
 	y += STEP;
+	Label label = panel.add(new Label(String.format("Combat info vertical offset: %d", CFG.SHOW_COMBAT_INFO_HEIGHT.get())), x + H_STEP, y);
+	y += UI.scale(15);
+	panel.add(new CFGHSlider(UI.scale(150), CFG.SHOW_COMBAT_INFO_HEIGHT, 1, 25) {
+	    @Override
+	    public void changed() {
+		label.settext(String.format("Combat info vertical offset: %d", val));
+	    }
+	}, x + H_STEP, y);
+	
+	y += STEP;
 	panel.add(new CFGBox("Show combat damage", CFG.SHOW_COMBAT_DMG), x, y);
 	
 	y += STEP;
