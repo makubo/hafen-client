@@ -1,3 +1,10 @@
+$size[14]{$u{Update for 19.07.24:}
+  * improved openings display in combat info
+  * added stance display to combat info
+  * added setting to change how high combat info is displayed
+  * fixed colors of rings for current target and just in combat being swapped
+  * fixed kin names of party members on minimap being visible only while they are in vision range
+ 
 $size[14]{$u{Update for 18.07.24:}
   * added option (Options -> Combat) to highlight gobs in combat by adding rings near feet
  
