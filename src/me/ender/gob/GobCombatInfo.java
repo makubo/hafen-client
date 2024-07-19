@@ -15,18 +15,20 @@ import java.util.Map;
 import static haven.Buff.*;
 
 public class GobCombatInfo extends GAttrib implements RenderTree.Node, PView.Render2D {
+    public static final int IP_HX = UI.scale(3);
+    public static final int OPENING_DY = UI.scale(24);
     private final Fightview.Relation rel;
     private final Coord3f pos = new Coord3f(0, 0, 1);
-    private static final Text.Furnace opIp = new PUtils.BlurFurn((new Text.Foundry(Text.mono, 14, new Color(255, 150, 80))).aa(false), 2, 2, Color.DARK_GRAY);
-    private static final Text.Furnace myIp = new PUtils.BlurFurn((new Text.Foundry(Text.mono, 14, new Color(100, 220, 220))).aa(false), 2, 2, Color.DARK_GRAY);
+    private static final Text.Furnace opIp = new PUtils.BlurFurn((new Text.Foundry(Text.monobold, 16, new Color(255, 150, 80))).aa(false), 2, 2, Color.DARK_GRAY);
+    private static final Text.Furnace myIp = new PUtils.BlurFurn((new Text.Foundry(Text.monobold, 16, new Color(100, 220, 220))).aa(false), 2, 2, Color.DARK_GRAY);
     private static final RichText.Foundry fndOpen;
     
     //Slightly tweaked colors for better visibility
-    private static final Map<String, Color> OPENINGS = new HashMap<String, Color>(4) {{
-	put(OPEN_GREEN, new Color(89, 180, 62));
-	put(OPEN_YELLOW, new Color(210, 210, 64));
-	put(OPEN_BLUE, new Color(51, 129, 231));
-	put(OPEN_RED, new Color(241, 62, 62));
+    private static final Map<String, Color> OPENINGS = new HashMap<String, Color>() {{
+	put(OPEN_GREEN, new Color(0, 128, 0));
+	put(OPEN_YELLOW, new Color(195, 159, 19));
+	put(OPEN_BLUE, new Color(32, 72, 160));
+	put(OPEN_RED, new Color(168, 25, 25));
     }};
     
     private static final Map<Long, Fightview.Relation> map = new HashMap<>();
@@ -34,7 +36,8 @@ public class GobCombatInfo extends GAttrib implements RenderTree.Node, PView.Ren
     static {
 	Map<AttributedCharacterIterator.Attribute, Object> a = new HashMap<>();
 	a.put(TextAttribute.FAMILY, "monospaced");
-	a.put(TextAttribute.SIZE, UI.scale(12.0f));
+	a.put(TextAttribute.SIZE, UI.scale(16.0f));
+	a.put(TextAttribute.FOREGROUND, Color.WHITE);
 	a.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
 	fndOpen = new RichText.Foundry(new RichText.Parser(a));
     }
@@ -72,7 +75,7 @@ public class GobCombatInfo extends GAttrib implements RenderTree.Node, PView.Ren
 	    }
 	};
 	
-	this.openings = new RichUText<String>(fndOpen, new Color(0, 0, 0, 84)) {
+	this.openings = new RichUText<String>(fndOpen, new Color(32, 32, 32, 160)) {
 	    @Override
 	    public String value() {
 		return getOpeningText();
@@ -99,38 +102,48 @@ public class GobCombatInfo extends GAttrib implements RenderTree.Node, PView.Ren
 	Coord sc = c3d.round2();
 	if(!sc.isect(Coord.z, g.sz())) {return;}
 	
-	g.aimage(mip.get().tex(), sc.addx(-2), 1f, 0f);
-	g.aimage(oip.get().tex(), sc.addx(2), 0f, 0f);
+	g.aimage(mip.get().tex(), sc.addx(-IP_HX), 1f, 0f);
+	g.aimage(oip.get().tex(), sc.addx(IP_HX), 0f, 0f);
 	
-	g.aimage(openings.get(), sc.addy(UI.scale(20)), 0.5f, 0f);
+	TexI tex = openings.get();
+	if(tex != null) {g.aimage(tex, sc.addy(OPENING_DY), 0.5f, 0f);}
     }
     
     private String getOpeningText() {
-	String y = "-", g = "-", b = "-", r = "-";
+	String y = null, g = null, b = null, r = null;
 	
 	for (Buff buff : rel.buffs.children(Buff.class)) {
 	    int value = buff.getNMeter();
 	    if(value <= 0) {continue;}
 	    try {
 		String name = buff.res.get().name;
+		String format = "%2d";
 		if(OPEN_YELLOW.equals(name)) {
-		    y = String.format("%2d", value);
+		    y = String.format(format, value);
 		} else if(OPEN_GREEN.equals(name)) {
-		    g = String.format("%2d", value);
+		    g = String.format(format, value);
 		} else if(OPEN_BLUE.equals(name)) {
-		    b = String.format("%2d", value);
+		    b = String.format(format, value);
 		} else if(OPEN_RED.equals(name)) {
-		    r = String.format("%2d", value);
+		    r = String.format(format, value);
 		}
 	    } catch (Loading ignore) {}
 	}
 	
-	y = RichText.color(y, OPENINGS.get(OPEN_YELLOW));
-	g = RichText.color(g, OPENINGS.get(OPEN_GREEN));
-	b = RichText.color(b, OPENINGS.get(OPEN_BLUE));
-	r = RichText.color(r, OPENINGS.get(OPEN_RED));
+	String result = null;
 	
-	return String.join("$col[150,150,150]{|}", y, g, b, r);
+	result = add(result, RichText.bgcolor(y, OPENINGS.get(OPEN_YELLOW)));
+	result = add(result, RichText.bgcolor(g, OPENINGS.get(OPEN_GREEN)));
+	result = add(result, RichText.bgcolor(b, OPENINGS.get(OPEN_BLUE)));
+	result = add(result, RichText.bgcolor(r, OPENINGS.get(OPEN_RED)));
+	
+	return result;
+    }
+    
+    private static String add(String current, String value){
+	if(value == null) {return current;}
+	if(current == null || current.isEmpty()) {return value;}
+	return current + "$col[180,180,180]{|}" + value;
     }
     
     public static void check(Gob gob) {

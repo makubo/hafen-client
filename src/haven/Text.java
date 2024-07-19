@@ -40,6 +40,7 @@ public class Text implements Disposable {
     public static final Font serif = new Font("Serif", Font.PLAIN, 10);
     public static final Font sans  = new Font("Sans", Font.PLAIN, 10);
     public static final Font mono  = new Font("Monospaced", Font.PLAIN, 10);
+    public static final Font monobold  = new Font("Monospaced", Font.BOLD, 10);
     //public static final Font fraktur = Resource.local().loadwait("ui/fraktur").flayer(Resource.Font.class).font;
     public static final Font fraktur = serif;
     public static final Font dfont = sans;
