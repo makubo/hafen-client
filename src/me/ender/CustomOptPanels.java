@@ -82,6 +82,7 @@ public class CustomOptPanels {
 	int START;
 	int x, y;
 	int my = 0, tx;
+	Widget w;
 	
 	Widget title = panel.add(new Label("Combat settings", LBL_FNT), 0, 0);
 	START = title.sz.y + UI.scale(10);
@@ -101,7 +102,11 @@ public class CustomOptPanels {
 	y += STEP;
 	panel.add(new CFGBox("Auto peace on combat start", CFG.COMBAT_AUTO_PEACE , "Automatically enter peaceful mode on combat start id enemy is aggressive - useful for taming"), x, y);
 	
-	y += STEP;
+	my = Math.max(my, y);
+	
+	x += COL_WIDTH;
+	y = START;
+	
 	panel.add(new CFGBox("Show combat info", CFG.SHOW_COMBAT_INFO, "Will display initiative points and openings over gobs that you are fighting"), x, y);
 	
 	y += STEP;
@@ -115,6 +120,12 @@ public class CustomOptPanels {
 	}, x + H_STEP, y);
 	
 	y += STEP;
+	panel.add(new CFGBox("Simplified combat openings", CFG.SIMPLE_COMBAT_OPENINGS, "Show openings as solid colors with numbers"), x, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Display combat keys", CFG.SHOW_COMBAT_KEYS), x, y);
+	
+	y += STEP;
 	panel.add(new CFGBox("Show combat damage", CFG.SHOW_COMBAT_DMG), x, y);
 	
 	y += STEP;
@@ -122,12 +133,6 @@ public class CustomOptPanels {
 	
 	y += STEP;
 	panel.add(new CFGBox("Clear all damage after combat", CFG.CLEAR_ALL_DMG_AFTER_COMBAT), x, y);
-	
-	y += STEP;
-	panel.add(new CFGBox("Simplified combat openings", CFG.SIMPLE_COMBAT_OPENINGS, "Show openings as solid colors with numbers"), x, y);
-	
-	y += STEP;
-	panel.add(new CFGBox("Display combat keys", CFG.SHOW_COMBAT_KEYS), x, y);
 	
 	//second row
 	my = Math.max(my, y);
@@ -137,9 +142,10 @@ public class CustomOptPanels {
 	
 	my = Math.max(my, y);
 	
-	panel.add(wnd.new PButton(UI.scale(200), "Back", 27, wnd.main), new Coord(0, my + UI.scale(35)));
+	w = panel.add(wnd.new PButton(UI.scale(200), "Back", 27, wnd.main), new Coord(0, my + UI.scale(35)));
 	panel.pack();
 	title.c.x = (panel.sz.x - title.sz.x) / 2;
+	w.c.x = (panel.sz.x - w.sz.x) / 2;
     }
     
     private static int AddCombatHighlight(OptWnd.Panel panel, int x, int y, String name, CFG<Boolean> highlight, CFG<Boolean> mark) {
