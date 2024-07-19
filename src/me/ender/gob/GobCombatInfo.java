@@ -11,12 +11,16 @@ import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static haven.Buff.*;
 
 public class GobCombatInfo extends GAttrib implements RenderTree.Node, PView.Render2D {
-    public static final int IP_HX = UI.scale(3);
-    public static final int OPENING_DY = UI.scale(24);
+    public static final Coord STANCE_SZ = UI.scale(32, 32);
+    public static final Coord PROGRESS_SZ = Coord.of(STANCE_SZ.x, UI.scale(6));
+    public static final Coord PROGRESS_SZ2 = PROGRESS_SZ.div(2);
+    public static final int IP_HX = STANCE_SZ.x / 2 + UI.scale(3);
+    public static final int OPENING_DY = UI.scale(8);
     private final Fightview.Relation rel;
     private final Coord3f pos = new Coord3f(0, 0, 1);
     private static final Text.Furnace opIp = new PUtils.BlurFurn((new Text.Foundry(Text.monobold, 16, new Color(255, 150, 80))).aa(false), 2, 2, Color.DARK_GRAY);
@@ -102,11 +106,47 @@ public class GobCombatInfo extends GAttrib implements RenderTree.Node, PView.Ren
 	Coord sc = c3d.round2();
 	if(!sc.isect(Coord.z, g.sz())) {return;}
 	
-	g.aimage(mip.get().tex(), sc.addx(-IP_HX), 1f, 0f);
-	g.aimage(oip.get().tex(), sc.addx(IP_HX), 0f, 0f);
+	g.aimage(mip.get().tex(), sc.addx(-IP_HX), 1f, 1f);
+	g.aimage(oip.get().tex(), sc.addx(IP_HX), 0f, 1f);
 	
 	TexI tex = openings.get();
 	if(tex != null) {g.aimage(tex, sc.addy(OPENING_DY), 0.5f, 0f);}
+	
+	drawStance(g, sc);
+    }
+    
+    private void drawStance(GOut g, Coord sc) {
+	//TODO: add setting to enable?
+	if(!gob.is(GobTag.PLAYER)) {return;}
+	Set<Buff> buffs = rel.buffs.children(Buff.class);
+	Buff stance = buffs.stream().findFirst().orElse(null);
+	if(stance == null) {return;}
+	try {
+	    g.aimage(resize(stance.res.get()), sc, 0.5f, 1f);
+	    int meter = stance.ameter();
+	    
+	    if(meter >= 0) {
+		g.chcolor(Color.BLACK);
+		g.frect(sc.sub(PROGRESS_SZ2), PROGRESS_SZ);
+		g.chcolor();
+		if(meter > 0) {
+		    g.frect(sc.sub(PROGRESS_SZ2), PROGRESS_SZ.mul(meter / 100f, 1));
+		}
+	    }
+	} catch (Resource.Loading ignore) {}
+	
+    }
+    
+    private static final Map<String, TexI> sizedCache = new HashMap<>();
+    
+    private static TexI resize(Resource res) {
+	if(sizedCache.containsKey(res.name)) {
+	    return sizedCache.get(res.name);
+	}
+	
+	TexI tex = new TexI(PUtils.convolvedown(res.layer(Resource.imgc).img, STANCE_SZ, CharWnd.iconfilter));
+	sizedCache.put(res.name, tex);
+	return tex;
     }
     
     private String getOpeningText() {
@@ -140,7 +180,7 @@ public class GobCombatInfo extends GAttrib implements RenderTree.Node, PView.Ren
 	return result;
     }
     
-    private static String add(String current, String value){
+    private static String add(String current, String value) {
 	if(value == null) {return current;}
 	if(current == null || current.isEmpty()) {return value;}
 	return current + "$col[180,180,180]{|}" + value;

@@ -277,7 +277,13 @@ public class Buff extends Widget implements ItemInfo.ResOwner, Bufflist.Managed 
     }
     
     public int getNMeter() {return nmeter;}
-    public int ameter() {return ameter;}
+    
+    public int ameter() {
+	if(ameter >= 0) {return ameter;}
+	Double v = ameteri.get();
+	if(v == null) {return -1;}
+	return (int) Math.floor(v * 100);
+    }
 
     public boolean mousedown(Coord c, int btn) {
 	wdgmsg("cl", c.sub(imgoff), btn, ui.modflags());
