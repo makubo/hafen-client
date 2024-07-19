@@ -742,8 +742,7 @@ public class MiniMap extends Widget {
 
     private static void drawPartyName(GOut g, Party.Member m, Coord c) {
 	Gob gob = m.getgob();
-	if(gob == null) {return;}
-	KinInfo ki = gob.kin();
+	KinInfo ki = gob != null ? gob.kin() : KinInfo.cached(m.gobid);
 	if(ki == null || ki.name == null || ki.rname == null) {return;}
 	//0 - white, 1 - party, 2 - buddy
 	int style = CFG.MMAP_SHOW_PARTY_NAMES_STYLE.get();

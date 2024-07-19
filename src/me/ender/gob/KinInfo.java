@@ -3,9 +3,11 @@ package me.ender.gob;
 import haven.*;
 import haven.res.ui.obj.buddy.Buddy;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class KinInfo {
+    private static final Map<Long, KinInfo> cache = new HashMap<>(); 
     
     public static final String VILLAGE_MATE_NAME = "haven.res.ui.obj.buddy_v.Vilmate";
     
@@ -55,9 +57,15 @@ public class KinInfo {
 	    villager = gob.getattr(VILLAGER);
 	}
 	if(buddy != null || villager != null) {
-	    return from(gob, buddy, villager);
+	    KinInfo info = from(gob, buddy, villager);
+	    cache.put(gob.id, info);
+	    return info;
 	}
 	return null;
+    }
+    
+    public static KinInfo cached(long gobId) {
+	return cache.get(gobId);
     }
     
     private static KinInfo from(Gob gob, Buddy buddy, GAttrib villager) {
