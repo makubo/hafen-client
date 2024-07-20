@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 20.07.24:}
+  * made action lists (Craft/Build/Act) to jump in front of all windows when opened
+  * added option (Options -> Combat) to show draggable HP and stamina bars 
+ 
 $size[14]{$u{Update for 19.07.24:}
   * improved openings display in combat info
   * added stance display to combat info
