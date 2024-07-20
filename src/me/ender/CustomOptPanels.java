@@ -104,6 +104,7 @@ public class CustomOptPanels {
 	
 	my = Math.max(my, y);
 	
+	//second row
 	x += COL_WIDTH;
 	y = START;
 	
@@ -134,10 +135,14 @@ public class CustomOptPanels {
 	y += STEP;
 	panel.add(new CFGBox("Clear all damage after combat", CFG.CLEAR_ALL_DMG_AFTER_COMBAT), x, y);
 	
-	//second row
-	my = Math.max(my, y);
-	x += UI.scale(265);
-	y = START;
+	y += STEP;
+	panel.add(new CFGBox("Show draggable HP/Stamina widgets", CFG.SHOW_FLOATING_STAT_WDGS), x, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Only during combat", CFG.SHOW_FLOATING_STATS_COMBAT), x + H_STEP, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Lock them to prevent clicks and dragging", CFG.LOCK_FLOATING_STAT_WDGS), x + H_STEP, y);
 	
 	
 	my = Math.max(my, y);

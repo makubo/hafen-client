@@ -23,7 +23,7 @@ public enum GobTag {
     
     CONTAINER, PROGRESSING, GATE,
     
-    HAS_WATER,
+    HAS_WATER, DRINKING,
     
     PLAYER, ME, FRIEND, FOE, PARTY, LEADER, IN_COMBAT, COMBAT_TARGET, AGGRO_TARGET,
     KO, DEAD, EMPTY, READY, FULL,
@@ -274,6 +274,9 @@ public enum GobTag {
                 }
                 if(d.hasPose("/dead") || d.hasPose("/waterdead")) {
                     tags.add(DEAD);
+                }
+                if(d.hasPose("drinkan")) {
+                    tags.add(DRINKING);
                 }
             }
         }

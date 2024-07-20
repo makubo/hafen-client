@@ -17,6 +17,8 @@ public class DraggableWidget extends Widget {
 	if(!draggable) {stop_dragging();}
     }
     
+    public boolean draggable() {return draggable;}
+    
     private void stop_dragging() {
 	if(dm != null) {
 	    dm.remove();

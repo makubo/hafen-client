@@ -31,11 +31,11 @@ import haven.rx.BuffToggles;
 import haven.rx.Reactor;
 import integrations.mapv4.MappingClient;
 import me.ender.QuestHelper;
+import me.ender.StatMeterWdg;
 import me.ender.minimap.*;
 import me.ender.timer.Timer;
 
 import java.util.*;
-import java.util.function.*;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -43,7 +43,6 @@ import java.awt.image.WritableRaster;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static haven.Inventory.*;
 import static haven.ItemFilter.*;
 import haven.render.Location;
 import static haven.Inventory.invsq;
@@ -351,6 +350,8 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
     protected void attached() {
 	iconconf = loadiconconf();
+	add(new StatMeterWdg.HPMeterWdg(), Coord.of(300, 200));
+	add(new StatMeterWdg.StaminaMeterWdg(), Coord.of(300, 300));
 	super.attached();
     }
 
@@ -1930,6 +1931,22 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     
     public boolean isInCombat() {
 	return fv != null && !fv.lsrel.isEmpty();
+    }
+    
+    public IMeter getIMeter(String name) {
+	for (Widget meter : this.meters) {
+	    if(!(meter instanceof IMeter)) {continue;}
+	    IMeter im = (IMeter) meter;
+	    
+	    try {
+		Resource res = im.bg.get();
+		if(res != null && res.basename().equals(name)) {
+		    return im;
+		}
+	    } catch (Loading ignored) {}
+	}
+	
+	return null;
     }
 
     public void act(String... args) {
