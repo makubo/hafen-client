@@ -64,6 +64,7 @@ public class Widget {
     private final List<Action1<Widget>> boundListeners = new LinkedList<>();
     private final List<Action2<Widget, Boolean>> focusListeners = new LinkedList<>();
     private final List<Action1<Widget>> destroyListeners = new LinkedList<>();
+    protected final List<Disposable> disposables = new LinkedList<>();
     
     @dolda.jglob.Discoverable
     @Target(ElementType.TYPE)
@@ -569,6 +570,10 @@ public class Widget {
 
     public void destroy() {
 	synchronized (destroyListeners) {destroyListeners.forEach(action -> action.call(this));}
+	synchronized (disposables) {
+	    disposables.forEach(Disposable::dispose);
+	    disposables.clear();
+	}
 	remove();
 	rdispose();
     }

@@ -67,7 +67,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
     private static final Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
     private long mapupdate = 0;
     String ttip = null;
-    private final List<Disposable> disposables = new LinkedList<>();
 
     private boolean showgrid;
 
@@ -687,13 +686,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	disposables.add(CFG.COLOR_TILE_GRID.observe(this::updateGridMat));
 	updateSupportOverlay(null);
 	updateGridMat(null);
-    }
-    
-    @Override
-    public void destroy() {
-	disposables.forEach(Disposable::dispose);
-	disposables.clear();
-	super.destroy();
     }
     
     private void updatePlobDrawable(CFG<Boolean> cfg) {
