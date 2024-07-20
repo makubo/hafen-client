@@ -72,6 +72,7 @@ public class ActWindow extends GameUI.Hidewnd {
 	filter.settext("");
 	filtered.change(0);
 	filtered.showsel();
+	raise();
 	parent.setfocus(this);
     }
 
