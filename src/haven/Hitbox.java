@@ -85,7 +85,7 @@ public class Hitbox extends SlottedNode implements Rendered {
 		}
 		
 		if(filled) {
-		    boolean needFilled = mesh != null && !passable; //TODO: add config for filled
+		    boolean needFilled = mesh != null && !passable && CFG.DISPLAY_GOB_HITBOX_FILLED.get();
 		    if(needFilled) {
 			if(changed || model == null) {
 			    changed = true;

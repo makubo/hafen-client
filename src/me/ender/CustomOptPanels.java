@@ -32,9 +32,12 @@ public class CustomOptPanels {
 	tx = x;
 	tx += panel.add(new CFGColorBtn(CFG.COLOR_HBOX_SOLID, "Solid", true), tx + H_STEP, y).sz.x;
 	tx += H_STEP;
-	tx += panel.add(new CFGColorBtn(CFG.COLOR_HBOX_FILLED, "Filled", true), tx + H_STEP, y).sz.x;
-	tx += H_STEP;
 	panel.add(new CFGColorBtn(CFG.COLOR_HBOX_PASSABLE, "Passable", true), tx + H_STEP, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Fill in solid hit boxes:", CFG.DISPLAY_GOB_HITBOX_FILLED), x, y);
+	y += STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_HBOX_FILLED, "With color", true), x + H_STEP, y);
 	
 	y += STEP;
 	panel.add(new CFGColorBtn(CFG.COLOR_RIDGE_BOX, "Ridge highlight", true), x, y);
