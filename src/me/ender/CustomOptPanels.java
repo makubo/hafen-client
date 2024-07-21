@@ -106,14 +106,14 @@ public class CustomOptPanels {
 	y += STEP;
 	
 	y += STEP;
+	panel.add(new CFGBox("Auto peace on combat start", CFG.COMBAT_AUTO_PEACE , "Automatically enter peaceful mode on combat start id enemy is aggressive - useful for taming"), x, y);
+	
+	y += STEP;
 	panel.add(new CFGBox("Always mark current target", CFG.ALWAYS_MARK_COMBAT_TARGET , "Usually current target only marked when there's more than one"), x, y);
 	
 	y = AddCombatHighlight(panel, x, y, "Highlight party members in combat", CFG.HIGHLIGHT_PARTY_IN_COMBAT, CFG.MARK_PARTY_IN_COMBAT);
 	y = AddCombatHighlight(panel, x, y, "Highlight self in combat", CFG.HIGHLIGHT_SELF_IN_COMBAT, CFG.MARK_SELF_IN_COMBAT);
 	y = AddCombatHighlight(panel, x, y, "Highlight enemies in combat", CFG.HIGHLIGHT_ENEMY_IN_COMBAT, CFG.MARK_ENEMY_IN_COMBAT);
-	
-	y += STEP;
-	panel.add(new CFGBox("Auto peace on combat start", CFG.COMBAT_AUTO_PEACE , "Automatically enter peaceful mode on combat start id enemy is aggressive - useful for taming"), x, y);
 	
 	my = Math.max(my, y);
 	
