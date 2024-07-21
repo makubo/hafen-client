@@ -99,6 +99,13 @@ public class CustomOptPanels {
 	panel.add(new CFGBox("Use new combat UI", CFG.ALT_COMBAT_UI), x, y);
 	
 	y += STEP;
+	panel.add(new CFGBox("Allow dragging combat UI", CFG.DRAG_COMBAT_UI, "Drag by cooldown circle"), x, y);
+	y += STEP;
+	panel.add(new Button(UI.scale(150), "Reset combat UI position", false), x + H_STEP, y)
+	    .action(() -> Fightsess.resetOffset(wnd.ui));
+	y += STEP;
+	
+	y += STEP;
 	panel.add(new CFGBox("Always mark current target", CFG.ALWAYS_MARK_COMBAT_TARGET , "Usually current target only marked when there's more than one"), x, y);
 	
 	y = AddCombatHighlight(panel, x, y, "Highlight party members in combat", CFG.HIGHLIGHT_PARTY_IN_COMBAT, CFG.MARK_PARTY_IN_COMBAT);

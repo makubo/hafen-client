@@ -60,6 +60,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public GobIcon.Settings iconconf;
     public MiniMap mmap;
     public Fightview fv;
+    public Fightsess fsess;
     private List<Widget> meters = new LinkedList<Widget>();
     private List<Widget> cmeters = new LinkedList<Widget>();
     private Text lastmsg;
@@ -99,7 +100,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public TimerPanel timers;
     private Gob detectGob;
     public StudyWnd studywnd;
-
+    
     public static abstract class BeltSlot {
 	public final int idx;
 
@@ -1068,7 +1069,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	} else if(place == "fight") {
 	    fv = urpanel.add((Fightview)child, 0, 0);
 	} else if(place == "fsess") {
-	    add(child, Coord.z);
+	    fsess = add((Fightsess)child, Coord.z);
 	} else if(place == "inv") {
 	    invwnd = new Hidewnd(Coord.z, "Inventory") {
 		    public void cresize(Widget ch) {

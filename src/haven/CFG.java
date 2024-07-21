@@ -71,6 +71,7 @@ public class CFG<T> {
     public static final CFG<Boolean> SHOW_FLOATING_STAT_WDGS = new CFG<>("ui.combat.show_floating_stat_wdgs", false);
     public static final CFG<Boolean> SHOW_FLOATING_STATS_COMBAT = new CFG<>("ui.combat.show_floating_stat_wdgs_combat", true);
     public static final CFG<Boolean> LOCK_FLOATING_STAT_WDGS = new CFG<>("ui.combat.lock_floating_stat_wdgs", false);
+    public static final CFG<Boolean> DRAG_COMBAT_UI = new CFG<>("ui.combat.drag_combat_ui", false);
     public static final CFG<Boolean> SHOW_COMBAT_DMG = new CFG<>("ui.combat.show_dmg", true);
     public static final CFG<Boolean> CLEAR_PLAYER_DMG_AFTER_COMBAT = new CFG<>("ui.combat.clear_player_damage_after", true);
     public static final CFG<Boolean> CLEAR_ALL_DMG_AFTER_COMBAT = new CFG<>("ui.combat.clear_all_damage_after", false);

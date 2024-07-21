@@ -29,6 +29,7 @@ package haven;
 import haven.rx.Reactor;
 
 import haven.render.*;
+import me.ender.FakeDraggerWdg;
 
 import java.awt.*;
 import java.util.*;
@@ -70,6 +71,8 @@ public class Fightsess extends Widget {
     public Coord pcc;
     public int pho;
     private Fightview fv;
+    private static final String DRAGGER = "Fightsess:drag";
+    private FakeDraggerWdg dragger = new FakeDraggerWdg(DRAGGER, CFG.DRAG_COMBAT_UI);
 
     public static class Action {
 	public final Indir<Resource> res;
@@ -97,9 +100,26 @@ public class Fightsess extends Widget {
     protected void added() {
 	fv = parent.getparent(GameUI.class).fv;
 	presize();
-	ui.gui.calendar.hide();
+	Cal calendar = ui.gui.calendar;
+	calendar.hide();
+	dragger.sz = cdframe.sz();
+	parent.add(dragger, Coord.z);
     }
-
+    
+    @Override
+    public void remove() {
+	dragger.remove();
+	super.remove();
+    }
+    
+    public static void resetOffset(UI ui) {
+	if(ui == null || ui.gui == null || ui.gui.fsess == null) {
+	    WidgetCfg.reset(DRAGGER);
+	} else {
+	    ui.gui.fsess.dragger.reset();
+	}
+    }
+    
     public void presize() {
 	resize(parent.sz);
 	pcc = sz.div(2);
@@ -208,8 +228,12 @@ public class Fightsess extends Widget {
     public void draw(GOut g) {
 	updatepos();
         boolean altui = CFG.ALT_COMBAT_UI.get();
-	int x0 = ui.gui.calendar.rootpos().x + ui.gui.calendar.sz.x / 2;
-	int y0 = ui.gui.calendar.rootpos().y + ui.gui.calendar.sz.y / 2;
+	Coord c0 = ui.gui.calendar.rootpos().add(ui.gui.calendar.sz.div(2));
+	dragger.origin(c0.sub(dragger.sz.div(2)));
+	int xa = c0.x;
+	c0 = dragger.c.add(dragger.sz.div(2));
+	int x0 = c0.x;
+	int y0 = c0.y;
 	int bottom = ui.gui.beltwdg.c.y - 40;
 	double now = Utils.rtime();
 
@@ -284,7 +308,7 @@ public class Fightsess extends Widget {
 	    }
 	}
 	for(int i = 0; i < actions.length; i++) {
-	    Coord ca = altui ? new Coord(x0 - 18, bottom - 150).add(actc(i)) : pcc.add(actc(i));
+	    Coord ca = altui ? new Coord(xa - 18, bottom - 150).add(actc(i)) : pcc.add(actc(i));
 	    Action act = actions[i];
 	    try {
 		if(act != null) {

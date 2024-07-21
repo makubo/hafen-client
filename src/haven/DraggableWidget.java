@@ -28,12 +28,17 @@ public class DraggableWidget extends Widget {
     }
     
     @Override
+    public boolean checkhit(Coord c) {
+	return c.isect(Coord.z, sz);
+    }
+    
+    @Override
     public boolean mousedown(Coord c, int button) {
 	if(super.mousedown(c, button)) {
 	    parent.setfocus(this);
 	    return true;
 	}
-	if(c.isect(Coord.z, sz) && draggable) {
+	if(checkhit(c) && draggable) {
 	    if(button == 1) {
 		dm = ui.grabmouse(this);
 		doff = c;
