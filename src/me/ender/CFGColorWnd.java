@@ -49,8 +49,8 @@ public class CFGColorWnd extends WindowX {
 	Composer composer = new Composer(this).hmrgn(PAD).vmrgn(PAD).hpad(BOX.x + PAD);
 	
 	txtR = new TextField(TEXT_W, Integer.toString(col.getRed()), this::rgbUpdated);
-	txtG = new TextField(TEXT_W, Integer.toString(col.getBlue()), this::rgbUpdated);
-	txtB = new TextField(TEXT_W, Integer.toString(col.getGreen()), this::rgbUpdated);
+	txtG = new TextField(TEXT_W, Integer.toString(col.getGreen()), this::rgbUpdated);
+	txtB = new TextField(TEXT_W, Integer.toString(col.getBlue()), this::rgbUpdated);
 	composer.addr(
 	    new Label("R:"), txtR,
 	    new Label("G:"), txtG,
