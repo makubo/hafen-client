@@ -1,6 +1,7 @@
 $size[14]{$u{Update for 21.07.24:}
   * added option to make solid hit boxes filled in with customized color
   * added option to drag combat UI and button to reset its position
+  * bumped max vertical offset for combat info
   * fixed Green and Blue channels being swapped in input fields on opening color config window
  
 $size[14]{$u{Update for 20.07.24:}

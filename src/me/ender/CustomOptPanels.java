@@ -126,7 +126,7 @@ public class CustomOptPanels {
 	y += STEP;
 	Label label = panel.add(new Label(String.format("Combat info vertical offset: %d", CFG.SHOW_COMBAT_INFO_HEIGHT.get())), x + H_STEP, y);
 	y += UI.scale(15);
-	panel.add(new CFGHSlider(UI.scale(150), CFG.SHOW_COMBAT_INFO_HEIGHT, 1, 25) {
+	panel.add(new CFGHSlider(UI.scale(150), CFG.SHOW_COMBAT_INFO_HEIGHT, 1, 35) {
 	    @Override
 	    public void changed() {
 		label.settext(String.format("Combat info vertical offset: %d", val));
