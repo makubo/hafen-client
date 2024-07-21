@@ -7,7 +7,7 @@ import static haven.OptWnd.*;
 public class CustomOptPanels {
     private static final int STEP = UI.scale(25);
     private static final int H_STEP = UI.scale(10);
-    private static final int COL_WIDTH = UI.scale(200);
+    private static final int COL_WIDTH = UI.scale(230);
     
     public static void initColorPanel(OptWnd wnd, OptWnd.Panel panel) {
 	int START;
@@ -29,8 +29,11 @@ public class CustomOptPanels {
 	panel.add(new Label("Hit Box:"), x, y);
 	
 	y += STEP;
-	tx = H_STEP;
-	tx += panel.add(new CFGColorBtn(CFG.COLOR_HBOX_SOLID, "Solid", true), tx, y).sz.x;
+	tx = x;
+	tx += panel.add(new CFGColorBtn(CFG.COLOR_HBOX_SOLID, "Solid", true), tx + H_STEP, y).sz.x;
+	tx += H_STEP;
+	tx += panel.add(new CFGColorBtn(CFG.COLOR_HBOX_FILLED, "Filled", true), tx + H_STEP, y).sz.x;
+	tx += H_STEP;
 	panel.add(new CFGColorBtn(CFG.COLOR_HBOX_PASSABLE, "Passable", true), tx + H_STEP, y);
 	
 	y += STEP;

@@ -79,6 +79,7 @@ public class OCache implements Iterable<Gob> {
 	callback(Gob.CHANGED);
 	disposables.add(CFG.DISPLAY_GOB_HITBOX.observe(cfg -> gobAction(Gob::hitboxUpdated)));
 	disposables.add(CFG.DISPLAY_GOB_HITBOX_TOP.observe(cfg -> gobAction(Gob::hitboxUpdated)));
+	disposables.add(CFG.COLOR_HBOX_FILLED.observe(cfg -> gobAction(Gob::hitboxUpdated)));
 	disposables.add(CFG.COLOR_HBOX_SOLID.observe(cfg -> gobAction(Gob::hitboxUpdated)));
 	disposables.add(CFG.COLOR_HBOX_PASSABLE.observe(cfg -> gobAction(Gob::hitboxUpdated)));
 	disposables.add(CFG.HIDE_TREES.observe(cfg -> gobAction(Gob::visibilityUpdated)));

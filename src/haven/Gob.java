@@ -1314,12 +1314,13 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	if(hitboxEnabled) {
 	    if(hitbox != null) {
 		if(!hitbox.show(true)) {
-		    hitbox.fx.updateState();
+		    hitbox.fxs.forEach(Hitbox::updateState);
 		}
 	    } else if(!virtual || this instanceof MapView.Plob) {
-		Hitbox hitbox = Hitbox.forGob(this);
-		if(hitbox != null) {
-		    this.hitbox = new HidingGobSprite<>(this, hitbox);
+		Hitbox hitbox = Hitbox.forGob(this, false);
+		Hitbox filled = Hitbox.forGob(this, true);
+		if(hitbox != null && filled != null) {
+		    this.hitbox = new HidingGobSprite<>(this, Arrays.asList(filled, hitbox));
 		    addol(this.hitbox);
 		}
 	    }

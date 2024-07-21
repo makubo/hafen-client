@@ -9,13 +9,17 @@ import java.util.stream.Collectors;
 
 public class Hitbox extends SlottedNode implements Rendered {
     private static final VertexArray.Layout LAYOUT = new VertexArray.Layout(new VertexArray.Layout.Input(Homo3D.vertex, new VectorFormat(3, NumberFormat.FLOAT32), 0, 0, 12));
+    private VertexArray mesh;
     private Model model;
     private final Gob gob;
-    private static final Map<Resource, Model> MODEL_CACHE = new HashMap<>();
+    private final boolean filled;
+    private static final Map<Resource, VertexArray> VERTEX_CACHE = new HashMap<>();
     private static final float Z = 0.1f;
     private static final float PASSABLE_WIDTH = 1.5f;
     private static final float SOLID_WIDTH = 3f;
-    private static final Pipe.Op TOP = Pipe.Op.compose(Rendered.last, States.Depthtest.none, States.maskdepth);
+    private static final Pipe.Op NO_CULL = new States.Facecull(States.Facecull.Mode.NONE);
+    private static final Pipe.Op TOP = Pipe.Op.compose(States.Depthtest.none, States.maskdepth);
+    private static Pipe.Op FILLED;
     private static Pipe.Op SOLID;
     private static Pipe.Op PASSABLE;
     private static Pipe.Op SOLID_TOP;
@@ -23,27 +27,30 @@ public class Hitbox extends SlottedNode implements Rendered {
     private Pipe.Op state = SOLID;
     
     static {
+	CFG.COLOR_HBOX_FILLED.observe(Hitbox::updateColors);
 	CFG.COLOR_HBOX_SOLID.observe(Hitbox::updateColors);
 	CFG.COLOR_HBOX_PASSABLE.observe(Hitbox::updateColors);
 	updateColors(null);
     }
     
     private static void updateColors(CFG<Color> cfg) {
-	SOLID = Pipe.Op.compose(new BaseColor(CFG.COLOR_HBOX_SOLID.get()), new States.LineWidth(SOLID_WIDTH));
-	PASSABLE = Pipe.Op.compose(new BaseColor(CFG.COLOR_HBOX_PASSABLE.get()), new States.LineWidth(PASSABLE_WIDTH));
+	FILLED = Pipe.Op.compose(new BaseColor(CFG.COLOR_HBOX_FILLED.get()), NO_CULL, MixColor.slot.nil, MapMesh.postmap);
+	SOLID = Pipe.Op.compose(new BaseColor(CFG.COLOR_HBOX_SOLID.get()), new States.LineWidth(SOLID_WIDTH), MixColor.slot.nil, Rendered.last);
+	PASSABLE = Pipe.Op.compose(new BaseColor(CFG.COLOR_HBOX_PASSABLE.get()), new States.LineWidth(PASSABLE_WIDTH), MixColor.slot.nil, Rendered.last);
 	SOLID_TOP = Pipe.Op.compose(SOLID, TOP);
 	PASSABLE_TOP = Pipe.Op.compose(PASSABLE, TOP);
     }
     
-    private Hitbox(Gob gob) {
-	model = getModel(gob);
+    private Hitbox(Gob gob, boolean filled) {
+	mesh = getMesh(gob);
 	this.gob = gob;
+	this.filled = filled;
 	updateState();
     }
     
-    public static Hitbox forGob(Gob gob) {
+    public static Hitbox forGob(Gob gob, boolean filled) {
 	try {
-	    return new Hitbox(gob);
+	    return new Hitbox(gob, filled);
 	} catch (Loading ignored) { }
 	return null;
     }
@@ -63,16 +70,43 @@ public class Hitbox extends SlottedNode implements Rendered {
     }
     
     public void updateState() {
-	if(model != null && slots != null) {
+	if(mesh != null && slots != null) {
 	    boolean top = CFG.DISPLAY_GOB_HITBOX_TOP.get();
-	    Pipe.Op newState = passable() ? (top ? PASSABLE_TOP : PASSABLE) : (top ? SOLID_TOP : SOLID);
+	    boolean passable = passable();
+	    Pipe.Op newState = filled
+		? FILLED
+		: passable ? (top ? PASSABLE_TOP : PASSABLE) : (top ? SOLID_TOP : SOLID);
 	    try {
-	    	Model m = getModel(gob);
-		if(m != null && m != model) {
-	    	    model = m;
-	    	    slots.forEach(RenderTree.Slot::update);
+		VertexArray m = getMesh(gob);
+		boolean changed = false;
+		if(m != null && m != mesh) {
+		    changed = true;
+		    mesh = m;
 		}
-	    }catch (Loading ignored) {}
+		
+		if(filled) {
+		    boolean needFilled = mesh != null && !passable; //TODO: add config for filled
+		    if(needFilled) {
+			if(changed || model == null) {
+			    changed = true;
+			    model = new Model(Model.Mode.TRIANGLE_FAN, mesh, null);
+			}
+		    } else if(model != null) {
+			changed = true;
+			model = null;
+		    }
+		} else {
+		    if(mesh == null && model != null) {
+			changed = true;
+			model = null;
+		    } else if(mesh != null && (model == null || changed)) {
+			changed = true;
+			model = new Model(Model.Mode.LINES, mesh, null);
+		    }
+		}
+		
+		if(changed) {slots.forEach(RenderTree.Slot::update);}
+	    } catch (Loading ignored) {}
 	    if(newState != state) {
 		state = newState;
 		newState = state(state);
@@ -106,12 +140,12 @@ public class Hitbox extends SlottedNode implements Rendered {
 	return false;
     }
     
-    private static Model getModel(Gob gob) {
-	Model model;
+    private static VertexArray getMesh(Gob gob) {
 	Resource res = getResource(gob);
-	synchronized (MODEL_CACHE) {
-	    model = MODEL_CACHE.get(res);
-	    if(model == null) {
+	VertexArray mesh;
+	synchronized (VERTEX_CACHE) {
+	    mesh = VERTEX_CACHE.get(res);
+	    if(mesh == null) {
 		List<List<Coord3f>> polygons = new LinkedList<>();
 	    
 		Collection<Resource.Neg> negs = res.layers(Resource.Neg.class);
@@ -148,15 +182,13 @@ public class Hitbox extends SlottedNode implements Rendered {
 		
 		    float[] data = convert(vertices);
 		    VertexArray.Buffer vbo = new VertexArray.Buffer(data.length * 4, DataBuffer.Usage.STATIC, DataBuffer.Filler.of(data));
-		    VertexArray va = new VertexArray(LAYOUT, vbo);
+		    mesh = new VertexArray(LAYOUT, vbo);
 		
-		    model = new Model(Model.Mode.LINES, va, null);
-		
-		    MODEL_CACHE.put(res, model);
+		    VERTEX_CACHE.put(res, mesh);
 		}
 	    }
 	}
-	return model;
+	return mesh;
     }
     
     private static float[] convert(List<Float> list) {
