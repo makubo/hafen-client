@@ -230,12 +230,7 @@ public class Hitbox extends SlottedNode implements Rendered {
     }
     
     private static Pipe.Op scale(float scale) {
-	scale = 1 / scale;
-	return new Location(new Matrix4f(
-	    scale, 0, 0, 0,
-	    0, scale, 0, 0,
-	    0, 0, scale, 0,
-	    0, 0, 0, 1));
+	return Location.scale(1 / scale);
     }
     
     public static void toggle(GameUI gui) {
