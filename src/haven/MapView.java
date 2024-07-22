@@ -694,8 +694,8 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
     }
     
-    private void updateGridMat(CFG<Color> cfg) {
-	gridmat = makeGridMat();
+    public void updateGridMat(CFG<Color> cfg) {
+	gridmat = null;
 	if(gridlines != null) {
 	    showgrid(false);
 	    showgrid(true);
@@ -1074,9 +1074,13 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    ol.tick();
     }
 
-    private static Material gridmat = makeGridMat();
-    private static Material makeGridMat() {
-	return new Material(new BaseColor(CFG.COLOR_TILE_GRID.get()), States.maskdepth, new MapMesh.OLOrder(null),
+    private static Material gridmat = null;
+    private static Material gridMat(UI ui) {
+	if(gridmat != null) {return gridmat;}
+	float w = 1f;
+	if(ui != null) {w = ui.gprefs.rscale.val;}
+	return gridmat = new Material(new BaseColor(CFG.COLOR_TILE_GRID.get()), States.maskdepth, new MapMesh.OLOrder(null),
+	    new States.LineWidth(w),
 	    Location.xlate(new Coord3f(0, 0, 0.5f))   /* Apparently, there is no depth bias for lines. :P */
 	);
     }
@@ -1097,7 +1101,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
 
 	public void added(RenderTree.Slot slot) {
-	    slot.ostate(gridmat);
+	    slot.ostate(gridMat(ui));
 	    slot.add(grid);
 	    super.added(slot);
 	}

@@ -174,6 +174,7 @@ public class OptWnd extends WindowX {
 				   try {
 				       float val = (float)Math.pow(2, this.val / (double)steps);
 				       ui.setgprefs(prefs = prefs.update(null, prefs.rscale, val));
+				       if(ui.gui != null && ui.gui.map != null) {ui.gui.map.updateGridMat(null);}
 				   } catch(GSettings.SettingException e) {
 				       error(e.getMessage());
 				       return;
