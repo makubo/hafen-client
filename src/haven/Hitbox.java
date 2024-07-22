@@ -213,12 +213,35 @@ public class Hitbox extends SlottedNode implements Rendered {
     private static Resource getResource(Gob gob) {
 	Resource res = gob.getres();
 	if(res == null) {throw new Loading();}
+	res = fix(gob, res);
 	Collection<RenderLink.Res> links = res.layers(RenderLink.Res.class);
 	for (RenderLink.Res link : links) {
 	    if(link.l instanceof RenderLink.MeshMat) {
 		RenderLink.MeshMat mesh = (RenderLink.MeshMat) link.l;
 		return mesh.mesh.get();
 	    }
+	}
+	return res;
+    }
+    
+    public static Resource fix(Gob gob, Resource res) {
+	if(gob.is(GobTag.HORSE)) {
+	    return Resource.remote().loadwait("gfx/kritter/horse/horse");
+	}
+	if(gob.is(GobTag.GOAT)) {
+	    return Resource.remote().loadwait("gfx/kritter/goat/goat");
+	}
+	if(gob.is(GobTag.CALF)) {
+	    return Resource.remote().loadwait("gfx/kritter/cattle/cattle");
+	}
+	if(gob.is(GobTag.LAMB)) {
+	    return Resource.remote().loadwait("gfx/kritter/sheep/sheep");
+	}
+	if(gob.is(GobTag.PIG)) {
+	    return Resource.remote().loadwait("gfx/kritter/pig/pig");
+	}
+	if(res.name.startsWith("gfx/kritter/reindeer")) {
+	    return Resource.remote().loadwait("gfx/kritter/reindeer/reindeer");
 	}
 	return res;
     }
