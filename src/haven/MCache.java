@@ -52,7 +52,7 @@ public class MCache implements MapSource {
     Map<Coord, Request> req = new HashMap<Coord, Request>();
     Map<Coord, Grid> grids = new HashMap<Coord, Grid>();
     Session sess;
-    Set<Overlay> ols = new HashSet<Overlay>();
+    final Set<Overlay> ols = new HashSet<Overlay>();
     public int olseq = 0, chseq = 0;
     public long lastupdate = 0;
     Map<Integer, Defrag> fragbufs = new TreeMap<Integer, Defrag>();
@@ -240,13 +240,17 @@ public class MCache implements MapSource {
 	public Overlay(Area a, OverlayInfo id) {
 	    this.a = a;
 	    this.id = id;
-	    ols.add(this);
-	    olseq++;
+	    synchronized (ols) {
+		ols.add(this);
+		olseq++;
+	    }
 	}
 
 	public void destroy() {
-	    ols.remove(this);
-	    olseq++;
+	    synchronized (ols) {
+		ols.remove(this);
+		olseq++;
+	    }
 	}
 
 	public void update(Area a) {
@@ -964,9 +968,11 @@ public class MCache implements MapSource {
 		    ret.add(id);
 	    }
 	}
-	for(Overlay lol : ols) {
-	    if((lol.a.overlap(a) != null) && !ret.contains(lol.id))
-		ret.add(lol.id);
+	synchronized (ols) {
+	    for (Overlay lol : ols) {
+		if((lol.a.overlap(a) != null) && !ret.contains(lol.id))
+		    ret.add(lol.id);
+	    }
 	}
 	return(ret);
     }
@@ -986,13 +992,15 @@ public class MCache implements MapSource {
 		    buf[a.ri(tc)] = gbuf[(tc.x - gt.ul.x) + ((tc.y - gt.ul.y) * cmaps.x)];
 	    }
 	}
-	for(Overlay lol : ols) {
-	    if(lol.id != id)
-		continue;
-	    Area la = lol.a.overlap(a);
-	    if(la != null) {
-		for(Coord lc : la)
-		    if(lol.mask(lc)) {buf[a.ri(lc)] = true;}
+	synchronized (ols) {
+	    for (Overlay lol : ols) {
+		if(lol.id != id)
+		    continue;
+		Area la = lol.a.overlap(a);
+		if(la != null) {
+		    for (Coord lc : la)
+			if(lol.mask(lc)) {buf[a.ri(lc)] = true;}
+		}
 	    }
 	}
     }
