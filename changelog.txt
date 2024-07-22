@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 22.07.24:}
+  * update tile grid line width when render scale changes
+  * fixed hit boxes being absent for some domesticated animals
+ 
 $size[14]{$u{Update for 21.07.24:}
   * added option to make solid hit boxes filled in with customized color
   * added option to drag combat UI and button to reset its position
