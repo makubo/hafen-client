@@ -107,7 +107,7 @@ public class MeshUtils {
 	    }
 	}
 	
-	return new HeightFastMesh(Pipe.Op.compose(MapMesh.postmap, NoFacecull, Clickable.No, Location.nullrot),
+	return new HeightFastMesh(Pipe.Op.compose(MapMesh.postmap, NoFacecull, Clickable.No, Location.nullrot, MixColor.nil),
 	    h, new VertexBuf(new VertexBuf.VertexData(vert), new VertexBuf.NormalData(vert)), ind);
     }
     
