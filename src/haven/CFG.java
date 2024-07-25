@@ -46,6 +46,7 @@ public class CFG<T> {
     public static final CFG<Boolean> DISPLAY_DECALS_ON_TOP = new CFG<>("display.decals_on_top", false);
     public static final CFG<Boolean> DISPLAY_AURA_SPEED_BUFF = new CFG<>("display.aura.speed", false);
     public static final CFG<Boolean> DISPLAY_AURA_RABBIT = new CFG<>("display.aura.rabbit", false);
+    public static final CFG<Boolean> DISPLAY_AURA_CRITTERS = new CFG<>("display.aura.critters", false);
     public static final CFG<Boolean> STORE_MAP = new CFG<>("general.storemap", false);
     public static final CFG<Boolean> SHOW_TOOLBELT_0 = new CFG<>("general.toolbelt0", true);
     public static final CFG<Boolean> SHOW_TOOLBELT_1 = new CFG<>("general.toolbelt1", false);
@@ -128,7 +129,8 @@ public class CFG<T> {
     public static final CFG<Color> COLOR_GOB_IN_COMBAT = new CFG<>("colors.gob.in_combat", new Color(246, 86, 153, 200));
     public static final CFG<Color> COLOR_GOB_COMBAT_TARGET = new CFG<>("colors.gob.combat_target", new Color(255, 0, 0, 200));
     public static final CFG<Color> COLOR_GOB_RABBIT = new CFG<>("colors.gob.rabbit", new Color(0, 255, 119, 140));
-    public static final CFG<Color> COLOR_GOB_SPEED_BUFF = new CFG<>("colors.gob.speed_buff", new Color(130, 239, 207, 140));
+    public static final CFG<Color> COLOR_GOB_CRITTERS = new CFG<>("colors.gob.critters", new Color(150, 230, 255, 140));
+    public static final CFG<Color> COLOR_GOB_SPEED_BUFF = new CFG<>("colors.gob.speed_buff", new Color(200, 255, 230, 140));
     
     /**Show stack's hover inventory widgets only if SHIFT is pressed*/
     public static final CFG<Boolean> UI_STACK_SUB_INV_ON_SHIFT = new CFG<>("ui.stack.sub_inv_on_shift", false);

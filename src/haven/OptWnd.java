@@ -1197,6 +1197,10 @@ public class OptWnd extends WindowX {
 	y += STEP;
 	tx = panel.add(new CFGColorBtn(CFG.COLOR_GOB_RABBIT, true), x + H_STEP, y).sz.x + H_STEP;
 	panel.add(new CFGBox("Rabbits", CFG.DISPLAY_AURA_RABBIT), x + tx + H_STEP, y);
+	
+	y += STEP;
+	tx = panel.add(new CFGColorBtn(CFG.COLOR_GOB_CRITTERS, true), x + H_STEP, y).sz.x + H_STEP;
+	panel.add(new CFGBox("Critters", CFG.DISPLAY_AURA_CRITTERS), x + tx + H_STEP, y);
     
 	my = Math.max(my, y);
 	

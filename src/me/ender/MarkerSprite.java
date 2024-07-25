@@ -18,6 +18,7 @@ public class MarkerSprite extends Sprite {
     public static Id ENEMY = Combat(CFG.COLOR_GOB_IN_COMBAT);
     public static Id TARGET = Combat(CFG.COLOR_GOB_COMBAT_TARGET);
     public static Id RABBIT = new Id(CFG.COLOR_GOB_RABBIT.get(), CIRCLE_10);
+    public static Id CRITTER = new Id(CFG.COLOR_GOB_CRITTERS.get(), CIRCLE_10);
     public static Id SPEED_BUFF = new Id(CFG.COLOR_GOB_SPEED_BUFF.get(), CIRCLE_6);
     
     static {
@@ -27,6 +28,7 @@ public class MarkerSprite extends Sprite {
 	CFG.COLOR_GOB_IN_COMBAT.observe(cfg -> ENEMY = Combat(cfg));
 	CFG.COLOR_GOB_COMBAT_TARGET.observe(cfg -> TARGET = Combat(cfg));
 	CFG.COLOR_GOB_RABBIT.observe(cfg -> RABBIT = new Id(cfg.get(), CIRCLE_10));
+	CFG.COLOR_GOB_CRITTERS.observe(cfg -> CRITTER = new Id(cfg.get(), CIRCLE_10));
 	CFG.COLOR_GOB_SPEED_BUFF.observe(cfg -> SPEED_BUFF = new Id(cfg.get(), CIRCLE_6));
     }
     

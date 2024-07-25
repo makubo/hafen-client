@@ -51,6 +51,9 @@ public class CustomOptPanels {
 	y += STEP;
 	panel.add(new CFGColorBtn(CFG.COLOR_GOB_RABBIT, "Rabbits", true), x + H_STEP, y);
 	
+	y += STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_CRITTERS, "Critters", true), x + H_STEP, y);
+	
 	my = Math.max(my, y);
 	
 	x += COL_WIDTH;

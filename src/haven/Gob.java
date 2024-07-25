@@ -1605,6 +1605,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    id = MarkerSprite.SPEED_BUFF;
 	} else if(CFG.DISPLAY_AURA_RABBIT.get() && is(GobTag.RABBIT) && !is(GobTag.DEAD)) {
 	    id = MarkerSprite.RABBIT;
+	} else if(CFG.DISPLAY_AURA_CRITTERS.get() && is(GobTag.CRITTER) && !anyOf(GobTag.DEAD, GobTag.KO)) {
+	    id = MarkerSprite.CRITTER;
 	}
 	
 	GameUI gui = context(GameUI.class);
