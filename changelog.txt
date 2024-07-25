@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 25.07.24:}
+  * added options (Options -> Display, Options -> Colors) to show clickable auras for speed buffs and rabbits
+ 
 $size[14]{$u{Update for 22.07.24:}
   * update tile grid line width when render scale changes
   * fixed hit boxes being absent for some domesticated animals
