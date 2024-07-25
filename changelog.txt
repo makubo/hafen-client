@@ -1,5 +1,8 @@
 $size[14]{$u{Update for 25.07.24:}
-  * added options (Options -> Display, Options -> Colors) to show clickable auras for speed buffs and rabbits
+  * added options (Options -> Display, Options -> Colors) to show clickable auras for speed buffs, rabbits and other critters
+  * added some missing critters to the list
+  * added some missing aggressive animals to the list
+  * fixed crash related to toggling tree visibility
  
 $size[14]{$u{Update for 22.07.24:}
   * update tile grid line width when render scale changes
