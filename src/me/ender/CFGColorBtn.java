@@ -15,6 +15,10 @@ public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
     private final boolean hasAlpha;
     private boolean dis;
     
+    public CFGColorBtn(CFG<Color> cfg, boolean hasAlpha) {
+	this(cfg, null, hasAlpha);
+    }
+    
     public CFGColorBtn(CFG<Color> cfg, String title, boolean hasAlpha) {
 	super(drawUp(cfg, title), drawDown(cfg, title), drawHover(cfg, title));
 	this.title = title;
@@ -73,7 +77,8 @@ public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
 	
 	g.dispose();
 	
-	return ItemInfo.catimgsh(UI.scale(5), ret, Text.render(title, textColor).img);
+	BufferedImage img = title != null ? Text.render(title, textColor).img : null;
+	return ItemInfo.catimgsh(UI.scale(5), ret, img);
     }
     
     private static BufferedImage drawUp(CFG<Color> cfg, String title) {
