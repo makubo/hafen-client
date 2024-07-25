@@ -1348,7 +1348,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 		    }
 		} else {
 		    ArrayList<RenderTree.Slot> tmpSlots = new ArrayList<>(slots);
-		    glob.loader.defer(() -> RUtils.multiadd(tmpSlots, d), null);
+		    glob.loader.defer(() -> RUtils.multiaddSafe(tmpSlots, d), null);
 		}
 	    }
 	    if(needHide) {
