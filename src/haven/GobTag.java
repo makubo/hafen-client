@@ -49,16 +49,59 @@ public enum GobTag {
     
     //behave like critters - can be picked up by r-clicking 
     private static final String[] LIKE_CRITTER = {
+        "/terobjs/items/hoppedcow",
+        "/terobjs/items/mandrakespirited",
         "/terobjs/items/grub"
     };
     
-    //these one can be picked up by r-clicking
+    //these can be picked up by r-clicking
     private static final String[] CRITTERS = {
-        "/rat/rat", "/swan", "/squirrel", "/silkmoth", "/frog", "/rockdove", "/quail", "/toad", "/grasshopper",
-        "/ladybug", "/forestsnail", "/dragonfly", "/forestlizard", "/waterstrider", "/firefly", "/sandflea",
-        "/rabbit", "/crab", "/cavemoth", "/hedgehog", "/stagbeetle", "jellyfish", "/mallard", "/chicken", "/irrbloss",
-        "/cavecentipede", "/bogturtle", "/moonmoth", "/monarchbutterfly", "/items/grub", "/springbumblebee", "/bayshrimp",
-        "/mole" , "/lobster", "/earthworm", "/whirlingsnowflake"
+	"/bayshrimp",
+	"/bogturtle",
+	"/brimstonebutterfly",
+        "/bullfinch",
+	"/cavecentipede",
+	"/cavemoth",
+	"/chicken",
+	"/crab",
+	"/dragonfly",
+	"/earthworm",
+	"/firefly",
+	"/forestlizard",
+	"/forestsnail",
+	"/frog",
+	"/grasshopper",
+	"/hedgehog",
+	"/irrbloss",
+	"/items/grub",
+        "/items/hoppedcow",
+        "/items/mandrakespirited",
+	"/jellyfish",
+	"/ladybug",
+	"/lobster",
+        "/magpie",
+	"/mallard",
+	"/mole",
+	"/monarchbutterfly",
+	"/moonmoth",
+        "/opiumdragon",
+        "/ptarmigan",
+	"/quail",
+	"/rabbit",
+	"/rat/rat",
+	"/rockdove",
+	"/sandflea",
+        "/seagull",
+	"/silkmoth",
+	"/springbumblebee",
+	"/squirrel",
+	"/stagbeetle",
+        "/stalagoomba",
+	"/toad",
+	"/waterstrider",
+	"/whirlingsnowflake",
+        "/woodgrouse-f",
+        "/woodworm",
     };
     
     //List of animals that player can aggro
