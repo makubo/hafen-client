@@ -31,8 +31,28 @@ public enum GobTag {
     MENU, PICKUP, HIDDEN;
     
     private static final String[] AGGRO = {
-        "/bear", "/boar", "/troll", "/wolverine", "/badger", "/adder", "/wolf", "/walrus", "/lynx", "/rat/caverat", "/moose", 
-        "/mammoth", "/goat/wildgoat", "/spermwhale", "/orca"
+	"/adder",
+	"/badger",
+	//"/bat", //bats are handled separately to account for wearing cape
+	"/bear",
+	"/boar",
+	"/boreworm",
+	"/caveangler",
+	"/cavelouse",
+	"/caverat",
+	"/eagleowl",
+	"/goat/wildgoat",
+	"/goldeneagle",
+	"/greenooze",
+	"/lynx",
+	"/mammoth",
+	"/moose",
+	"/orca",
+	"/spermwhale",
+	"/troll",
+	"/walrus",
+	"/wolf",
+	"/wolverine",
     };
     
     private static final String[] BIG_PARTS = {
