@@ -10,11 +10,15 @@ import java.util.function.Supplier;
 
 public class MarkerSprite extends Sprite {
     private static final Supplier<FastMesh> COMBAT = MeshUtils.Ring(4f, 1.75f);
+    private static final Supplier<FastMesh> CIRCLE_6 = MeshUtils.Circle(6f);
+    private static final Supplier<FastMesh> CIRCLE_10 = MeshUtils.Circle(10f);
     public static Id SELF = Combat(CFG.COLOR_GOB_SELF);
     public static Id PARTY = Combat(CFG.COLOR_GOB_PARTY);
     public static Id LEADER = Combat(CFG.COLOR_GOB_LEADER);
     public static Id ENEMY = Combat(CFG.COLOR_GOB_IN_COMBAT);
     public static Id TARGET = Combat(CFG.COLOR_GOB_COMBAT_TARGET);
+    public static Id RABBIT = new Id(CFG.COLOR_GOB_RABBIT.get(), CIRCLE_10);
+    public static Id SPEED_BUFF = new Id(CFG.COLOR_GOB_SPEED_BUFF.get(), CIRCLE_6);
     
     static {
 	CFG.COLOR_GOB_SELF.observe(cfg -> SELF = Combat(cfg));
@@ -22,6 +26,8 @@ public class MarkerSprite extends Sprite {
 	CFG.COLOR_GOB_LEADER.observe(cfg -> LEADER = Combat(cfg));
 	CFG.COLOR_GOB_IN_COMBAT.observe(cfg -> ENEMY = Combat(cfg));
 	CFG.COLOR_GOB_COMBAT_TARGET.observe(cfg -> TARGET = Combat(cfg));
+	CFG.COLOR_GOB_RABBIT.observe(cfg -> RABBIT = new Id(cfg.get(), CIRCLE_10));
+	CFG.COLOR_GOB_SPEED_BUFF.observe(cfg -> SPEED_BUFF = new Id(cfg.get(), CIRCLE_6));
     }
     
     private final Gob gob;

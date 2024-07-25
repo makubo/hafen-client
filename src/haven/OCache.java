@@ -92,6 +92,8 @@ public class OCache implements Iterable<Gob> {
 	disposables.add(CFG.HIGHLIGHT_SELF_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
 	disposables.add(CFG.HIGHLIGHT_ENEMY_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
 	disposables.add(CFG.FLAT_TERRAIN.observe(cfg -> gobAction(Gob::markerUpdated)));
+	disposables.add(CFG.DISPLAY_AURA_SPEED_BUFF.observe(cfg -> gobAction(Gob::markerUpdated)));
+	disposables.add(CFG.DISPLAY_AURA_RABBIT.observe(cfg -> gobAction(Gob::markerUpdated)));
 	disposables.add(CFG.MARK_PARTY_IN_COMBAT.observe(cfg -> gobAction(Gob::markerUpdated)));
 	disposables.add(CFG.MARK_SELF_IN_COMBAT.observe(cfg -> gobAction(Gob::markerUpdated)));
 	disposables.add(CFG.MARK_ENEMY_IN_COMBAT.observe(cfg -> gobAction(Gob::markerUpdated)));
@@ -106,6 +108,8 @@ public class OCache implements Iterable<Gob> {
 	disposables.add(CFG.COLOR_GOB_SELF.observe(cfg -> gobAction(Gob::colorUpdated)));
 	disposables.add(CFG.COLOR_GOB_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
 	disposables.add(CFG.COLOR_GOB_COMBAT_TARGET.observe(cfg -> gobAction(Gob::colorUpdated)));
+	disposables.add(CFG.COLOR_GOB_SPEED_BUFF.observe(cfg -> gobAction(Gob::colorUpdated)));
+	disposables.add(CFG.COLOR_GOB_RABBIT.observe(cfg -> gobAction(Gob::colorUpdated)));
     }
     
     public void destroy() {

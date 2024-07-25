@@ -30,6 +30,7 @@ package haven;
 import java.util.HashSet;
 import java.util.LinkedList;
 import haven.render.*;
+import me.ender.CFGColorBtn;
 import me.ender.GobInfoOpts;
 import me.ender.CustomOptPanels;
 
@@ -1081,6 +1082,7 @@ public class OptWnd extends WindowX {
 
     private void initDisplayPanel(Panel panel) {
 	int STEP = UI.scale(25);
+	int H_STEP = UI.scale(10);
 	int START;
 	int x, y;
 	int my = 0, tx;
@@ -1182,6 +1184,19 @@ public class OptWnd extends WindowX {
 	
 	y += STEP;
 	panel.add(new CFGBox("Cupboard decals on top", CFG.DISPLAY_DECALS_ON_TOP, "Show decals put on cupboard on its top instead of a door. (Requires zone reload or re-applying decal)", true), x, y);
+	
+	y += STEP;
+	
+	y += STEP;
+	panel.add(new Label("Show clickable auras:"), x, y);
+	
+	y += STEP;
+	tx = panel.add(new CFGColorBtn(CFG.COLOR_GOB_SPEED_BUFF, true), x + H_STEP, y).sz.x + H_STEP;
+	panel.add(new CFGBox("Speed Buff", CFG.DISPLAY_AURA_SPEED_BUFF), x + tx + H_STEP, y);
+	
+	y += STEP;
+	tx = panel.add(new CFGColorBtn(CFG.COLOR_GOB_RABBIT, true), x + H_STEP, y).sz.x + H_STEP;
+	panel.add(new CFGBox("Rabbits", CFG.DISPLAY_AURA_RABBIT), x + tx + H_STEP, y);
     
 	my = Math.max(my, y);
 	

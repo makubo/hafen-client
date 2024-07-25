@@ -9,7 +9,7 @@ public enum GobTag {
     TREE, BUSH, LOG, STUMP, HERB,
     ANIMAL, AGGRESSIVE, CRITTER,
     
-    MIDGES,
+    MIDGES, RABBIT, SPEED,
     
     DOMESTIC, YOUNG, ADULT,
     CATTLE, COW, BULL, CALF,
@@ -159,6 +159,9 @@ public enum GobTag {
                     }
                 }
             } else if(name.startsWith("gfx/kritter/") || ofType(name, LIKE_CRITTER)) {
+                if(name.contains("/rabbit")) {
+                    tags.add(RABBIT);
+                }
                 if(name.endsWith("/midgeswarm")) {
                     tags.add(MIDGES);
                 } else if(ofType(name, CRITTERS)) {
@@ -217,6 +220,9 @@ public enum GobTag {
             }
             if(name.equals("gfx/terobjs/items/arrow")) {
                 tags.add(ARROW);
+            }
+            if(name.equals("gfx/terobjs/boostspeed")) {
+                tags.add(SPEED);
             }
             
             if("Water".equals(gob.contents())) {

@@ -50,7 +50,7 @@ public class MeshUtils {
     }
     
     private static FastMesh makeStaticCircle(float radius) {
-	float h = 0.1f;
+	float h = 0.3f;
 	int total = 64; //TODO: calculate based on radius?
 	
 	FloatBuffer vert = Utils.mkfbuf(3 * (total + 1));
@@ -71,7 +71,7 @@ public class MeshUtils {
 	    ind.put(a).put(b).put(c);
 	}
 	
-	return new StateFastMesh(Pipe.Op.compose(MapMesh.postmap, NoFacecull, Clickable.No, Location.nullrot),
+	return new StateFastMesh(Pipe.Op.compose(MapMesh.postmap, NoFacecull, Location.nullrot),
 	    new VertexBuf(new VertexBuf.VertexData(vert), new VertexBuf.NormalData(vert)), ind);
     }
     

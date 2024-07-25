@@ -42,6 +42,15 @@ public class CustomOptPanels {
 	y += STEP;
 	panel.add(new CFGColorBtn(CFG.COLOR_RIDGE_BOX, "Ridge highlight", true), x, y);
 	
+	y += STEP;
+	panel.add(new Label("Aura colors:"), x, y);
+	
+	y += STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_SPEED_BUFF, "Speed Buff", true), x + H_STEP, y);
+	
+	y += STEP;
+	panel.add(new CFGColorBtn(CFG.COLOR_GOB_RABBIT, "Rabbits", true), x + H_STEP, y);
+	
 	my = Math.max(my, y);
 	
 	x += COL_WIDTH;
