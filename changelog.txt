@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 26.07.24:}
+  * merged loftar's changes
+ 
 $size[14]{$u{Update for 25.07.24:}
   * added options (Options -> Display, Options -> Colors) to show clickable auras for speed buffs, rabbits and other critters
   * added some missing critters to the list
