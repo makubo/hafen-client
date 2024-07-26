@@ -309,6 +309,55 @@ public class Config {
 	}
     }
 
+    public static class Services {
+	public static final Variable<URI> directory = Config.Variable.propu("haven.svcdir", "");
+	public final Properties props;
+
+	public Services(Properties props) {
+	    this.props = props;
+	}
+
+	private static Services fetch(URI uri) {
+	    Properties props = new Properties();
+	    if(uri != null) {
+		Object[] data;
+		try {
+		    try(InputStream fp = Http.fetch(uri.toURL())) {
+			data = new StreamMessage(fp).list();
+		    }
+		} catch(IOException exc) {
+		    throw(new RuntimeException(exc));
+		}
+		for(Object d : data) {
+		    Object[] p = (Object[])d;
+		    props.put(p[0], p[1]);
+		}
+	    }
+	    return(new Services(props));
+	}
+
+	private static Services global = null;
+	public static Services get() {
+	    if(global != null)
+		return(global);
+	    synchronized(Services.class) {
+		if(global == null)
+		    global = fetch(directory.get());
+		return(global);
+	    }
+	}
+
+	public static Variable<URI> var(String name, String defval) {
+	    URI def = parseuri(defval);
+	    return new Variable<URI>(cfg -> {
+		    String pv = cfg.getprop("haven." + name, null);
+		    if(pv == null)
+			pv = Services.get().props.getProperty(name);
+		    return((pv == null) ? def : parseuri(pv));
+	    });
+	}
+    }
+
     private static void usage(PrintStream out) {
 	out.println("usage: haven.jar [OPTIONS] [SERVER[:PORT]]");
 	out.println("Options include:");

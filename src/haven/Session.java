@@ -238,6 +238,10 @@ public class Session implements Resource.Resolver {
     public Indir<Resource> getres(int id) {
 	return(getres(id, 0));
     }
+
+    public Indir<Resource> dynres(UID uid) {
+	return(Resource.remote().dynres(uid));
+    }
     
     public Indir<Resource> getres2(int id) {
 	synchronized (rescache) {
