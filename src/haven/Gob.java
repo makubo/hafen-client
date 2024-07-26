@@ -29,9 +29,7 @@ package haven;
 import haven.render.*;
 import haven.res.gfx.fx.msrad.MSRad;
 import integrations.mapv4.MappingClient;
-import me.ender.ClientUtils;
-import me.ender.Reflect;
-import me.ender.ResName;
+import me.ender.*;
 import me.ender.gob.KinInfo;
 import me.ender.gob.GobCombatInfo;
 import me.ender.minimap.AutoMarkers;
@@ -44,9 +42,6 @@ import java.util.function.Supplier;
 import static haven.OCache.*;
 
 public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, EquipTarget, RandomSource {
-    private static final Color COL_READY = new Color(16, 255, 16, 128);
-    private static final Color COL_FULL = new Color(215, 63, 250, 64);
-    private static final Color COL_EMPTY = new Color(104, 213, 253, 64);
     public Coord2d rc;
     public double a;
     public boolean virtual = false;
@@ -76,9 +71,12 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     private final Set<GobTag> tags = new HashSet<>();
     public boolean drivenByPlayer = false;
     public boolean mapProcessed = false;
-    public long drives = 0;
+    private long vehicleId = 0;
+    public final Set<Gob> occupants = new HashSet<>();
     private GobRadius radius = null;
     private long eseq = 0;
+    private Overlay marker;
+    private MarkerSprite.Id markerId;
     public static final ChangeCallback CHANGED = new ChangeCallback() {
 	@Override
 	public void added(Gob ob) {
@@ -568,7 +566,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	}
 	if(!mapProcessed && context(MapWnd2.class) != null) {
 	    mapProcessed = true;
-	    status.update(StatusType.marker);
+	    status.update(StatusType.map_marker);
 	}
 	updateState();
     }
@@ -719,9 +717,16 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     public void itemact() {
 	try {
 	    UI ui = glob.sess.ui;
+	    itemact(ui.modflags());
+	} catch (Exception ignored) {}
+    }
+    
+    public void itemact(int modflags) {
+	try {
+	    UI ui = glob.sess.ui;
 	    Coord mc = rc.floor(posres);
 	    MapView map = ui.gui.map;
-	    map.wdgmsg("itemact", ui.mc, mc, ui.modflags(), 0, (int)id, mc, 0, -1);
+	    map.wdgmsg("itemact", ui.mc, mc, modflags, 0, (int)id, mc, 0, -1);
 	} catch (Exception ignored) {}
     }
     
@@ -743,6 +748,8 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     public boolean disposed() {return disposed;}
     
     public void dispose() {
+	setVehicle(0);
+	occupants.clear();
 	drawable = null;
 	moving = null;
 	synchronized (removalLock) {
@@ -1307,12 +1314,13 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	if(hitboxEnabled) {
 	    if(hitbox != null) {
 		if(!hitbox.show(true)) {
-		    hitbox.fx.updateState();
+		    hitbox.fxs.forEach(Hitbox::updateState);
 		}
 	    } else if(!virtual || this instanceof MapView.Plob) {
-		Hitbox hitbox = Hitbox.forGob(this);
-		if(hitbox != null) {
-		    this.hitbox = new HidingGobSprite<>(this, hitbox);
+		Hitbox hitbox = Hitbox.forGob(this, false);
+		Hitbox filled = Hitbox.forGob(this, true);
+		if(hitbox != null && filled != null) {
+		    this.hitbox = new HidingGobSprite<>(this, Arrays.asList(filled, hitbox));
 		    addol(this.hitbox);
 		}
 	    }
@@ -1329,7 +1337,9 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    if(onRadar != null && onRadar && CFG.SKIP_HIDING_RADAR_TREES.get()) {
 		needHide = false;
 	    }
+	    boolean changed = false;
 	    if(d != null && d.skipRender != needHide) {
+		changed = true;
 		d.skipRender = needHide;
 		if(needHide) {
 		    if(d.slots != null) {
@@ -1338,7 +1348,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 		    }
 		} else {
 		    ArrayList<RenderTree.Slot> tmpSlots = new ArrayList<>(slots);
-		    glob.loader.defer(() -> RUtils.multiadd(tmpSlots, d), null);
+		    glob.loader.defer(() -> RUtils.multiaddSafe(tmpSlots, d), null);
 		}
 	    }
 	    if(needHide) {
@@ -1346,7 +1356,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	    } else {
 	        untag(GobTag.HIDDEN);
 	    }
-	    return true;
+	    return changed;
 	}
 	return false;
     }
@@ -1473,12 +1483,26 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     
     public void tagsUpdated() {status.update(StatusType.tags);}
     
+    public void colorUpdated() {status.update(StatusType.color);}
+    
+    public void markerUpdated() {status.update(StatusType.marker);}
+    
+    private static void updateStatus(UI ui, long gobId, StatusType type) {
+	Gob gob = ui.sess.glob.oc.getgob(gobId);
+	if(gob == null) {return;}
+	gob.status.update(type);
+    }
+    
+    public static void gobTagsUpdated(UI ui, long gobId) {updateStatus(ui, gobId, StatusType.tags);}
+    
+    public static void gobTagsUpdated(Gob gob) {if(gob != null) {gob.tagsUpdated();}}
+    
     private void updateState() {
 	if(updateseq == 0 || !status.updated()) {return;}
 	StatusUpdates status = this.status;
 	this.status = new StatusUpdates();
     
-	if(status.updated(StatusType.drawable, StatusType.kin, StatusType.id, StatusType.pose, StatusType.tags, StatusType.overlay)) {
+	if(status.updated(StatusType.drawable, StatusType.kin, StatusType.id, StatusType.pose, StatusType.tags, StatusType.overlay, StatusType.combat)) {
 	    updateTags();
 	    status.update(StatusType.tags);
 	}
@@ -1518,12 +1542,16 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	if(status.updated(StatusType.info, StatusType.tags)) {
 	    info.clean();
 	}
+	
+	if(status.updated(StatusType.tags, StatusType.color, StatusType.marker)) {
+	    updateMarkerSprite();
+	}
     
-	if(status.updated(StatusType.tags, StatusType.info)) {
+	if(status.updated(StatusType.tags, StatusType.info, StatusType.color)) {
 	    updateColor();
 	}
 	
-	if(status.updated(StatusType.marker, StatusType.id)) {
+	if(status.updated(StatusType.map_marker, StatusType.id)) {
 	    markGob();
 	}
     }
@@ -1532,17 +1560,94 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	Color c = null;
 	if(CFG.SHOW_PROGRESS_COLOR.get() && is(GobTag.PROGRESSING)) {
 	    if(is(GobTag.READY)) {
-		c = COL_READY;
+		c = CFG.COLOR_GOB_READY.get();
 	    }
 	}
 	if(CFG.SHOW_CONTAINER_FULLNESS.get() && is(GobTag.CONTAINER)) {
 	    if(is(GobTag.EMPTY)) {
-		c = COL_EMPTY;
+		c = CFG.COLOR_GOB_EMPTY.get();
 	    } else if(is(GobTag.FULL)) {
-		c = COL_FULL;
+		c = CFG.COLOR_GOB_FULL.get();
+	    }
+	}
+	
+	GameUI gui = context(GameUI.class);
+	if(gui != null && gui.isInCombat()) {
+	    boolean inParty = is(GobTag.PARTY);
+	    boolean isMe = Boolean.TRUE.equals(isMe());
+	    if(!isMe && CFG.HIGHLIGHT_PARTY_IN_COMBAT.get()) {
+		if(is(GobTag.LEADER)) {
+		    c = CFG.COLOR_GOB_LEADER.get();
+		} else if(inParty) {
+		    c = CFG.COLOR_GOB_PARTY.get();
+		}
+	    }
+	    
+	    if(isMe && CFG.HIGHLIGHT_SELF_IN_COMBAT.get()) {
+		c = CFG.COLOR_GOB_SELF.get();
+	    }
+	    
+	    if(!inParty && !isMe && CFG.HIGHLIGHT_ENEMY_IN_COMBAT.get()) {
+		if(is(GobTag.COMBAT_TARGET)) {
+		    c = CFG.COLOR_GOB_COMBAT_TARGET.get();
+		} else if(is(GobTag.IN_COMBAT)) {
+		    c = CFG.COLOR_GOB_IN_COMBAT.get();
+		}
 	    }
 	}
 	customColor.color(c);
+    }
+    
+    private void updateMarkerSprite() {
+	MarkerSprite.Id id = null;
+	
+	if(CFG.DISPLAY_AURA_SPEED_BUFF.get() && is(GobTag.SPEED)) {
+	    id = MarkerSprite.SPEED_BUFF;
+	} else if(CFG.DISPLAY_AURA_RABBIT.get() && is(GobTag.RABBIT) && !is(GobTag.DEAD)) {
+	    id = MarkerSprite.RABBIT;
+	} else if(CFG.DISPLAY_AURA_CRITTERS.get() && is(GobTag.CRITTER) && !anyOf(GobTag.DEAD, GobTag.KO)) {
+	    id = MarkerSprite.CRITTER;
+	}
+	
+	GameUI gui = context(GameUI.class);
+	if(gui != null && gui.isInCombat()) {
+	    boolean inParty = is(GobTag.PARTY);
+	    boolean isMe = Boolean.TRUE.equals(isMe());
+	    if(!isMe && CFG.MARK_PARTY_IN_COMBAT.get()) {
+		if(is(GobTag.LEADER)) {
+		    id = MarkerSprite.LEADER;
+		} else if(inParty) {
+		    id = MarkerSprite.PARTY;
+		}
+	    }
+	    
+	    if(isMe && CFG.MARK_SELF_IN_COMBAT.get()) {
+		id = MarkerSprite.SELF;
+	    }
+	    
+	    if(!inParty && !isMe && CFG.MARK_ENEMY_IN_COMBAT.get()) {
+		if(is(GobTag.COMBAT_TARGET)) {
+		    id = MarkerSprite.TARGET;
+		} else if(is(GobTag.IN_COMBAT)) {
+		    id = MarkerSprite.ENEMY;
+		}
+	    }
+	}
+	
+	synchronized (ols) {
+	    if(id == markerId) {return;}
+	    if(marker != null) {
+		marker.remove();
+		marker.spr.dispose();
+		marker = null;
+		markerId = null;
+	    }
+	    if(id != null) {
+		markerId = id;
+		marker = new Overlay(this, new MarkerSprite(this, id));
+		addol(marker);
+	    }
+	}
     }
     
     public KinInfo kin() {
@@ -1579,7 +1684,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
     }
     
     private enum StatusType {
-	drawable, overlay, tags, pose, id, info, kin, hitbox, icon, visibility, marker, combat
+	drawable, overlay, tags, pose, id, info, kin, hitbox, icon, visibility, map_marker, combat, color, marker
     }
     
     private void updateMovingInfo(GAttrib a, GAttrib prev) {
@@ -1590,7 +1695,7 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	if(a instanceof LinMove || a instanceof Homing) {
 	    glob.oc.paths.addPath((Moving) a);
 	}
-	drives = 0;
+	long drives = 0;
 	if(prev instanceof Following) {
 	    Following follow = (Following) prev;
 	    if(me) {
@@ -1618,7 +1723,23 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 		}
 	    }
 	}
+	setVehicle(drives);
 	glob.sess.ui.pathQueue().ifPresent(pathQueue -> pathQueue.movementChange(this, prev, a));
+    }
+    
+    public long vehicleId() {return vehicleId;}
+    
+    private void setVehicle(long id) {
+	if(vehicleId == id) {return;}
+	Gob vehicle;
+	if(id == 0) {
+	    vehicle = glob.oc.getgob(vehicleId);
+	    if(vehicle != null) {vehicle.occupants.remove(this);}
+	} else {
+	    vehicle = glob.oc.getgob(id);
+	    if(vehicle != null) {vehicle.occupants.add(this);}
+	}
+	vehicleId = id;
     }
     
     private long eseq() {

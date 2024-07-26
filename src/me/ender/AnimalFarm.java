@@ -1,6 +1,6 @@
 package me.ender;
 
-import auto.Bot;
+import auto.Actions;
 import haven.*;
 import rx.functions.Func2;
 
@@ -113,7 +113,7 @@ public class AnimalFarm {
 	}
     
 	private static Func2<GameUI, Long, Runnable> flower(final String option) {
-	    return (gui, id) -> () -> Bot.selectFlower(gui, id, option);
+	    return (gui, id) -> () -> Actions.selectFlower(gui, id, option);
 	}
     }
     

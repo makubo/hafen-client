@@ -355,6 +355,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 		tt = tt.substring(0, pos) + "$b{$col[255,128,0]{" + tt.charAt(pos) + "}}" + tt.substring(pos + 1);
 	    else if(key != KeyMatch.nil)
 		tt += " [$b{$col[255,128,0]{" + key.name() + "}}]";
+
 	    BufferedImage ret = ttfnd.render(tt, UI.scale(300)).img;
 	    if(withpg) {
 		List<ItemInfo> info = info();
@@ -892,6 +893,9 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	makeLocal("paginae/add/fsmelter9", Action.FUEL_SMELTER_9);
 	makeLocal("paginae/add/fsmelter12", Action.FUEL_SMELTER_12);
 	makeLocal("paginae/add/foven4", Action.FUEL_OVEN_4);
+	makeLocal("paginae/add/auto/aggro_one", Action.AGGRO_ONE_PVE);
+	makeLocal("paginae/add/auto/aggro_one_pvp", Action.AGGRO_ONE_PVP);
+	makeLocal("paginae/add/auto/aggro_all", Action.AGGRO_ALL);
 	makeLocal("paginae/add/info/plant-growth", Action.TOGGLE_GOB_INFO_PLANTS, () -> GobInfoOpts.enabled(InfoPart.PLANT_GROWTH));
 	makeLocal("paginae/add/info/tree-growth", Action.TOGGLE_GOB_INFO_TREES, () -> GobInfoOpts.enabled(InfoPart.TREE_GROWTH));
 	makeLocal("paginae/add/info/health", Action.TOGGLE_GOB_INFO_HEALTH, () -> GobInfoOpts.enabled(InfoPart.HEALTH));

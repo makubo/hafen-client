@@ -101,6 +101,8 @@ public class Window extends Widget implements DTarget {
     protected WidgetCfg cfg = null;
     public boolean justclose = false;
     public boolean skipInitPos = false;
+    public boolean skipSavePos = false;
+    private boolean closed = false;
     private String title;
     protected Text.Furnace rcf = cf;
 
@@ -170,6 +172,7 @@ public class Window extends Widget implements DTarget {
     }
 
     protected void setCfg() {
+	if(skipSavePos) {return;}
 	if(cfg == null) {
 	    cfg = new WidgetCfg();
 	}
@@ -177,6 +180,7 @@ public class Window extends Widget implements DTarget {
     }
 
     protected void storeCfg() {
+	if(skipSavePos) {return;}
 	WidgetCfg.set(cfgName(caption()), cfg);
     }
 
@@ -737,8 +741,11 @@ public class Window extends Widget implements DTarget {
 	    throw(new AssertionError(animst));
 	}
     }
+    
+    public boolean closed() {return closed;}
 
     public void reqdestroy() {
+	closed = true;
 	if(parent == null) {
 	    super.reqdestroy();
 	    return;

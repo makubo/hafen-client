@@ -1,3 +1,57 @@
+$size[14]{$u{Update for 25.07.24:}
+  * added options (Options -> Display, Options -> Colors) to show clickable auras for speed buffs, rabbits and other critters
+  * added some missing critters to the list
+  * added some missing aggressive animals to the list
+  * fixed crash related to toggling tree visibility
+ 
+$size[14]{$u{Update for 22.07.24:}
+  * update tile grid line width when render scale changes
+  * fixed hit boxes being absent for some domesticated animals
+  * fixed ConcurrentModificationException related to mine support radii as map overlay
+ 
+$size[14]{$u{Update for 21.07.24:}
+  * added option to make solid hit boxes filled in with customized color
+  * added option to drag combat UI and button to reset its position
+  * bumped max vertical offset for combat info
+  * fixed Green and Blue channels being swapped in input fields on opening color config window
+ 
+$size[14]{$u{Update for 20.07.24:}
+  * made action lists (Craft/Build/Act) to jump in front of all windows when opened
+  * added option (Options -> Combat) to show draggable HP and stamina bars 
+ 
+$size[14]{$u{Update for 19.07.24:}
+  * improved openings display in combat info
+  * added stance display to combat info
+  * added setting to change how high combat info is displayed
+  * fixed colors of rings for current target and just in combat being swapped
+  * fixed kin names of party members on minimap being visible only while they are in vision range
+ 
+$size[14]{$u{Update for 18.07.24:}
+  * added option (Options -> Combat) to highlight gobs in combat by adding rings near feet
+ 
+$size[14]{$u{Update for 16.07.24:}
+  * split aggro one into PVP and PVE versions and clarified all aggro descriptions a bit
+ 
+$size[14]{$u{Update for 15.07.24:}
+  * added button to show party member names on minimap
+  * fixed ridge highlight
+  * fixed aggro one/all not targeting some animals 
+  * made aggro one/all actions not aggro own horse or those of party members
+  * made aggro one/all actions not aggro KO creatures
+  * fixed smelter timer disappearing when window is closed
+ 
+$size[14]{$u{Update for 14.07.24:}
+  * added Options -> Colors panel - allows to tweak various colors used by client
+  * added Options -> Display -> Colorize ridge tiles
+ 
+$size[14]{$u{Update for 13.07.24:}
+  * added action to aggro creature nearest to cursor that is not in your party (eXtra -> Automation -> Aggro one). Also, can be bound in global hotkey settings.
+  * added action to aggro all non-party members near you (eXtra -> Automation -> Aggro all). Also, can be bound in global hotkey settings.
+  * added option to highlight party members during combat
+  * added option to highlight self during combat
+  * added option to highlight enemies during combat
+  * added option (Display -> Show mine support radius as overlay) that will highlight tiles covered by mine supports, instead of drawing radius around supports. Turned on by default.
+ 
 $size[14]{$u{Update for 30.06.24:}
   * fixed startup buffs not working
   * fixed chat losing focus when items stack in inventory 

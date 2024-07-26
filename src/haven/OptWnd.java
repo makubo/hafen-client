@@ -30,7 +30,9 @@ package haven;
 import java.util.HashSet;
 import java.util.LinkedList;
 import haven.render.*;
+import me.ender.CFGColorBtn;
 import me.ender.GobInfoOpts;
+import me.ender.CustomOptPanels;
 
 import java.awt.event.KeyEvent;
 import java.util.Set;
@@ -41,8 +43,9 @@ public class OptWnd extends WindowX {
     public static final Coord PANEL_POS = new Coord(220, 30);
     public static final Coord Q_TYPE_PADDING = new Coord(3, 0);
     private final Panel display, general, camera, shortcuts, mapping, uipanel, combat;
+    private final Panel color;
     public final Panel main;
-    private static final Text.Foundry LBL_FNT = new Text.Foundry(sans, 14);
+    public static final Text.Foundry LBL_FNT = new Text.Foundry(sans, 14);
     public Panel current;
     private WidgetList<KeyBinder.ShortcutWidget> shortcutList;
     
@@ -172,6 +175,7 @@ public class OptWnd extends WindowX {
 				   try {
 				       float val = (float)Math.pow(2, this.val / (double)steps);
 				       ui.setgprefs(prefs = prefs.update(null, prefs.rscale, val));
+				       if(ui.gui != null && ui.gui.map != null) {ui.gui.map.updateGridMat(null);}
 				   } catch(GSettings.SettingException e) {
 				       error(e.getMessage());
 				       return;
@@ -788,6 +792,7 @@ public class OptWnd extends WindowX {
 	camera = add(new Panel());
 	shortcuts = add(new Panel());
 	mapping = add(new Panel());
+	color = add(new Panel());
 
 	int row = 0, colum = 0, mrow = 1;
     
@@ -805,6 +810,7 @@ public class OptWnd extends WindowX {
 	addPanelButton("General", 'g', general, colum, row++);
 	addPanelButton("UI", 'u', uipanel, colum, row++);
 	addPanelButton("Display", 'd', display, colum, row++);
+	addPanelButton("Colors", 'o', color, colum, row++);
 	addPanelButton("Combat", 'b', combat, colum, row++);
 	addPanelButton("Map upload", 'm', mapping, colum, row++);
 
@@ -832,10 +838,11 @@ public class OptWnd extends WindowX {
 	chpanel(this.main);
 	initDisplayPanel(display);
 	initUIPanel(uipanel);
-	initCombatPanel(combat);
+	CustomOptPanels.initCombatPanel(this, combat);
 	initGeneralPanel(general);
 	initCameraPanel();
 	initMappingPanel(mapping);
+	CustomOptPanels.initColorPanel(this, color);
 	main.pack();
 	chpanel(main);
     }
@@ -1075,6 +1082,7 @@ public class OptWnd extends WindowX {
 
     private void initDisplayPanel(Panel panel) {
 	int STEP = UI.scale(25);
+	int H_STEP = UI.scale(10);
 	int START;
 	int x, y;
 	int my = 0, tx;
@@ -1097,6 +1105,9 @@ public class OptWnd extends WindowX {
     
 	y += STEP;
 	panel.add(new CFGBox("Make terrain flat", CFG.FLAT_TERRAIN), x, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Colorize ridge tiles", CFG.DISPLAY_RIDGE_BOX, "Makes it easier to properly approach ridge for climbing"), x, y);
 	
 	y += STEP;
 	panel.add(new CFGBox("Darken deep ocean tiles", CFG.COLORIZE_DEEP_WATER), x, y);
@@ -1145,6 +1156,9 @@ public class OptWnd extends WindowX {
 	
 	y += 35;
 	panel.add(new CFGBox("Show object radius", CFG.SHOW_GOB_RADIUS, "Shows radius of mine supports, beehives etc.", true), x, y);
+	
+	y += STEP;
+	panel.add(new CFGBox("Show mine support radius as overlay", CFG.SHOW_MINE_SUPPORT_AS_OVERLAY, "Will highlight tiles covered by mine supports, instead of drawing radius around supports."), x, y);
 
 	y += STEP;
 	panel.add(new Button(UI.scale(150), "Show as buffs", false) {
@@ -1170,6 +1184,23 @@ public class OptWnd extends WindowX {
 	
 	y += STEP;
 	panel.add(new CFGBox("Cupboard decals on top", CFG.DISPLAY_DECALS_ON_TOP, "Show decals put on cupboard on its top instead of a door. (Requires zone reload or re-applying decal)", true), x, y);
+	
+	y += STEP;
+	
+	y += STEP;
+	panel.add(new Label("Show clickable auras:"), x, y);
+	
+	y += STEP;
+	tx = panel.add(new CFGColorBtn(CFG.COLOR_GOB_SPEED_BUFF, true), x + H_STEP, y).sz.x + H_STEP;
+	panel.add(new CFGBox("Speed Buff", CFG.DISPLAY_AURA_SPEED_BUFF), x + tx + H_STEP, y);
+	
+	y += STEP;
+	tx = panel.add(new CFGColorBtn(CFG.COLOR_GOB_RABBIT, true), x + H_STEP, y).sz.x + H_STEP;
+	panel.add(new CFGBox("Rabbits", CFG.DISPLAY_AURA_RABBIT), x + tx + H_STEP, y);
+	
+	y += STEP;
+	tx = panel.add(new CFGColorBtn(CFG.COLOR_GOB_CRITTERS, true), x + H_STEP, y).sz.x + H_STEP;
+	panel.add(new CFGBox("Critters", CFG.DISPLAY_AURA_CRITTERS), x + tx + H_STEP, y);
     
 	my = Math.max(my, y);
 	
@@ -1351,56 +1382,7 @@ public class OptWnd extends WindowX {
 	title.c.x = (panel.sz.x - title.sz.x) / 2;
     }
     
-    private void initCombatPanel(Panel panel) {
-	int STEP = UI.scale(25);
-	int START;
-	int x, y;
-	int my = 0, tx;
     
-	Widget title = panel.add(new Label("Combat settings", LBL_FNT), 0, 0);
-	START = title.sz.y + UI.scale(10);
-    
-	x = 0;
-	y = START;
-	//first row
-	panel.add(new CFGBox("Use new combat UI", CFG.ALT_COMBAT_UI), x, y);
-    
-	y += STEP;
-	panel.add(new CFGBox("Always mark current target", CFG.ALWAYS_MARK_COMBAT_TARGET , "Usually current target only marked when there's more than one"), x, y);
-    
-	y += STEP;
-	panel.add(new CFGBox("Auto peace on combat start", CFG.COMBAT_AUTO_PEACE , "Automatically enter peaceful mode on combat start id enemy is aggressive - useful for taming"), x, y);
-	
-	y += STEP;
-	panel.add(new CFGBox("Show combat info", CFG.SHOW_COMBAT_INFO, "Will display initiative points and openings over gobs that you are fighting"), x, y);
-    
-	y += STEP;
-	panel.add(new CFGBox("Show combat damage", CFG.SHOW_COMBAT_DMG), x, y);
-    
-	y += STEP;
-	panel.add(new CFGBox("Clear player damage after combat", CFG.CLEAR_PLAYER_DMG_AFTER_COMBAT), x, y);
-    
-	y += STEP;
-	panel.add(new CFGBox("Clear all damage after combat", CFG.CLEAR_ALL_DMG_AFTER_COMBAT), x, y);
-    
-	y += STEP;
-	panel.add(new CFGBox("Simplified combat openings", CFG.SIMPLE_COMBAT_OPENINGS, "Show openings as solid colors with numbers"), x, y);
-    
-	y += STEP;
-	panel.add(new CFGBox("Display combat keys", CFG.SHOW_COMBAT_KEYS), x, y);
-	
-	//second row
-	my = Math.max(my, y);
-	x += UI.scale(265);
-	y = START;
-	
-	
-	my = Math.max(my, y);
-    
-	panel.add(new PButton(UI.scale(200), "Back", 27, main), new Coord(0, my + UI.scale(35)));
-	panel.pack();
-	title.c.x = (panel.sz.x - title.sz.x) / 2;
-    }
 
     private void populateShortcutsPanel(KeyBinder.KeyBindType type) {
         shortcutList.clear(true);

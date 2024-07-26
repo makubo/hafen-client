@@ -1,7 +1,6 @@
 package me.ender;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import haven.*;
 
@@ -10,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -127,9 +127,33 @@ public class ClientUtils {
 	return c;
     }
     
+    public static int clamp(int value, int min, int max) {
+	return Math.max(Math.min(max, value), min);
+    }
+    
+    public static int str2cc(String value) {
+	return clamp(str2int(value), 0, 255);
+    }
+    
+    public static int str2int(String value) {
+	int result = 0;
+	if(value != null) {
+	    try {
+		result = Integer.parseInt(value);
+	    } catch (Exception ignored) {}
+	}
+	return result;
+    }
+    
     public static String color2hex(Color col) {
+	return color2hex(col, true);
+    }
+    
+    public static String color2hex(Color col, boolean hasAlpha) {
 	if(col != null) {
-	    return Integer.toHexString(col.getRGB());
+	    int rgb = col.getRGB();
+	    if(!hasAlpha) {rgb = rgb & 0xffffff;}
+	    return Integer.toHexString(rgb);
 	}
 	return null;
     }
@@ -270,6 +294,13 @@ public class ClientUtils {
 	    return String.format("%d:%02d", time / 60, time % 60);
 	} else {
 	    return String.format("%02d", time);
+	}
+    }
+    
+    public static class ColorSerializer implements JsonSerializer<Color> {
+	@Override
+	public JsonElement serialize(Color color, Type type, JsonSerializationContext serializer) {
+	    return new JsonPrimitive(color2hex(color));
 	}
     }
 }

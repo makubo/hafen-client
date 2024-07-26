@@ -36,12 +36,14 @@ import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.*;
 
 import haven.render.*;
 import haven.MCache.OverlayInfo;
 import haven.render.sl.Uniform;
 import haven.render.sl.Type;
+import haven.res.gfx.fx.msrad.MSRad;
 import haven.rx.Reactor;
 
 public class MapView extends PView implements DTarget, Console.Directory {
@@ -676,13 +678,41 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	this.clickmap = new ClickMap();
 	clmaptree.add(clickmap);
 	setcanfocus(true);
-	CFG.DISPLAY_GOB_HITBOX.observe(cfg -> updatePlobDrawable());
-	CFG.DISPLAY_GOB_HITBOX_TOP.observe(cfg -> updatePlobDrawable());
+	disposables.add(CFG.DISPLAY_GOB_HITBOX.observe(this::updatePlobDrawable));
+	disposables.add(CFG.DISPLAY_GOB_HITBOX_TOP.observe(this::updatePlobDrawable));
+	disposables.add(CFG.SHOW_GOB_RADIUS.observe(this::updateSupportOverlay));
+	disposables.add(CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.observe(this::updateSupportOverlay));
+	disposables.add(CFG.COLOR_MINE_SUPPORT_OVERLAY.observe(this::updateSupportOverlayColor));
+	disposables.add(CFG.COLOR_TILE_GRID.observe(this::updateGridMat));
+	updateSupportOverlay(null);
+	updateGridMat(null);
     }
     
-    private void updatePlobDrawable() {
+    private void updatePlobDrawable(CFG<Boolean> cfg) {
 	if(placing != null && placing.done()) {
 	    placing.get().drawableUpdated();
+	}
+    }
+    
+    public void updateGridMat(CFG<Color> cfg) {
+	gridmat = null;
+	if(gridlines != null) {
+	    showgrid(false);
+	    showgrid(true);
+	}
+    }
+    
+    private void updateSupportOverlayColor(CFG<Color> cfg) {
+	Overlay o = ols.remove(MSRad.safeol);
+	if(o != null) {o.remove();}
+    }
+    
+    private void updateSupportOverlay(CFG<Boolean> cfg) {
+	boolean show = CFG.SHOW_GOB_RADIUS.get() && CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.get();
+	if(show && !visol(MSRad.OL_TAG)) {
+	    enol(MSRad.OL_TAG);
+	} else if(!show && visol(MSRad.OL_TAG)) {
+	    disol(MSRad.OL_TAG);
 	}
     }
     
@@ -722,7 +752,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		oltags.remove(tag);;
 	}
     }
-
+    
     private final Gobs gobs;
     private class Gobs implements RenderTree.Node, OCache.ChangeCallback {
 	final OCache oc = glob.oc;
@@ -1044,9 +1074,17 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    ol.tick();
     }
 
-    private static final Material gridmat = new Material(new BaseColor(255, 255, 255, 48), States.maskdepth, new MapMesh.OLOrder(null),
-							 Location.xlate(new Coord3f(0, 0, 0.5f))   /* Apparently, there is no depth bias for lines. :P */
-							 );
+    private static Material gridmat = null;
+    private static Material gridMat(UI ui) {
+	if(gridmat != null) {return gridmat;}
+	float w = 1f;
+	if(ui != null) {w = ui.gprefs.rscale.val;}
+	return gridmat = new Material(new BaseColor(CFG.COLOR_TILE_GRID.get()), States.maskdepth, new MapMesh.OLOrder(null),
+	    new States.LineWidth(w),
+	    Location.xlate(new Coord3f(0, 0, 0.5f))   /* Apparently, there is no depth bias for lines. :P */
+	);
+    }
+    
     private class GridLines extends MapRaster {
 	final Grid grid = new Grid<RenderTree.Node>() {
 		RenderTree.Node getcut(Coord cc) {
@@ -1063,7 +1101,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
 
 	public void added(RenderTree.Slot slot) {
-	    slot.ostate(gridmat);
+	    slot.ostate(gridMat(ui));
 	    slot.add(grid);
 	    super.added(slot);
 	}
@@ -2144,7 +2182,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		synchronized(ui) {
 		    if(mapcl != null) {
 			if(Config.center_tile) { mapcl = mapcl.floor(tilesz).mul(tilesz).add(5, 5); }
-			ui.pathQueue().ifPresent(pathQueue -> pathQueue.click(mapcl, objcl));
 			if(objcl == null)
 			    hit(pc, mapcl, null);
 			else
@@ -2228,12 +2265,18 @@ public class MapView extends PView implements DTarget, Console.Directory {
     
     public void click(Coord2d mc, int button, Object... args) {
 	boolean send = true;
-	if(button == 1 && CFG.QUEUE_PATHS.get()) {
-	    if(ui.modmeta) {
-		args[3] = 0;
-		send = ui.gui.pathQueue.add(mc);
-	    } else {
-		ui.gui.pathQueue.start(mc);
+	Coord2d cc = args.length > 6 && args[6] instanceof Coord ? ((Coord)args[6]).mul(posres) : mc;
+	
+	if(CFG.QUEUE_PATHS.get()) {
+	    if(button == 1) {
+		if(ui.modmeta) {
+		    args[3] = 0;
+		    send = ui.gui.pathQueue.add(mc);
+		} else {
+		    ui.gui.pathQueue.start(mc);
+		}
+	    } else if(button == 3) {
+		ui.gui.pathQueue.click(cc);
 	    }
 	}
 	if(send)
@@ -2748,5 +2791,21 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    return MapWnd.markcurs;
 	}
 	return super.getcurs(c);
+    }
+    
+    public CompletableFuture<Coord2d> hit(Coord c) {
+	CompletableFuture<Coord2d> res = new CompletableFuture<>();
+	new MapView.Hittest(c) {
+	    @Override
+	    protected void hit(Coord pc, Coord2d mc, ClickData inf) {
+		res.complete(mc);
+	    }
+	    
+	    @Override
+	    protected void nohit(Coord pc) {
+		res.cancel(false);
+	    }
+	}.run();
+	return res;
     }
 }
