@@ -9,3 +9,8 @@ out
 /resources/classes
 /resources/custom/
 /nbproject
+/accounts.json
+/config.json
+/error.log
+/i10n/ru/missing/
+/windows.json
