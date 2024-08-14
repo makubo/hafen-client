@@ -6,7 +6,6 @@
             <name>hafen-client</name>
             <explicit-platform explicit-source-supported="true"/>
             <source-roots>
-                <root id="src.i10n.dir"/>
                 <root id="src.java.dir"/>
                 <root id="src.dir"/>
             </source-roots>
