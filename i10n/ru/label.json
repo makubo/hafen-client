@@ -196,5 +196,9 @@
 	"Zoom in": "Приблизить",
 	"Zoom out": "Отдалить",
 	"↑ Better performance, worse latency": "↑ Производительность ниже, задержка меньше",
-	"↓ Worse performance, better latency": "↓ Производительность выше, задержка хуже"
+	"↓ Worse performance, better latency": "↓ Производительность выше, задержка хуже",
+        "User name": "Имя пользователя",
+        "Login saved": "Авторизован",
+        "Password": "Пароль",
+        "Remember me": "Запомни меня"
 }
