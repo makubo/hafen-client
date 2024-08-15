@@ -371,11 +371,11 @@ public class LoginScreen extends Widget {
 	if(msg == "login") {
 	    mklogin();
 	} else if(msg == "error") {
-	    error((String)args[0]);
+	    error(L10N.msg((String)args[0]));
 	} else if(msg == "prg") {
 	    error(null);
 	    clear();
-	    progress((String)args[0]);
+	    progress(L10N.msg((String)args[0]));
 	} else {
 	    super.uimsg(msg, args);
 	}
