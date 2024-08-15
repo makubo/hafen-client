@@ -205,5 +205,19 @@
 	"Display provinces": "Отображать провинции",
 	"Hair style:": "Прическа:",
 	"Hair color:": "Цвет волос:",
-	"Beard style:": "Растительность на лице:"
+	"Beard style:": "Растительность на лице:",
+        "Season: (.*), day (.*) of (.*)": "Время года: @1, день @2 из @3",
+        "Autumn": "Осень",
+        "Winter": "Зима",
+        "Spring": "Весна",
+        "Summer": "Лето",
+        "Moon: ": "Фаза луны: ",
+        "New Moon": "Новолуние",
+	"Waxing Crescent": "Молодая Луна",
+	"First Quarter": "Первая четверть",
+	"Waxing Gibbous": "Растущая Луна",
+	"Full Moon": "Полнолуние",
+	"Waning Gibbous": "Убывающая Луна",
+	"Last Quarter": "Последняя четверть",
+	"Waning Crescent": "Старая Луна"
 }
