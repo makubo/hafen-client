@@ -38,7 +38,8 @@ public class Loading extends RuntimeException implements Waitable {
     }
 
     public Loading(String msg) {
-	super(msg);
+        // Loading message translations here
+        super(L10N.msg(msg));
 	rec = null;
     }
     

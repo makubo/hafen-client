@@ -1249,7 +1249,7 @@ public class ChatUI extends Widget {
 	    }
 
 	    public Text rname() {
-		String name = chan.name();
+		String name = L10N.button(chan.name());
 		int urg = chan.urgency;
 		if((rname == null) || !rname.text.equals(name) || (urgency != urg)) {
 		    Text.Line raw = tf.render(name);

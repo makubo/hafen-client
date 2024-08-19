@@ -33,7 +33,7 @@ public class L10N {
 	LABEL("label", true),
 	FLOWER("flower", true),
         BIOME("biome"),
-        MSG("msg");
+        MSG("msg", true);
     
 	public final String name;
 	public final boolean useMatch;

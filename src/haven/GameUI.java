@@ -1829,7 +1829,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     
     public void msg(String msg, Color color, Color logcol) {
 	msgtime = Utils.rtime();
-	lastmsg = RootWidget.msgfoundry.render(msg, color);
+	lastmsg = RootWidget.msgfoundry.render(L10N.msg(msg), color);
 	Gob g = detectGob;
 	if(g != null) {
 	    Matcher m = GeneralGobInfo.GOB_Q.matcher(msg);
@@ -1841,7 +1841,8 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 		detectGob = null;
 	    }
 	}
-	syslog.append(msg, logcol);
+        // Translate System Chat messages here
+	syslog.append(L10N.msg(msg), logcol);
     }
 
     public void msg(String msg, Color color) {

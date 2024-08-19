@@ -1,4 +1,14 @@
 {
   "Connecting...": "Подключение...",
-  "Authenticating...": "Аутентификация..."
+  "Authenticating...": "Аутентификация...",
+  "Contains: (\\d*(\\.\\d+)?) l": "Содержит: @1 л",
+  "Quality: (\\d+)": "Качество: @1",
+  "That land is owned by (.*)\\.": "Это земля пренадлежит @1.",
+  "That item requires more attention than you have.": "Этот предмеь требует больше внимания чем есть у тебя.",
+  "You gained Charisma (.+)": "Вы повысили Харизму на @1",
+  "You gained Dexterity (.+)": "Вы повысили Ловкость на @1",
+  "Waiting for resource (.*)\\.\\.\\.": "Ожтдание ресурса @1...",
+  "Initializing map...": "Инициализация карты...",
+  "Map file is busy": "Файл карты занят",
+  "Waiting for map data...": "Ожидание данных карты..."
 }
