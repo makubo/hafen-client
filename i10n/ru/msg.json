@@ -10,5 +10,8 @@
   "Waiting for resource (.*)\\.\\.\\.": "Ожтдание ресурса @1...",
   "Initializing map...": "Инициализация карты...",
   "Map file is busy": "Файл карты занят",
-  "Waiting for map data...": "Ожидание данных карты..."
+  "Waiting for map data...": "Ожидание данных карты...",
+  "Waiting to resolve resource reference (\\d+)...": "Ожидание получения ссылки на ресурс @1...",
+  "You lack the key.": "У вас нет ключа.",
+  "That site is occupied.": "Это место занято."
 }
