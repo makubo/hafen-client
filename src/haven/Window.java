@@ -155,7 +155,7 @@ public class Window extends Widget implements DTarget {
 	if(this instanceof GItem.ContentsWindow) {
 	    return false;
 	}
-	return true;
+	return visible();
     }
 
     protected void initCfg() {
