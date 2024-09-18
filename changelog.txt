@@ -1,7 +1,7 @@
 $size[14]{$u{Update for 18.09.24:}
   * fixed inability to upload new images to sketch
   * fixed sketch preview window not closing
-
+ 
 $size[14]{$u{Update for 13.09.24:}
   * merged loftar's changes
 
