@@ -785,7 +785,7 @@ public class DynresWindow extends WindowX {
 	}
     }
 
-    public static class PreviewWindow extends Window {
+    public static class PreviewWindow extends WindowX {
 	public final BufferedImage img;
 	public final TexL tex;
 	private final Display display;
