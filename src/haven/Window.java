@@ -275,8 +275,8 @@ public class Window extends Widget implements DTarget {
 		    wnd.close();
 		    return;
 		}
+		wnd.reqclose();
 	    }
-	    parent.wdgmsg("close");
 	}
 
 	public DefaultDeco dragsize(boolean v) {
