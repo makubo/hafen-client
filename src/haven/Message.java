@@ -568,6 +568,20 @@ public abstract class Message {
 	return(this);
     }
 
+    public Message addlist(Object... args) {
+	for(Object o : args)
+	    addtto(o);
+	return(this);
+    }
+
+    public Message addmap(Map<?, ?> map) {
+	for(Map.Entry<?, ?> e : map.entrySet()) {
+	    addtto(e.getKey());
+	    addtto(e.getValue());
+	}
+	return(this);
+    }
+
     public boolean same(Object obj) {
 	if(obj instanceof Message) {
 	    Message other = (Message) obj;

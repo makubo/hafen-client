@@ -117,25 +117,21 @@ public class WItem extends Widget implements DTarget2 {
 	} else {
 	    hoverstart = now;
 	}
-	try {
-	    List<ItemInfo> info = item.info();
-	    if(info.size() < 1)
-		return(null);
-	    if(info != ttinfo) {
-		shorttip = longtip = null;
-		ttinfo = info;
-	    }
-	    if(now - hoverstart < 1.0) {
-		if(shorttip == null)
-		    shorttip = new ShortTip(info);
-		return(shorttip);
-	    } else {
-		if(longtip == null)
-		    longtip = new LongTip(info);
-		return(longtip);
-	    }
-	} catch(Loading e) {
-	    return("...");
+	List<ItemInfo> info = item.info();
+	if(info.size() < 1)
+	    return(null);
+	if(info != ttinfo) {
+	    shorttip = longtip = null;
+	    ttinfo = info;
+	}
+	if(now - hoverstart < 1.0) {
+	    if(shorttip == null)
+		shorttip = new ShortTip(info);
+	    return(shorttip);
+	} else {
+	    if(longtip == null)
+		longtip = new LongTip(info);
+	    return(longtip);
 	}
     }
 
@@ -458,24 +454,24 @@ public class WItem extends Widget implements DTarget2 {
 	return CFG.Q_SHOW_SINGLE.get() ? SingleType.Quality : null;
     }
 
-    public boolean mousedown(Coord c, int btn) {
-	if(checkXfer(btn)) {
+    public boolean mousedown(MouseDownEvent ev) {
+	if(checkXfer(ev.b)) {
 	    return true;
-	} else if(btn == 1) {
-	    item.wdgmsg("take", c);
+	} else if(ev.b == 1) {
+	    item.wdgmsg("take", ev.c);
 	    return true;
-	} else if(btn == 3) {
+	} else if(ev.b == 3) {
 	    synchronized (rClickListeners) {
 		if(rClickListeners.isEmpty()) {
 		    FlowerMenu.lastItem(this);
-		    item.wdgmsg("iact", c, ui.modflags());
+		    item.wdgmsg("iact", ev.c, ui.modflags());
 		} else {
 		    rClickListeners.forEach(action -> action.call(this, c, ui.modflags()));
 		}
 	    }
 	    return(true);
 	}
-	return(false);
+	return(super.mousedown(ev));
     }
     
     public void onRClick(Action3<WItem, Coord, Integer> action) {
@@ -571,13 +567,12 @@ public class WItem extends Widget implements DTarget2 {
 	return(true);
     }
 
-    public boolean mousehover(Coord c, boolean on) {
-	boolean ret = super.mousehover(c, on);
+    public boolean mousehover(MouseHoverEvent ev, boolean on) {
 	if(on && (item.contents != null) && (!CFG.UI_STACK_SUB_INV_ON_SHIFT.get() || ui.modshift)) {
 	    item.hovering(this);
 	    return(true);
 	}
-	return(ret);
+	return(super.mousehover(ev, on));
     }
     
     public void tryDrop() {

@@ -125,8 +125,8 @@ public abstract class ConsoleHost extends Widget implements ReadLine.Owner {
 	kg.remove();
     }
 
-    public boolean keydown(KeyEvent ev) {
-	if(cmdkey(ev))
+    public boolean keydown(KeyDownEvent ev) {
+	if(cmdkey(ev.awt))
 	    return(true);
 	return(super.keydown(ev));
     }
