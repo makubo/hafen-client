@@ -64,9 +64,9 @@ public class StatMeterWdg extends DraggableWidget {
     }
     
     @Override
-    public void mousemove(Coord c) {
-	hover = checkhit(c);
-	super.mousemove(c);
+    public void mousemove(MouseMoveEvent ev) {
+	hover = checkhit(ev.c); 
+	super.mousemove(ev);
     }
     
     public static class HPMeterWdg extends StatMeterWdg {

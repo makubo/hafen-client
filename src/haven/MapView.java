@@ -46,7 +46,7 @@ import haven.render.sl.Type;
 import haven.res.gfx.fx.msrad.MSRad;
 import haven.rx.Reactor;
 
-public class MapView extends PView implements DTarget, Console.Directory {
+public class MapView extends PView implements DTarget, Console.Directory, Widget.CursorQuery.Handler {
     public static final Resource.Named inspectCursor = Resource.local().loadwait("gfx/hud/curs/studyx").indir();
     public static final Resource.Named trackCursor = Resource.local().loadwait("gfx/hud/curs/track").indir();
     public static boolean clickdb = false;
@@ -2308,13 +2308,13 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    }
 	}
 	if(ev.b == 2) {
-	    if(((Camera)camera).click(c)) {
+	    if(((Camera)camera).click(ev.c)) {
 		camdrag = ui.grabmouse(this);
 	    }
 	} else if((placing_l != null) && placing_l.done()) {
 	    Plob placing = placing_l.get();
 	    if(placing.lastmc != null) {
-		wdgmsg("place", placing.rc.floor(posres), (int) Math.round(placing.a * 32768 / Math.PI), button, ui.modflags());
+		wdgmsg("place", placing.rc.floor(posres), (int) Math.round(placing.a * 32768 / Math.PI), ev.b, ui.modflags());
 		ui.gui.pathQueue.start(placing.rc);
 	    }
 	} else if((grab != null) && grab.mmousedown(ev.c, ev.b)) {
@@ -2786,11 +2786,12 @@ public class MapView extends PView implements DTarget, Console.Directory {
     }
     
     @Override
-    public Resource getcurs(Coord c) {
+    public boolean getcurs(CursorQuery ev) {
 	if(ui.gui.mapfile != null && ui.gui.mapfile.domark) {
-	    return MapWnd.markcurs;
+	    ev.set(MapWnd.markcurs);
+	    return true;
 	}
-	return super.getcurs(c);
+	return false;
     }
     
     public CompletableFuture<Coord2d> hit(Coord c) {

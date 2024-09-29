@@ -541,7 +541,7 @@ public class UI {
 	    addwidget(id, parent, pargs);
     }
 
-    public class Grab<E extends Event> {
+    public class Grab<E extends Widget.Event> {
 	public final Widget owner;
 	public final Class<E> etype;
 	public final EventHandler<? super E> handler;
@@ -556,12 +556,12 @@ public class UI {
 	    grabs.remove(this);
 	}
 
-	private boolean check(Event ev) {
+	private boolean check(Widget.Event ev) {
 	    return(etype.isInstance(ev) && handler.handle(etype.cast(ev)));
 	}
     }
 
-    public <E extends Event>  Grab<E> grab(Widget owner, Class<E> etype, EventHandler<? super E> handler) {
+    public <E extends Widget.Event>  Grab<E> grab(Widget owner, Class<E> etype, EventHandler<? super E> handler) {
 	Grab<E> g = new Grab<>(owner, etype, handler);
 	grabs.addFirst(g);
 	return(g);
@@ -629,7 +629,7 @@ public class UI {
 	wdg.reqdestroy();
     }
 
-    public boolean dispatch(Widget to, Event ev) {
+    public boolean dispatch(Widget to, Widget.Event ev) {
 	ev.target = to;
 	ev.grabbed = true;
 	for(Grab<?> g : grabs) {
@@ -640,7 +640,7 @@ public class UI {
 	return(ev.dispatch(to));
     }
 
-    public <E extends Event> E dispatchq(Widget to, E ev) {
+    public <E extends Widget.Event> E dispatchq(Widget to, E ev) {
 	dispatch(to, ev);
 	return(ev);
     }
@@ -841,17 +841,6 @@ public class UI {
 	mc = c;
 	dispatch(root, new Widget.MouseWheelEvent(c, amount));
     }
-
-    public void mouseclick(MouseEvent ev, Coord c, int button, int count) {
-        setmods(ev);
-        lcc = mc = c;
-        for(Grab g : c(mousegrab)) {
-            if(g.wdg.mouseclick(wdgxlate(c, g.wdg), button, count))
-                return;
-        }
-        root.mouseclick(c, button, count);
-    }
-    
 
     public Resource getcurs(Coord c) {
 	return(dispatchq(root, new CursorQuery(c)).ret);

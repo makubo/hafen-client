@@ -235,14 +235,14 @@ public class FightWndEx extends Widget {
 	    super.change(act);
 	}
 
-	public boolean mousewheel(Coord c, int am) {
+	public boolean mousewheel(MouseWheelEvent ev) {
 	    if(ui.modshift) {
-		Action act = itemat(c);
+		Action act = itemat(ev.c);
 		if(act != null)
-		    setu(act, act.u - am);
+		    setu(act, act.u - ev.a);
 		return (true);
 	    }
-	    return (super.mousewheel(c, am));
+	    return (super.mousewheel(ev));
 	}
 
 	public void draw(GOut g) {
@@ -286,35 +286,35 @@ public class FightWndEx extends Widget {
 	    dp = null;
 	}
 
-	public boolean mousedown(Coord c, int button) {
-	    if(button == 1) {
-		int idx = (c.y / itemh) + sb.val;
+	public boolean mousedown(MouseDownEvent ev) {
+	    if(ev.b == 1) {
+		int idx = (ev.c.y / itemh) + sb.val;
 		if(idx < listitems()) {
-		    if(onadd(c, idx)) {
+		    if(onadd(ev.c, idx)) {
 			da = idx;
 			d = ui.grabmouse(this);
 			return (true);
-		    } else if(onsub(c, idx)) {
+		    } else if(onsub(ev.c, idx)) {
 			ds = idx;
 			d = ui.grabmouse(this);
 			return (true);
 		    }
 		}
-		super.mousedown(c, button);
-		if((sel != null) && (c.x < sb.c.x)) {
+		super.mousedown(ev);
+		if((sel != null) && (ev.c.x < sb.c.x)) {
 		    d = ui.grabmouse(this);
 		    drag = sel;
-		    dp = c;
+		    dp = ev.c;
 		}
 		return (true);
 	    }
-	    return (super.mousedown(c, button));
+	    return (super.mousedown(ev));
 	}
 
-	public void mousemove(Coord c) {
-	    super.mousemove(c);
+	public void mousemove(MouseMoveEvent ev) {
+	    super.mousemove(ev);
 	    if((drag != null) && (dp != null)) {
-		if(c.dist(dp) > 5)
+		if(ev.c.dist(dp) > 5)
 		    dp = null;
 	    }
 	}
@@ -349,8 +349,9 @@ public class FightWndEx extends Widget {
 		d.remove();
 		d = null;
 		if(drag != null) {
-		    if(dp == null)
-			ui.dropthing(ui.root, c.add(rootpos()), drag);
+		    if(dp == null) {
+			DropTarget.dropthing(ui.root, c.add(rootpos()), drag);
+		    }
 		    drag = null;
 		}
 		if(da >= 0) {

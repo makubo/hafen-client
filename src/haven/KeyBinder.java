@@ -116,7 +116,7 @@ public class KeyBinder {
 	Config.saveFile(CONFIG_JSON, gson.toJson(new ConfigBean(binds, Fightsess.keybinds)));
     }
     
-    public static boolean handle(UI ui, KeyEvent e) {
+    public static boolean handle(UI ui, GlobKeyEvent e) {
 	return get(e).execute(ui);
     }
     
@@ -147,7 +147,7 @@ public class KeyBinder {
 	return binds.get(action);
     }
 
-    public static KeyBind get(final KeyEvent e) {
+    public static KeyBind get(final GlobKeyEvent e) {
 	return binds.values().stream().filter(b -> b.match(e)).findFirst().orElse(EMPTY);
     }
     
@@ -233,6 +233,10 @@ public class KeyBinder {
     
 	public boolean match(KeyEvent e) {
 	    return match(e.getKeyCode(), getModFlags(e.getModifiersEx()));
+	}
+	
+	public boolean match(KbdEvent e) {
+	    return match(e.code, getModFlags(e.mods));
 	}
 	
 	public boolean match(int code, int mods) {

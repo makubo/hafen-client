@@ -33,12 +33,10 @@ import me.ender.FakeDraggerWdg;
 
 import java.awt.*;
 import java.util.*;
-import java.awt.event.InputEvent;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 import static haven.KeyBinder.*;
 
@@ -550,7 +548,7 @@ public class Fightsess extends Widget {
 	return(false);
     }
     
-    private int getAction(KeyEvent ev) {
+    private int getAction(GlobKeyEvent ev) {
 	for (int i = 0; i < actions.length && i < keybinds.length; i++) {
 	    if(keybinds[i].match(ev)) {
 		return i;

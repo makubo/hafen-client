@@ -45,7 +45,7 @@ import rx.functions.Action3;
 import static haven.Inventory.sqsz;
 import static me.ender.WindowDetector.*;
 
-public class WItem extends Widget implements DTarget2 {
+public class WItem extends Widget implements DTarget {
     public static final Resource missing = Resource.local().loadwait("gfx/invobjs/missing");
     public static final Coord TEXT_PADD_TOP = new Coord(0, -3), TEXT_PADD_BOT = new Coord(0, 2);
     public static final Color DURABILITY_COLOR = new Color(214, 253, 255);
@@ -556,12 +556,12 @@ public class WItem extends Widget implements DTarget2 {
 	if(inv != null) {inv.itemsChanged();}
     }
     
-    public boolean drop(WItem target, Coord cc, Coord ul) {
+    public boolean drop(Drop ev) {
 	return(false);
     }
 
-    public boolean iteminteract(WItem target, Coord cc, Coord ul) {
-	if(!GildingWnd.processGilding(ui,this, target)) {
+    public boolean iteminteract(DTarget.Interact ev) {
+	if(!GildingWnd.processGilding(ui,this, ev.src)) {
 	    item.wdgmsg("itemact", ui.modflags());
 	}
 	return(true);

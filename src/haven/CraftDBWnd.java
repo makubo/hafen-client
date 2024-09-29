@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static haven.CraftDBWnd.Mode.*;
 import static haven.ItemFilter.*;
 
-public class CraftDBWnd extends WindowX implements DTarget2 {
+public class CraftDBWnd extends WindowX implements DTarget {
     private static final int PANEL_H = UI.scale(52);
     private static final Coord WND_SZ = UI.scale(635, 360).addy(PANEL_H);
     private static final Coord ICON_SZ = UI.scale(20, 20);
@@ -455,14 +455,14 @@ public class CraftDBWnd extends WindowX implements DTarget2 {
     }
 
     @Override
-    public boolean drop(WItem target, Coord cc, Coord ul) {
-	updateInfo(target);
+    public boolean drop(Drop ev) {
+	updateInfo(ev.src);
 	return true;
     }
 
     @Override
-    public boolean iteminteract(WItem target, Coord cc, Coord ul) {
-	updateInfo(target);
+    public boolean iteminteract(Interact ev) {
+	updateInfo(ev.src);
 	return true;
     }
     

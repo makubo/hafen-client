@@ -27,7 +27,6 @@
 package haven;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class TextEntry extends Widget implements ReadLine.Owner {
     public static final Color defcol = new Color(255, 205, 109), dirtycol = new Color(255, 232, 209);
@@ -164,10 +163,6 @@ public class TextEntry extends Widget implements ReadLine.Owner {
 
     public void activate() {
 	activate(buf.line());
-    }
-
-    public boolean type(char c, KeyEvent ev) {
-	return(buf.key(ev));
     }
 
     public boolean gkeytype(GlobKeyEvent ev) {

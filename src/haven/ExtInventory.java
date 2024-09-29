@@ -287,11 +287,11 @@ public class ExtInventory extends Widget {
 	}
     }
 
-    @Override
-    public boolean mousewheel(Coord c, int amount) {
-	super.mousewheel(c, amount);
-	return(true);
-    }
+//    @Override
+//    public boolean mousewheel(MouseWheelEvent ev) {
+//	super.mousewheel(ev);
+//	return(true);
+//    }
 
     @Override
     public void tick(double dt) {
@@ -546,9 +546,9 @@ public class ExtInventory extends Widget {
 	}
 
 	@Override
-	public boolean mousedown(Coord c, int button) {
-	    boolean properButton = button == 1 || button == 3;
-	    boolean reverse = button == 3;
+	public boolean mousedown(MouseDownEvent ev) {
+	    boolean properButton = ev.b == 1 || ev.b == 3;
+	    boolean reverse = ev.b == 3;
 	    if(ui.modshift && properButton) {
 		Object[] args = extInventory.getTransferTargets();
 		if(args == null) {
@@ -563,7 +563,7 @@ public class ExtInventory extends Widget {
 	    } else {
 		WItem item = items.get(0);
 		if(!item.disposed()) {
-		    item.mousedown(sqsz.div(2), button);
+		    item.mousedown(new MouseDownEvent(ev, sqsz.div(2)));
 		}
 	    }
 	    return (false);
@@ -612,10 +612,10 @@ public class ExtInventory extends Widget {
 	return EXCLUDES.contains(title);
     }
     
-    private class Extension extends Widget implements DTarget2 {
+    private class Extension extends Widget implements DTarget {
 	@Override
-	public boolean drop(WItem target, Coord cc, Coord ul) {
-	    Coord c = inv.findPlaceFor(target.lsz);
+	public boolean drop(Drop ev) {
+	    Coord c = inv.findPlaceFor(ev.src.lsz);
 	    if(c != null) {
 		c = c.mul(sqsz).add(sqsz.div(2));
 		inv.drop(c, c);
@@ -626,12 +626,12 @@ public class ExtInventory extends Widget {
 	}
 	
 	@Override
-	public boolean iteminteract(WItem target, Coord cc, Coord ul) {
+	public boolean iteminteract(Interact ev) {
 	    return false;
 	}
     }
     
-    private class ItemGroupList extends Listbox<ItemsGroup> implements DTarget2{
+    private class ItemGroupList extends Listbox<ItemsGroup> implements DTarget {
 	private List<ItemsGroup> groups = Collections.emptyList();
 	private boolean needsUpdate = false;
 
@@ -640,16 +640,16 @@ public class ExtInventory extends Widget {
 	}
 	
 	@Override
-	public boolean drop(WItem target, Coord cc, Coord ul) {
+	public boolean drop(Drop ev) {
 	    return false;
 	}
 	
 	@Override
-	public boolean iteminteract(WItem target, Coord cc, Coord ul) {
-	    ItemsGroup item = itemat(cc);
+	public boolean iteminteract(Interact ev) {
+	    ItemsGroup item = itemat(ev.c);
 	    if(item == null) {return false;}
 	    if(item.items.isEmpty()) {return false;}
-	    item.items.get(0).iteminteract(target, cc, ul);
+	    item.items.get(0).iteminteract(ev);
 	    return false;
 	}
 

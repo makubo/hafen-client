@@ -126,10 +126,10 @@ public class Inventory extends Widget implements DTarget {
 	}
 	return(true);
     }
-
+    
     @Override
-    public boolean mousedown(Coord c, int button) {
-	return !locked && super.mousedown(c, button);
+    public boolean mousedown(MouseDownEvent ev) {
+	return locked || super.mousedown(ev);
     }
 
     public void addchild(Widget child, Object... args) {

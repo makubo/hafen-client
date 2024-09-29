@@ -58,6 +58,9 @@ public class RootWidget extends ConsoleHost implements UI.MessageWidget, Widget.
     public boolean globtype(GlobKeyEvent ev) {
 	if(ev.propagate(this))
 	    return(true);
+	if(KeyBinder.handle(ui, ev)) {
+	    return true;
+	}
 	if(ev.c == '`') {
 	    if(UIPanel.profile.get()) {
 		add(new Profwnd(guprof, "UI profile"), UI.scale(100, 100));
@@ -82,11 +85,7 @@ public class RootWidget extends ConsoleHost implements UI.MessageWidget, Widget.
 	return(super.globtype(ev));
     }
     
-    @Override
-    public boolean keyup(KeyEvent ev) {
-	return super.keyup(ev);
-    }
-    
+/*  
     private boolean isCTRL(KeyEvent ev) {
 	return ev.getModifiersEx() == (ev.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK)
 	    && KeyEvent.VK_CONTROL == ev.getExtendedKeyCode()
@@ -110,11 +109,7 @@ public class RootWidget extends ConsoleHost implements UI.MessageWidget, Widget.
 	    && KeyEvent.VK_SHIFT == ev.getExtendedKeyCode()
 	    && KeyEvent.VK_SHIFT == ev.getKeyCode();
     }
-    
-    @Override
-    public boolean mousedown(Coord c, int button) {
-	return super.mousedown(c, button);
-    }
+*/
 
     public void draw(GOut g) {
 	super.draw(g);

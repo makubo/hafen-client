@@ -86,12 +86,12 @@ public abstract class Dropbox<T> extends ListWidget<T> {
 	    return Dropbox.this.itemtip(item);
 	}
 	
-	public boolean mousedown(Coord c, int btn) {
-	    if(!c.isect(Coord.z, sz)) {
+	public boolean mousedown(MouseDownEvent ev) {
+	    if(!ev.c.isect(Coord.z, sz)) {
 		reqdestroy();
 		return(true);
 	    }
-	    return(super.mousedown(c, btn));
+	    return(super.mousedown(ev));
 	}
 	
 	public void destroy() {
