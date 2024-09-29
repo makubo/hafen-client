@@ -119,7 +119,7 @@ public class ICheckBox extends ACheckBox {
 	if((ev.b == 1) && checkhit(ev.c)) {
 	    click();
 	    return(true);
-	} else if((ev.b == 3) && checkhit(c)) {
+	} else if((ev.b == 3) && checkhit(ev.c)) {
 	    rclick();
 	    return true;
 	}

@@ -132,13 +132,13 @@ public class ISBox extends Widget implements DTarget {
 	if(take != null) {
 	    Coord cc = xlate(take.c, true);
 	    if(c.isect(cc, take.sz)) {
-		return take.mousedown(c.sub(cc), ev.b);
+		return take.mousedown(new MouseDownEvent(ev, c.sub(cc)));
 	    }
 	}
 	if(value != null) {
 	    Coord cc = xlate(value.c, true);
 	    if(c.isect(cc, value.sz)) {
-		return value.mousedown(c.sub(cc), ev.b);
+		return value.mousedown(new MouseDownEvent(ev, c.sub(cc)));
 	    }
 	}
 	if (ev.b == 1) {

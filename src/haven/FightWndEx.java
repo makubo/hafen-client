@@ -344,24 +344,25 @@ public class FightWndEx extends Widget {
 	    return (true);
 	}
 
-	public boolean mouseup(Coord c, int button) {
-	    if((d != null) && (button == 1)) {
+	@Override
+	public boolean mouseup(MouseUpEvent ev) {
+	    if((d != null) && (ev.b == 1)) {
 		d.remove();
 		d = null;
 		if(drag != null) {
 		    if(dp == null) {
-			DropTarget.dropthing(ui.root, c.add(rootpos()), drag);
+			DropTarget.dropthing(ui.root, ev.c.add(rootpos()), drag);
 		    }
 		    drag = null;
 		}
 		if(da >= 0) {
-		    if(onadd(c, da)) {
+		    if(onadd(ev.c, da)) {
 			Action act = listitem(da);
 			setu(act, act.u + 1);
 		    }
 		    da = -1;
 		} else if(ds >= 0) {
-		    if(onsub(c, ds)) {
+		    if(onsub(ev.c, ds)) {
 			Action act = listitem(ds);
 			setu(act, act.u - 1);
 		    }
@@ -369,7 +370,7 @@ public class FightWndEx extends Widget {
 		}
 		return (true);
 	    }
-	    return (super.mouseup(c, button));
+	    return (super.mouseup(ev));
 	}
 
 	public boolean drop(Coord cc, Coord ul) {
@@ -463,9 +464,10 @@ public class FightWndEx extends Widget {
 	    }
 	}
 
-	public boolean mousedown(Coord c, int button) {
-	    if(button == 1) {
-		int s = citem(c);
+	@Override
+	public boolean mousedown(MouseDownEvent ev) {
+	    if(ev.b == 1) {
+		int s = citem(ev.c);
 		if(s >= 0) {
 		    Action act = order[s];
 		    actlist.change(act);
@@ -473,12 +475,12 @@ public class FightWndEx extends Widget {
 		    if(act != null) {
 			grab = ui.grabmouse(this);
 			drag = act;
-			dp = c;
+			dp = ev.c;
 		    }
 		    return (true);
 		}
-	    } else if(button == 3) {
-		int s = citem(c);
+	    } else if(ev.b == 3) {
+		int s = citem(ev.c);
 		if(s >= 0) {
 		    if(order[s] != null)
 			order[s].u(0);
@@ -486,13 +488,14 @@ public class FightWndEx extends Widget {
 		    return (true);
 		}
 	    }
-	    return (super.mousedown(c, button));
+	    return (super.mousedown(ev));
 	}
 
-	public void mousemove(Coord c) {
-	    super.mousemove(c);
+	@Override
+	public void mousemove(MouseMoveEvent ev) {
+	    super.mousemove(ev);
 	    if(dp != null) {
-		if(c.dist(dp) > 5) {
+		if(ev.c.dist(dp) > 5) {
 		    grab.remove();
 		    actlist.drag(drag);
 		    grab = null;
@@ -502,14 +505,15 @@ public class FightWndEx extends Widget {
 	    }
 	}
 
-	public boolean mouseup(Coord c, int button) {
+	@Override
+	public boolean mouseup(MouseUpEvent ev) {
 	    if(grab != null) {
 		grab.remove();
 		grab = null;
 		drag = null;
 		dp = null;
 	    }
-	    return (super.mouseup(c, button));
+	    return (super.mouseup(ev));
 	}
 
 	private void animate(int s, Coord off) {

@@ -106,7 +106,7 @@ public class TextButton extends SIWidget {
 	if(d == null) {return (false);}
 	d.remove();
 	d = null;
-	mousemove(ev.c);
+	mousemove(new MouseMoveEvent(ev.c));
 	if(checkhit(ev.c)) {
 	    unpress();
 	    click(ev.b);

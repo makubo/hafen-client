@@ -341,9 +341,9 @@ public class KeyBinder {
 		  }
     
 		  @Override
-		  public boolean mouseup(Coord c, int button) {
+		  public boolean mouseup(MouseUpEvent ev) {
 		      //FIXME: a little hack, because WidgetList does not pass correct click coordinates if scrolled
-		      return super.mouseup(Coord.z, button);
+		      return super.mouseup(new MouseUpEvent(ev, Coord.z));
 		  }
 	      },
 	    UI.scale(225), 0);
@@ -414,7 +414,7 @@ public class KeyBinder {
 	}
 	
 	@Override
-	public boolean mousedown(Coord c, int button) {
+	public boolean mousedown(MouseDownEvent ev) {
 	    reqdestroy();
 	    return true;
 	}
