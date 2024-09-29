@@ -125,7 +125,7 @@ public abstract class Listbox<T> extends ListWidget<T> {
     }
     
     public boolean mousedown(MouseDownEvent ev) {
-	if(super.mousedown(ev))
+	if(ev.propagate(this))
 	    return(true);
 	int idx = idxat(ev.c);
 	T item = (idx >= listitems()) ? null : listitem(idx);

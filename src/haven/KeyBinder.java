@@ -236,7 +236,7 @@ public class KeyBinder {
 	}
 	
 	public boolean match(KbdEvent e) {
-	    return match(e.code, getModFlags(e.mods));
+	    return match(e.code, e.mods);
 	}
 	
 	public boolean match(int code, int mods) {

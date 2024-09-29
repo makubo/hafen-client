@@ -112,7 +112,7 @@ public class FlowerList extends WidgetList<FlowerList.Item> {
 
 	@Override
 	public boolean mousedown(MouseDownEvent ev) {
-	    if(super.mousedown(ev)) {
+	    if(ev.propagate(this)) {
 		return true;
 	    }
 	    if(ev.b != 1)

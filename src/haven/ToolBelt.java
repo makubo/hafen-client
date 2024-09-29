@@ -170,10 +170,10 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
     private int slot(int i) {return i + start;}
     
     @Override
-    public boolean globtype(char key, KeyEvent ev) {
-	if(!visible || beltkeys == null || key != 0 || ui.modflags() != 0) { return false;}
+    public boolean globtype(GlobKeyEvent ev) {
+	if(!visible || beltkeys == null ||  ui.modflags() != 0) { return false;}
 	for (int i = 0; i < beltkeys.length; i++) {
-	    if(ev.getKeyCode() == beltkeys[i]) {
+	    if(ev.code == beltkeys[i]) {
 		keyact(slot(i));
 		return true;
 	    }

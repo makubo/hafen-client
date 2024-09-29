@@ -123,7 +123,7 @@ public abstract class Dropbox<T> extends ListWidget<T> {
     }
     
     public boolean mousedown(MouseDownEvent ev) {
-	if(super.mousedown(ev))
+	if(ev.propagate(this))
 	    return(true);
 	if((dl == null) && (ev.b == 1)) {
 	    dl = new Droplist();

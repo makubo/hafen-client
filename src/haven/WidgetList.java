@@ -146,7 +146,7 @@ public class WidgetList<T extends Widget> extends ListWidget<T> {
 
     @Override
     public boolean mousedown(MouseDownEvent ev) {
-	if(super.mousedown(ev))
+	if(ev.propagate(this))
 	    return (true);
 	T item = itemat(ev.c);
 	if((item == null) && (ev.b == 1))
@@ -158,7 +158,7 @@ public class WidgetList<T extends Widget> extends ListWidget<T> {
 
     @Override
     public void mousemove(MouseMoveEvent ev) {
-	super.mousemove(ev);
+	ev.propagate(this);
 	if(ev.c.isect(Coord.z, sz)) {
 	    over = itemat(ev.c);
 	} else {
