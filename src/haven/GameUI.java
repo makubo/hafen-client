@@ -1998,6 +1998,8 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	}
 	
 	public boolean globtype(GlobKeyEvent ev) {
+	    //skip matching if CTRL pressed to not clash with global hotkeys
+	    if(ev.mods == KeyMatch.C) {return super.globtype(ev);}
 	    boolean M = (ev.mods & KeyMatch.M) != 0;
 	    for(int i = 0; i < beltkeys.length; i++) {
 		if(ev.code == beltkeys[i]) {
@@ -2088,6 +2090,8 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	}
 	
 	public boolean globtype(GlobKeyEvent ev) {
+	    //skip matching if CTRL pressed to not clash with global hotkeys
+	    if(ev.mods == KeyMatch.C) {return super.globtype(ev);}
 	    if((ev.code < KeyEvent.VK_0) || (ev.code > KeyEvent.VK_9))
 		return(super.globtype(ev));
 	    int i = Utils.floormod(ev.code - KeyEvent.VK_0 - 1, 10);
