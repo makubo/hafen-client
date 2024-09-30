@@ -2336,7 +2336,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 		placing.new Adjust(ev.c, ui.modflags()).run();
 	    }
 	} else {
-	    inspect(c);
+	    inspect(ev.c);
 	}
     }
     
