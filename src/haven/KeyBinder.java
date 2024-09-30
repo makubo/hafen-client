@@ -120,11 +120,19 @@ public class KeyBinder {
 	return get(e).execute(ui);
     }
     
-    public static int getModFlags(int modflags) {
+    public static int getAWTModFlags(int modflags) {
 	modflags = ((modflags & InputEvent.ALT_DOWN_MASK) != 0 ? ALT : 0)
 	    | ((modflags & InputEvent.META_DOWN_MASK) != 0 ? ALT : 0)
 	    | ((modflags & InputEvent.CTRL_DOWN_MASK) != 0 ? CTRL : 0)
 	    | ((modflags & InputEvent.SHIFT_DOWN_MASK) != 0 ? SHIFT : 0);
+	return modflags;
+    }
+    
+    public static int getLoftarModFlags(int modflags) {
+	modflags = ((modflags & KeyMatch.M) != 0 ? ALT : 0)
+	    | ((modflags & KeyMatch.SUPER) != 0 ? ALT : 0) //not sure about this one
+	    | ((modflags & KeyMatch.C) != 0 ? CTRL : 0)
+	    | ((modflags & KeyMatch.S) != 0 ? SHIFT : 0);
 	return modflags;
     }
     
@@ -152,7 +160,7 @@ public class KeyBinder {
     }
     
     public static KeyBind make(KeyEvent e, Action action) {
-	return new KeyBind(e.getKeyCode(), getModFlags(e.getModifiersEx()), action);
+	return new KeyBind(e.getKeyCode(), getAWTModFlags(e.getModifiersEx()), action);
     }
     
     private static boolean change(KeyBind to) {
@@ -232,11 +240,11 @@ public class KeyBinder {
 	}
     
 	public boolean match(KeyEvent e) {
-	    return match(e.getKeyCode(), getModFlags(e.getModifiersEx()));
+	    return match(e.getKeyCode(), getAWTModFlags(e.getModifiersEx()));
 	}
 	
 	public boolean match(KbdEvent e) {
-	    return match(e.code, e.mods);
+	    return match(e.code, getLoftarModFlags(e.mods));
 	}
 	
 	public boolean match(int code, int mods) {
