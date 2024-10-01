@@ -379,12 +379,13 @@ public class LoginScreen extends Widget {
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
 	if(sender == accounts) {
-	    if("account".equals(msg)) {
+	    if("account".equals(msg) && login instanceof Credbox) {
+		Credbox creds = (Credbox) login;
 		String name = (String) args[0];
 		String token = (String) args[1];
-		login.user.settext2(name);
-		login.token = Utils.hex2byte(token);
-		login.enter();
+		creds.user.settext2(name);
+		creds.token = Utils.hex2byte(token);
+		creds.enter();
 	    }
 	    return;
 	}

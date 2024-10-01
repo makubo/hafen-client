@@ -155,7 +155,7 @@ public class OptWnd extends WindowX {
 		    }, Coord.z);
 		prev = add(new CFGBox("Full screen", CFG.VIDEO_FULL_SCREEN).set(v -> {
 		    try {
-			ui.cons.run(new String[]{"fs", v?"1":"0"});
+			ui.cons.run(ui.root, new String[]{"fs", v ? "1" : "0"});
 		    } catch (Exception ignored) {
 		    }
 		}), prev.pos("bl").adds(0, 5));
