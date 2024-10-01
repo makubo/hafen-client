@@ -1409,9 +1409,6 @@ public class Widget {
 	return(this);
     }
 	
-    public static final KeyMatch key_act = KeyMatch.forcode(KeyEvent.VK_ENTER, 0);
-    public static final KeyMatch key_esc = KeyMatch.forcode(KeyEvent.VK_ESCAPE, 0);
-    public static final KeyMatch key_tab = KeyMatch.forcode(KeyEvent.VK_TAB, 0);
     public boolean keydown(KeyDownEvent ev) {
 	if(canactivate) {
 	    if(key_act.match(ev)) {
@@ -1472,13 +1469,6 @@ public class Widget {
     @Deprecated
     public boolean globtype(char key, KeyEvent ev) {
 	return(hackhandling.get().propagate(this));
-    }
-
-    public Widget setgkey(KeyBinding gkey) {
-	kb_gkey = gkey;
-	if((tooltip == null) && (kb_gkey != null))
-	    tooltip = new KeyboundTip();
-	return(this);
     }
 
     @Deprecated
