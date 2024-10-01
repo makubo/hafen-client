@@ -303,4 +303,8 @@ public class ClientUtils {
 	    return new JsonPrimitive(color2hex(color));
 	}
     }
+    
+    public static Coord getScreenCenter(UI ui) {
+	return ui.root.sz.div(2);
+    }
 }

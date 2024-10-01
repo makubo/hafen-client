@@ -30,6 +30,7 @@ import haven.Equipory.SLOTS;
 import haven.rx.BuffToggles;
 import haven.rx.Reactor;
 import integrations.mapv4.MappingClient;
+import me.ender.ClientUtils;
 import me.ender.QuestHelper;
 import me.ender.StatMeterWdg;
 import me.ender.minimap.*;
@@ -338,7 +339,6 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	buffs = ulpanel.add(new Bufflist(), portrait.c.x + portrait.sz.x + UI.scale(10), portrait.c.y + ((IMeter.fsz.y + UI.scale(2)) * 2) + UI.scale(5 - 2));
 	calendar = umpanel.add(new Cal(), Coord.z);
 	eqproxy = add(new EquipProxy(SLOTS.HAND_LEFT, SLOTS.HAND_RIGHT, SLOTS.BACK, SLOTS.BELT), new Coord(420, 5));
-	filter = add(new FilterWnd());
 	syslog = chat.add(new ChatUI.Log("System"));
 	opts = add(new OptWnd());
 	opts.hide();
@@ -563,7 +563,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
     public void toggleCraftList() {
 	if(craftlist == null){
-	    craftlist = add(new ActWindow("Craft…", "paginae/craft/.+"));
+	    craftlist = add(new ActWindow("Craft…", "paginae/craft/.+"), ClientUtils.getScreenCenter(ui));
 	    craftlist.addtwdg(new IButton("gfx/hud/btn-help", "","-d","-h"){
 		@Override
 		public void click() {
@@ -579,7 +579,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
     public void toggleBuildList() {
 	if(buildlist == null){
-	    buildlist = add(new ActWindow("Build…", "paginae/bld/.+"));
+	    buildlist = add(new ActWindow("Build…", "paginae/bld/.+"), ClientUtils.getScreenCenter(ui));
 	    buildlist.addtwdg(new IButton("gfx/hud/btn-help", "","-d","-h"){
 		@Override
 		public void click() {
@@ -595,7 +595,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
     public void toggleActList() {
 	if(actlist == null){
-	    actlist = add(new ActWindow("Act…", "paginae/act/.+|paginae/pose/.+|paginae/gov/.+|paginae/add/.+|gfx/fx/msrad|ui/tt/q/quality"));
+	    actlist = add(new ActWindow("Act…", "paginae/act/.+|paginae/pose/.+|paginae/gov/.+|paginae/add/.+|gfx/fx/msrad|ui/tt/q/quality"), ClientUtils.getScreenCenter(ui));
 	} else if(actlist.visible) {
 	    actlist.hide();
 	} else {
@@ -616,10 +616,17 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	}
 	Utils.setprefb("chatvis", chat.targetshow);
     }
-
+    
+    public void toggleFilter() {
+	if(filter == null) {
+	    filter = add(new FilterWnd(), ClientUtils.getScreenCenter(ui));
+	}
+	filter.toggle();
+    }
+    
     public void toggleCraftDB() {
 	if(craftwnd == null) {
-	    craftwnd = add(new CraftDBWnd());
+	    craftwnd = add(new CraftDBWnd(), ClientUtils.getScreenCenter(ui));
 	} else {
 	    craftwnd.close();
 	}
