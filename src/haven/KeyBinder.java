@@ -397,8 +397,8 @@ public class KeyBinder {
 	}
     
 	@Override
-	public boolean keydown(KeyEvent ev) {
-	    int code = ev.getKeyCode();
+	public boolean keydown(KeyDownEvent ev) {
+	    int code = ev.code;
 	    if(    code != 0
 		&& code != KeyEvent.VK_CONTROL
 		&& code != KeyEvent.VK_SHIFT
@@ -407,7 +407,7 @@ public class KeyBinder {
 		if(code == KeyEvent.VK_DELETE) {
 		    listener.keyBindChanged(bind, new KeyBind(0, 0, bind.action));
 		} else if(code != KeyEvent.VK_ESCAPE) {
-		    listener.keyBindChanged(bind, make(ev, bind.action));
+		    listener.keyBindChanged(bind, make(ev.awt, bind.action));
 		}
 		reqdestroy();
 	    }

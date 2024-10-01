@@ -525,11 +525,11 @@ public class CraftDBWnd extends WindowX implements DTarget {
     }
     
     @Override
-    public boolean keydown(KeyEvent ev) {
-	if(ignoredKey(ev)) {
+    public boolean keydown(KeyDownEvent ev) {
+	if(ignoredKey(ev.awt)) {
 	    return false;
 	}
-	switch (ev.getKeyCode()) {
+	switch (ev.code) {
 	    case KeyEvent.VK_ESCAPE:
 		if(!filter.line().isEmpty()) {
 		    changeMode(mode);
@@ -559,7 +559,7 @@ public class CraftDBWnd extends WindowX implements DTarget {
 	}
  
 	String before = filter.line();
-	if(filter.key(ev) && !before.equals(filter.line())) {
+	if(filter.key(ev.awt) && !before.equals(filter.line())) {
 	    needfilter();
 	    if(filter.line().isEmpty()) {
 		changeMode(mode);

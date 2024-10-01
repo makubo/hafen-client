@@ -85,32 +85,6 @@ public class RootWidget extends ConsoleHost implements UI.MessageWidget, Widget.
 	return(super.globtype(ev));
     }
     
-/*  
-    private boolean isCTRL(KeyEvent ev) {
-	return ev.getModifiersEx() == (ev.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK)
-	    && KeyEvent.VK_CONTROL == ev.getExtendedKeyCode()
-	    && KeyEvent.VK_CONTROL == ev.getKeyCode();
-    }
-    
-    private boolean isALT(KeyEvent ev) {
-	return (
-	    ev.getModifiersEx() == (ev.getModifiersEx() & KeyEvent.ALT_DOWN_MASK)
-		&& KeyEvent.VK_ALT == ev.getExtendedKeyCode()
-		&& KeyEvent.VK_ALT == ev.getKeyCode()
-	) || (
-	    ev.getModifiersEx() == (ev.getModifiersEx() & KeyEvent.META_DOWN_MASK)
-		&& KeyEvent.VK_META == ev.getExtendedKeyCode()
-		&& KeyEvent.VK_META == ev.getKeyCode()
-	);
-    }
-    
-    private boolean isSHIFT(KeyEvent ev) {
-	return ev.getModifiersEx() == (ev.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK)
-	    && KeyEvent.VK_SHIFT == ev.getExtendedKeyCode()
-	    && KeyEvent.VK_SHIFT == ev.getKeyCode();
-    }
-*/
-
     public void draw(GOut g) {
 	super.draw(g);
 	if(cmdline != null) {

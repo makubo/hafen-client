@@ -649,13 +649,14 @@ public class FightWndEx extends Widget {
 	    use(sel);
 	}
 
-	public boolean keydown(KeyEvent ev) {
+	@Override
+	public boolean keydown(KeyDownEvent ev) {
 	    if(edit != -1) {
-		if(ev.getKeyChar() == 27) {
+		if(ev.awt.getKeyChar() == 27) {
 		    cancel();
 		    return (true);
 		} else {
-		    return (nmed.key(ev));
+		    return (nmed.key(ev.awt));
 		}
 	    }
 	    return (super.keydown(ev));
