@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 01.10.24:}
+ * merged loftar's changes in preparation to steam release
+ 
 $size[14]{$u{Update for 18.09.24:}
   * fixed inability to upload new images to sketch
   * fixed sketch preview window not closing
