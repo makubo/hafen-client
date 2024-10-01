@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="workshop:upload" type="Application" factoryName="Application">
+  <configuration default="false" name="workshop" type="Application" factoryName="Application">
     <envs>
       <env name="SteamAppID" value="3051280" />
     </envs>
