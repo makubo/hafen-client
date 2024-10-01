@@ -123,27 +123,25 @@ public class ISBox extends Widget implements DTarget {
     }
 
     public Object tooltip(Coord c, Widget prev) {
-	try {
-	    if(res.get().layer(Resource.tooltip) != null)
-		return(res.get().layer(Resource.tooltip).t);
-	} catch(Loading ignored) {}
+	if(res.get().layer(Resource.tooltip) != null)
+	    return(res.get().layer(Resource.tooltip).t);
 	return(null);
     }
 
-    public boolean mousedown(Coord c, int button) {
+    public boolean mousedown(MouseDownEvent ev) {
 	if(take != null) {
 	    Coord cc = xlate(take.c, true);
 	    if(c.isect(cc, take.sz)) {
-		return take.mousedown(c.sub(cc), button);
+		return take.mousedown(new MouseDownEvent(ev, c.sub(cc)));
 	    }
 	}
 	if(value != null) {
 	    Coord cc = xlate(value.c, true);
 	    if(c.isect(cc, value.sz)) {
-		return value.mousedown(c.sub(cc), button);
+		return value.mousedown(new MouseDownEvent(ev, c.sub(cc)));
 	    }
 	}
-	if (button == 1) {
+	if (ev.b == 1) {
 	    if (ui.modshift ^ ui.modctrl) {           //SHIFT or CTRL means pull
 		int dir = ui.modctrl ? -1 : 1;        //CTRL means pull out, SHIFT pull in
 		int all = (dir > 0) ? av - rem : rem; //count depends on direction
@@ -154,7 +152,7 @@ public class ISBox extends Widget implements DTarget {
 	    }
 	    return (true);
 	}
-	return (false);
+	return (super.mousedown(ev));
     }
 
     public void transfer(int dir, int amount) {
@@ -163,10 +161,10 @@ public class ISBox extends Widget implements DTarget {
 	}
     }
     
-    public boolean mousewheel(Coord c, int amount) {
-	if(amount < 0)
+    public boolean mousewheel(MouseWheelEvent ev) {
+	if(ev.a < 0)
 	    wdgmsg("xfer2", -1, ui.modflags());
-	if(amount > 0)
+	if(ev.a > 0)
 	    wdgmsg("xfer2", 1, ui.modflags());
 	return(true);
     }

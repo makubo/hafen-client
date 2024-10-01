@@ -26,7 +26,20 @@
 
 package haven;
 
-public interface DTarget2 {
-    boolean drop(WItem target, Coord cc, Coord ul);
-    boolean iteminteract(WItem target, Coord cc, Coord ul);
+public interface EventHandler<E> {
+    public boolean handle(E ev);
+
+    public static class Listener<E> {
+	public final Class<E> t;
+	public final EventHandler<? super E> h;
+
+	public Listener(Class<E> t, EventHandler<? super E> h) {
+	    this.t = t;
+	    this.h = h;
+	}
+
+	public boolean check(Object ev) {
+	    return(t.isInstance(ev) ? h.handle(t.cast(ev)) : false);
+	}
+    }
 }

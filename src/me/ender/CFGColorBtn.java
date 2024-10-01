@@ -30,21 +30,21 @@ public class CFGColorBtn extends IButton implements CFG.Observer<Color> {
     }
     
     @Override
-    public boolean mousedown(Coord c, int button) {
-	if(dis) {return false;}
-	return super.mousedown(c, button);
+    public boolean mousedown(MouseDownEvent ev) {
+	if(dis) {return true;}
+	return super.mousedown(ev);
     }
     
     @Override
-    public boolean mouseup(Coord c, int button) {
-	if(dis) {return false;}
-	return super.mouseup(c, button);
+    public boolean mouseup(MouseUpEvent ev) {
+	if(dis) {return true;}
+	return super.mouseup(ev);
     }
     
     @Override
-    public void mousemove(Coord c) {
+    public void mousemove(MouseMoveEvent ev) {
 	if(dis) {return;}
-	super.mousemove(c);
+	super.mousemove(ev);
     }
     
     @Override

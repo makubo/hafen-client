@@ -170,10 +170,10 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
     private int slot(int i) {return i + start;}
     
     @Override
-    public boolean globtype(char key, KeyEvent ev) {
-	if(!visible || beltkeys == null || key != 0 || ui.modflags() != 0) { return false;}
+    public boolean globtype(GlobKeyEvent ev) {
+	if(!visible || beltkeys == null ||  ui.modflags() != 0) { return false;}
 	for (int i = 0; i < beltkeys.length; i++) {
-	    if(ev.getKeyCode() == beltkeys[i]) {
+	    if(ev.code == beltkeys[i]) {
 		keyact(slot(i));
 		return true;
 	    }
@@ -198,24 +198,24 @@ public class ToolBelt extends DraggableWidget implements DTarget, DropTarget {
     }
     
     @Override
-    public boolean mousedown(Coord c, int button) {
+    public boolean mousedown(MouseDownEvent ev) {
 	//TODO: Make actions draggable if not locked
-	int slot = beltslot(c);
+	int slot = beltslot(ev.c);
 	if(slot != -1) {
-	    if(button == 1) {
+	    if(ev.b == 1) {
 		act(slot, new MenuGrid.Interaction(1, ui.modflags()));
-	    } else if(button == 3) {
+	    } else if(ev.b == 3) {
 		ui.gui.wdgmsg("setbelt", slot, null);
 	    }
 	    return true;
 	}
-	return super.mousedown(c, button);
+	return super.mousedown(ev);
     }
     
     @Override
-    public void mousemove(Coord c) {
-	over = c.isect(Coord.z, sz);
-	super.mousemove(c);
+    public void mousemove(MouseMoveEvent ev) {
+	over = ev.c.isect(Coord.z, sz);
+	super.mousemove(ev);
     }
     
     @Override

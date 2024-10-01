@@ -199,16 +199,16 @@ public class Pointer extends Widget implements MiniMap.IPointer, DTarget {
 	this.gobid = gobid;
     }
     
-    public boolean mousedown(Coord c, int button) {
-	if(lc != null && lc.dist(c) < 20) {
-	    if(button == 1) {
+    public boolean mousedown(MouseDownEvent ev) {
+	if(lc != null && lc.dist(ev.c) < 20) {
+	    if(ev.b == 1) {
 		Gob gob = getGob();
 		if(gob != null) {
 		    ui.gui.map.click(gob, 1);
 		} else {
 		    ui.gui.map.click(tc(), 1);
 		}
-	    } else if(button == 3) {
+	    } else if(ev.b == 3) {
 		if(ui.modctrl && marker != null) {
 		    if(ui.modmeta && marker instanceof PMarker) {
 			ui.gui.mapfile.removeMarker(marker);
@@ -222,10 +222,10 @@ public class Pointer extends Widget implements MiniMap.IPointer, DTarget {
 		    }
 		}
 	    }
-	    if(click) {wdgmsg("click", button, ui.modflags());}
+	    if(click) {wdgmsg("click", ev.b, ui.modflags());}
 	    return (true);
 	}
-	return (super.mousedown(c, button));
+	return (super.mousedown(ev));
     }
     
     private QuestWnd getQuestWnd() {
