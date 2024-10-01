@@ -253,11 +253,11 @@ public class ClientUtils {
     @SuppressWarnings("unchecked")
     public static <T extends Number> T num2value(Number n, Class<T> type) {
 	if(Integer.class.equals(type)) {
-	    return (T) new Integer(n.intValue());
+	    return (T) (Integer) (n.intValue());
 	} else if(Long.class.equals(type)) {
-	    return (T) new Long(n.longValue());
+	    return (T) (Long) (n.longValue());
 	}
-	return (T) new Float(n.floatValue());
+	return (T) (Float) (n.floatValue());
     }
     
     @SafeVarargs
