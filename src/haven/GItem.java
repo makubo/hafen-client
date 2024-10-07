@@ -26,6 +26,7 @@
 
 package haven;
 
+import me.ender.Reflect;
 import rx.functions.Action0;
 
 import java.util.*;
@@ -628,6 +629,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 
 	private Coord lc = null;
 	public void tick(double dt) {
+	    children().forEach(wdg->checkContentsUpdate(wdg, cont));
 	    super.tick(dt);
 	    if(st == "hide") {
 		ckhover();
@@ -659,6 +661,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 		cont.contentswnd = null;
 		this.destroy();
 	    }
+	    cont.itemsChanged();
 	}
 
 	public boolean mousehover(MouseHoverEvent ev, boolean on) {
@@ -681,6 +684,20 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 	    } else if(!show && (st == "wnd")) {
 		chstate("hide");
 	    }
+	}
+    }
+    
+    private void itemsChanged() {
+	Inventory inv = getparent(Inventory.class);
+	if(inv != null) {
+	    inv.itemsChanged();
+	}
+    }
+    
+    private static void checkContentsUpdate(Widget wdg, GItem cont) {
+	if(!Reflect.is(wdg, "haven.res.ui.stackinv.ItemStack")) {return;}
+	if(Reflect.getFieldValueBool(wdg, "dirty")) {
+	    cont.itemsChanged();
 	}
     }
 }

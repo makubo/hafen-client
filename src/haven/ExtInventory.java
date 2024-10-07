@@ -287,12 +287,6 @@ public class ExtInventory extends Widget {
 	}
     }
 
-//    @Override
-//    public boolean mousewheel(MouseWheelEvent ev) {
-//	super.mousewheel(ev);
-//	return(true);
-//    }
-
     @Override
     public void tick(double dt) {
 	if(waitUpdate > 0) {waitUpdate -= dt;}
