@@ -111,7 +111,7 @@ public class Pointer extends Widget implements MiniMap.IPointer, DTarget {
 	
 	// gl.glEnable(GL2.GL_POLYGON_SMOOTH); XXXRENDER
 	QuestWnd questWnd;
-	if(col == null && (questWnd = getQuestWnd()) != null) {
+	if(tip != null && col == null && (questWnd = getQuestWnd()) != null) {
 	    int i = questWnd.getObjectiveIndex(tip);
 	    col = colors[i % colors.length];
 	}
