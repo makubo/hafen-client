@@ -537,7 +537,7 @@ public class Fightsess extends Widget {
     }
 
     public boolean keyup(KeyUpEvent ev) {
-	if(ev.grabbed && (kb_acts[held].key().match(ev.awt, KeyMatch.MODS))) {
+	if(ev.grabbed && (keybinds[held].match(ev, KeyBinder.MODS))) {
 	    MapView map = getparent(GameUI.class).map;
 	    new Release(held);
 	    holdgrab.remove();

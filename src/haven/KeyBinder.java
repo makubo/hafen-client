@@ -23,6 +23,7 @@ public class KeyBinder {
     public static final int ALT = 1;
     public static final int CTRL = 2;
     public static final int SHIFT = 4;
+    public static final int MODS = ALT | CTRL | SHIFT;
     public static final String COMBAT_KEYS_UPDATED = "KeyBinder.COMBAT_KEYS_UPDATED";
     
     private static final Gson gson;
@@ -240,15 +241,19 @@ public class KeyBinder {
 	}
     
 	public boolean match(KeyEvent e) {
-	    return match(e.getKeyCode(), getAWTModFlags(e.getModifiersEx()));
+	    return match(e.getKeyCode(), getAWTModFlags(e.getModifiersEx()), 0);
 	}
 	
 	public boolean match(KbdEvent e) {
-	    return match(e.code, getLoftarModFlags(e.mods));
+	    return match(e, 0);
 	}
 	
-	public boolean match(int code, int mods) {
-	    return !isEmpty() && code == this.code && mods == this.mods;
+	public boolean match(KbdEvent e, int modign) {
+	    return match(e.code, getLoftarModFlags(e.mods), modign);
+	}
+	
+	public boolean match(int code, int mods, int modign) {
+	    return !isEmpty() && code == this.code && ((mods & MODS & ~modign) == (this.mods & ~modign));
 	}
 
 	public boolean execute(UI ui) {
