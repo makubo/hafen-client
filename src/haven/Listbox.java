@@ -157,6 +157,7 @@ public abstract class Listbox<T> extends ListWidget<T> {
 	}
     }
     
+    @Override
     public boolean mouseclick(Coord c, int button, int count) {
 	if(super.mouseclick(c, button, count))
 	    return(true);
