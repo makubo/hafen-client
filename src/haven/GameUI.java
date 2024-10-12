@@ -1106,7 +1106,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    updhand();
 	    synchronized (heldNotifier) { heldNotifier.notifyAll(); }
 	} else if(place == "chr") {
-	    studywnd = add(new StudyWnd());
+	    studywnd = add(new StudyWnd(), ClientUtils.getScreenCenter(ui));
 	    studywnd.hide();
 	    chrwdg = add((CharWnd)child, Utils.getprefc("wndc-chr", new Coord(300, 50)));
 	    chrwdg.hide();

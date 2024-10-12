@@ -20,22 +20,22 @@ public class InventoryProxy extends Widget implements DTarget {
 
     @Override
     public boolean mousedown(MouseDownEvent ev) {
-	return target.mousedown(ev);
+	return ev.dispatch(target);
     }
 
     @Override
     public boolean mouseup(MouseUpEvent ev) {
-	return target.mouseup(ev);
+	return ev.dispatch(target);
     }
 
     @Override
     public boolean mousewheel(MouseWheelEvent ev) {
-	return target.mousewheel(ev);
+	return ev.dispatch(target);
     }
 
     @Override
     public void mousemove(MouseMoveEvent ev) {
-	target.mousemove(ev);
+	ev.dispatch(target);
     }
 
     @Override
