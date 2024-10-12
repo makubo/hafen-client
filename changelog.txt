@@ -1,3 +1,10 @@
+$size[14]{$u{Update for 12.10.24:}
+  * fixed holding CTRL to drop item with drop protection on not working unless SHIFT or ALT are pressed too
+  * fixed Take button in stockpiles
+  * allow drink refill to fill Birchbark Kuksa
+  * fixed drink refill not recognizing water barrels if gob info display is disabled
+  * merged PR with KO translation
+ 
 $size[14]{$u{Update for 07.10.24:}
   * fixed combat keybinds
   * fixed list inventory not updating in some cases
