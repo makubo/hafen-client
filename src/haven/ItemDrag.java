@@ -49,7 +49,7 @@ public class ItemDrag extends WItem {
     public boolean mousedown(MouseDownEvent ev) {
 	if(!ev.grabbed)
 	    return(false);
-	if(ui.modctrl && !ui.modshift && !ui.modmeta) {
+	if(!CFG.ITEM_DROP_PROTECTION.get() && ui.modctrl && !ui.modshift && !ui.modmeta) {
 	    /* XXX */
 	    GameUI gui = getparent(GameUI.class);
 	    if((gui != null) && (gui.map != null)) {
