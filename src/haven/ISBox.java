@@ -92,7 +92,6 @@ public class ISBox extends Widget implements DTarget {
 
 		take = new Button(UI.scale(40), "Take", this::take);
 		add(take, UI.scale(100, 39));
-		take.canactivate = true;
 
 		sz = sz.add(0, UI.scale(25));
 		
@@ -174,6 +173,15 @@ public class ISBox extends Widget implements DTarget {
         } else {
             super.uimsg(msg, args);
         }
+    }
+    
+    @Override
+    public void wdgmsg(Widget sender, String msg, Object... args) {
+	if(sender == value) {
+	    take();
+	} else {
+	    super.wdgmsg(sender, msg, args);
+	}
     }
     
     private void take() {
