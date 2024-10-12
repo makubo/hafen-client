@@ -1397,18 +1397,6 @@ public class Widget {
 	return(true);
     }
 
-    public Widget setgkey(KeyMatch gkey) {
-	this.gkey = gkey;
-	return(this);
-    }
-	
-    public Widget setgkey(KeyBinding gkey) {
-	kb_gkey = gkey;
-	if((tooltip == null) && (kb_gkey != null))
-	    tooltip = new KeyboundTip();
-	return(this);
-    }
-	
     public boolean keydown(KeyDownEvent ev) {
 	if(canactivate) {
 	    if(key_act.match(ev)) {
@@ -1471,6 +1459,18 @@ public class Widget {
 	return(hackhandling.get().propagate(this));
     }
 
+    public Widget setgkey(KeyMatch gkey) {
+	this.gkey = gkey;
+	return(this);
+    }
+
+    public Widget setgkey(KeyBinding gkey) {
+	kb_gkey = gkey;
+	if((tooltip == null) && (kb_gkey != null))
+	    tooltip = new KeyboundTip();
+	return(this);
+    }
+
     @Deprecated
     public boolean keydown(KeyEvent ev) {
 	return(hackhandling.get().propagate(this));
@@ -1479,18 +1479,6 @@ public class Widget {
     @Deprecated
     public boolean keyup(KeyEvent ev) {
 	return(hackhandling.get().propagate(this));
-    }
-    
-    public boolean mouseclick(Coord c, int button, int count) {
-	for(Widget wdg = lchild; wdg != null; wdg = wdg.prev) {
-	    if(!wdg.visible)
-		continue;
-	    Coord cc = xlate(wdg.c, true);
-	    if(c.isect(cc, wdg.sz))
-		if(wdg.mouseclick(c.add(cc.inv()), button, count))
-		    return(true);
-	}
-	return(false);
     }
 
     public Area area() {
