@@ -194,17 +194,19 @@ public class GeneralGobInfo extends GobInfo {
     }
     
     public String contents() {
+	if(contents == null) {
+	    contents = getContents(true).orElse("");
+	} 
 	return contents;
     }
-
-    private BufferedImage content() {
-	this.contents = null;
+    
+    private Optional<String> getContents(boolean force) {
 	String res = gob.resid();
-	if(res == null) {return null;}
 	Optional<String> contents = Optional.empty();
+	if(res == null) {return contents;}
 	
 	if(res.startsWith("gfx/terobjs/barrel")) {
-	    if(GobInfoOpts.disabled(InfoPart.BARREL)) {return null;}
+	    if(!force && GobInfoOpts.disabled(InfoPart.BARREL)) {return contents;}
 	    contents = gob.ols.stream()
 		.map(Gob.Overlay::name)
 		.filter(name -> name.startsWith("gfx/terobjs/barrel-"))
@@ -213,7 +215,7 @@ public class GeneralGobInfo extends GobInfo {
 		.findAny();
 	    
 	} else if(res.startsWith("gfx/terobjs/iconsign")) {
-	    if(GobInfoOpts.disabled(InfoPart.DISPLAY_SIGN)) {return null;}
+	    if(!force && GobInfoOpts.disabled(InfoPart.DISPLAY_SIGN)) {return contents;}
 	    Message sdt = gob.sdtm();
 	    if(!sdt.eom()) {
 		int resid = sdt.uint16();
@@ -228,6 +230,13 @@ public class GeneralGobInfo extends GobInfo {
 		}
 	    }
 	}
+	
+	return contents;
+    }
+
+    private BufferedImage content() {
+	this.contents = null;
+	Optional<String> contents = getContents(false);
 	
 	if(contents.isPresent()) {
 	    this.contents = contents.get();
