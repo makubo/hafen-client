@@ -506,14 +506,20 @@ public class WItem extends Widget implements DTarget {
 	double meter = meter();
 	if(meter <= 0) {return -1;}
 	
+	double remaining = -1;
 	if(WindowDetector.isWindowType(this, WND_SMELTER)) {
-	    double remaining = WELL_MINED.matches(info()) ? 41.25d : 55d; //ore smelting time in minutes
-	    remaining *= 60 * (1d - meter); //remaining seconds
-	    remaining -= (System.currentTimeMillis() - item.meterUpdated) / 1000d; //adjust for time passed since last update
-	    return (int) remaining;
+	    remaining = WELL_MINED.matches(info()) ? 41.25d : 55d; //ore smelting time in minutes
+	} else if(WindowDetector.isWindowType(this, WND_FINERY_FORGE)) {
+	    //TODO: check for coin melting time
+	    remaining = 9d; //bar smelting time in minutes
 	}
 	
-	return -1;
+	if(remaining > 0) {
+	    remaining *= 60 * (1d - meter); //remaining seconds
+	    remaining -= (System.currentTimeMillis() - item.meterUpdated) / 1000d; //adjust for time passed since last update
+	}
+	
+	return (int) remaining;
     }
 
     private boolean checkXfer(int button) {

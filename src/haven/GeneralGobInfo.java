@@ -40,6 +40,7 @@ public class GeneralGobInfo extends GobInfo {
     
     static {
 	POS.put("gfx/terobjs/smelter", 5);
+	POS.put("gfx/terobjs/fineryforge", 8);
 	POS.put("gfx/terobjs/barrel", 6);
 	POS.put("gfx/terobjs/iconsign", 5);
 	POS.put("gfx/terobjs/cheeserack", 17);
