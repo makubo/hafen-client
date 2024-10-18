@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 18.10.24:}
+  * added smelt timer for finery forge
+ 
 $size[14]{$u{Update for 12.10.24:}
   * fixed holding CTRL to drop item with drop protection on not working unless SHIFT or ALT are pressed too
   * fixed Take button in stockpiles
