@@ -1114,8 +1114,16 @@ public class Gob implements RenderTree.Node, Sprite.Owner, Skeleton.ModOwner, Eq
 	return null;
     }
     
-    public String inspect() {
-	return String.format("%s [%d]",resid(), sdt());
+    public String inspect(boolean full) {
+	String info = String.format("%s [%d]", resid(), sdt());
+	if(!full) {return info;}
+	
+	String mats = CustomizeVarMat.formatMaterials(this);
+	if(mats != null) {
+	    info += "\n" + mats;
+	    
+	}
+	return info;
     }
     
     private static final ClassResolver<Gob> ctxr = new ClassResolver<Gob>()

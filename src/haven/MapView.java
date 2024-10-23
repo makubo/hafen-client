@@ -66,7 +66,9 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
     public static double plobagran = Utils.getprefd("plobagran", 12);
     private static final Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
     private long mapupdate = 0;
-    String ttip = null;
+    String stip = null;
+    RichText otip = null;
+    boolean fullTip = false;
 
     private boolean showgrid;
 
@@ -2425,8 +2427,13 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	if(selection != null) {
 	    if(selection.tt != null)
 		return(selection.tt);
-	} else if(ttip != null) {
-	    return ttip;
+	} else if(stip != null) {
+	    if(fullTip != ui.modshift) {
+		fullTip = ui.modshift;
+		inspect(rootxlate(ui.mc));
+	    }
+	    if(otip == null) {otip = RichText.render(stip, 0);}
+	    return otip;
 	}
 	return(super.tooltip(c, prev));
     }
@@ -2716,7 +2723,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	if(cursor == inspectCursor) {
 	    cursor = null;
 	}
-	ttip = null;
+	ttip(null);
     }
     
     public void toggleInspectMode() {
@@ -2732,30 +2739,39 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	    new Hittest(c) {
 		@Override
 		protected void hit(Coord pc, Coord2d mc, ClickData inf) {
-		    ttip = null;
+		    ttip(null);
 		    if(inf != null) {
 			Gob gob = Gob.from(inf.ci);
 			if(gob != null) {
-			    ttip = cursor == inspectCursor ? gob.inspect() : gob.tooltip();
+			    ttip(cursor == inspectCursor ? gob.inspect(fullTip) : gob.tooltip());
 			}
 		    } else if(cursor == inspectCursor) {
 			MCache mCache = ui.sess.glob.map;
 			int tile = mCache.gettile(mc.div(tilesz).floor());
 			Resource res = mCache.tilesetr(tile);
 			if(res != null) {
-			    ttip = res.name;
+			    ttip(res.name);
 			}
 		    }
 		}
 		
 		@Override
 		protected void nohit(Coord pc) {
-		    ttip = null;
+		    ttip(null);
 		}
 	    }.run();
 	} else {
-	    ttip = null;
+	    ttip(null);
 	}
+    }
+    
+    private void ttip(String tip) {
+	if(Objects.equals(tip, stip)) {return;}
+	if(otip != null) {
+	    otip.dispose();
+	    otip = null;
+	}
+	stip = tip;
     }
     
     public void toggleTrackingMode() {
