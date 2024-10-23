@@ -2313,7 +2313,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 		return true;
 	    }
 	}
-	if(ev.b == 2) {
+	if(ev.b == 2 && camdrag == null) {
 	    if(((Camera)camera).click(ev.c)) {
 		camdrag = ui.grabmouse(this);
 	    }
