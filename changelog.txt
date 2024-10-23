@@ -1,6 +1,6 @@
 $size[14]{$u{Update for 23.10.24:}
-  * merged loftar's chages
-  * added option (Options -> Display -> Cupboard use default materials) to make cupboards have default look regardless of materials
+  * merged loftar's changes
+  * added option to make cupboards have default look regardless of materials (Options -> Display -> Cupboard use default materials)
   * holding SHIFT while inspect custom cursor is on will show gob materials
  
 $size[14]{$u{Update for 18.10.24:}
