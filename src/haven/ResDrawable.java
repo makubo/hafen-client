@@ -29,6 +29,8 @@ package haven;
 import java.util.*;
 import java.util.function.*;
 import haven.render.*;
+import me.ender.Reflect;
+
 import static haven.Sprite.*;
 
 public class ResDrawable extends Drawable implements EquipTarget {
@@ -102,6 +104,13 @@ public class ResDrawable extends Drawable implements EquipTarget {
 	    } else {
 		extra = "empty";
 	    }
+	}
+	if(name.contains("cupb")) {
+	    RenderTree.Node[] tmp = (RenderTree.Node[]) Reflect.getFieldValue(spr, "parts");
+	    RUtils.StateTickNode stn = (RUtils.StateTickNode) tmp[0];
+	    Pipe.Op.Wrapping wrp = (Pipe.Op.Wrapping) stn.r;
+//	    Material.Res mr = (Material.Res) wrp.op;
+	    System.out.println("DONE");
 	}
 	return extra == null ? name : String.format("%s[%s]", name, extra);
     }

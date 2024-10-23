@@ -44,6 +44,7 @@ public class CFG<T> {
     public static final CFG<Integer> DISPLAY_SCALE_CUPBOARDS = new CFG<>("display.scale.cupboards", 100);
     public static final CFG<Integer> DISPLAY_SCALE_WALLS = new CFG<>("display.scale.walls", 100);
     public static final CFG<Boolean> DISPLAY_DECALS_ON_TOP = new CFG<>("display.decals_on_top", false);
+    public static final CFG<Boolean> DISPLAY_NO_MAT_CUPBOARDS = new CFG<>("display.no_mat.cupboards", false);
     public static final CFG<Boolean> DISPLAY_AURA_SPEED_BUFF = new CFG<>("display.aura.speed", false);
     public static final CFG<Boolean> DISPLAY_AURA_RABBIT = new CFG<>("display.aura.rabbit", false);
     public static final CFG<Boolean> DISPLAY_AURA_CRITTERS = new CFG<>("display.aura.critters", false);

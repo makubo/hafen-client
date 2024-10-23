@@ -4,6 +4,8 @@ package haven.res.lib.vmat;
 import haven.*;
 import haven.render.*;
 import haven.ModSprite.*;
+import me.ender.CustomizeVarMat;
+
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -17,6 +19,7 @@ public class VarSprite extends SkelSprite {
     }
 
     public Mapping mats() {
+	if(CustomizeVarMat.NoMat(this)) {return Mapping.empty;}
 	return(gob.map(gob -> gob.getattr(Mapping.class)).orElse(Mapping.empty));
     }
 

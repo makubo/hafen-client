@@ -1186,6 +1186,9 @@ public class OptWnd extends WindowX {
 	y = addSlider(CFG.DISPLAY_SCALE_WALLS, "Wall scale", "Scale palisade and brick wall vertically, changes are applied on zone reload.", panel, x, y, STEP);
 	
 	y += STEP;
+	panel.add(new CFGBox("Cupboard use default materials", CFG.DISPLAY_NO_MAT_CUPBOARDS, "All cupboards will have default look", true), x, y);
+	
+	y += STEP;
 	panel.add(new CFGBox("Cupboard decals on top", CFG.DISPLAY_DECALS_ON_TOP, "Show decals put on cupboard on its top instead of a door. (Requires zone reload or re-applying decal)", true), x, y);
 	
 	y += STEP;
