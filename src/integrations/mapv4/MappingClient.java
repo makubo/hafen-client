@@ -166,6 +166,7 @@ public class MappingClient {
 		    isWisp = name.equals("gfx/borka/wisp");
 		} catch (Exception e) {
 		    checkWisp = true;
+		    lastGC = gc;
 		    return;
 		}
 	    }
