@@ -57,6 +57,7 @@ public class Widget {
     public KeyBinding kb_gkey;
     static Map<String, Factory> types = new TreeMap<String, Factory>();
     private final List<Subscription> subscriptions = new ArrayList<>();
+    private boolean allowGlobalKeysWhenHidden = false;
     private boolean i10n = true;
     private boolean disposed = false;
     private boolean bound = false;
@@ -1442,7 +1443,7 @@ public class Widget {
 	if(kb_gkey != null)
 	    gkey = kb_gkey.key();
 	if((gkey != null) && gkey.match(ev.awt)) {
-	    if(tvisible() && gkeytype(ev))
+	    if((allowGlobalKeysWhenHidden || tvisible()) && gkeytype(ev))
 		return(true);
 	}
 	return(false);
@@ -1468,6 +1469,11 @@ public class Widget {
 	kb_gkey = gkey;
 	if((tooltip == null) && (kb_gkey != null))
 	    tooltip = new KeyboundTip();
+	return(this);
+    }
+    
+    public Widget allowGlobalKeysWhenHidden(boolean value) {
+	allowGlobalKeysWhenHidden = value;
 	return(this);
     }
 

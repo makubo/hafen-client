@@ -1664,6 +1664,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    super("gfx/hud/" + base, "", "-d", "-h");
 	    invisibleKeys = true;
 	    setgkey(gkey);
+	    allowGlobalKeysWhenHidden(true);
 	    settip(tooltip);
 	}
     }
@@ -1673,6 +1674,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    super("gfx/hud/" + base, "", "-d", "-h", "-dh");
 	    invisibleKeys = true;
 	    setgkey(gkey);
+	    allowGlobalKeysWhenHidden(true);
 	    settip(tooltip);
 	}
     }
