@@ -1442,7 +1442,7 @@ public class Widget {
 	if(kb_gkey != null)
 	    gkey = kb_gkey.key();
 	if((gkey != null) && gkey.match(ev.awt)) {
-	    if(gkeytype(ev))
+	    if(tvisible() && gkeytype(ev))
 		return(true);
 	}
 	return(false);
