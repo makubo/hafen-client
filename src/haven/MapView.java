@@ -2124,8 +2124,6 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	}
     }
 
-    private UI.Grab camdrag = null;
-    
     public abstract class Maptest {
 	private final Coord pc;
 
@@ -2298,6 +2296,8 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	    this.grab = null;
     }
     
+    private UI.Grab camdrag = null;
+
     public boolean mousedown(MouseDownEvent ev) {
 	parent.setfocus(this);
 	Loader.Future<Plob> placing_l = this.placing;
@@ -2313,8 +2313,8 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 		return true;
 	    }
 	}
-	if(ev.b == 2 && camdrag == null) {
-	    if(((Camera)camera).click(ev.c)) {
+	if(ev.b == 2) {
+	    if(camdrag == null && ((Camera)camera).click(ev.c)) {
 		camdrag = ui.grabmouse(this);
 	    }
 	} else if((placing_l != null) && placing_l.done()) {
