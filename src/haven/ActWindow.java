@@ -83,11 +83,11 @@ public class ActWindow extends GameUI.Hidewnd {
     }
     
     @Override
-    public boolean keydown(KeyEvent ev) {
-	return !ignoredKey(ev) && super.keydown(ev);
+    public boolean keydown(KeyDownEvent ev) {
+	return !ignoredKey(ev.awt) && super.keydown(ev);
     }
     
-    private static boolean ignoredKey(KeyEvent ev){
+    private static boolean ignoredKey(KeyEvent ev) {
 	int code = ev.getKeyCode();
 	int mods = ev.getModifiersEx();
 	//any modifier except SHIFT pressed alone is ignored, TAB is also ignored
