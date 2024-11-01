@@ -7,6 +7,7 @@ $size[14]{$u{Update for 01.11.24:}
   * merged PR with KO translation update
   * merged PR with ZH translation
   * merged PR with mapper tweak to not upload character creation room
+  * fixed not-full-but-with-some-water kuksa being not detected for drink refills
  
 $size[14]{$u{Update for 25.10.24:}
   * merged loftar's changes
