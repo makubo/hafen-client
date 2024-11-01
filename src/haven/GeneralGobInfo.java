@@ -3,7 +3,9 @@ package haven;
 import me.ender.ClientUtils;
 import me.ender.GobInfoOpts;
 import me.ender.GobInfoOpts.InfoPart;
+import me.ender.GobInfoOpts.TreeSubPart;
 import me.ender.Reflect;
+import me.ender.gob.GobContents;
 import me.ender.gob.GobTimerData;
 
 import java.awt.*;
@@ -66,12 +68,14 @@ public class GeneralGobInfo extends GobInfo {
 
     @Override
     protected Tex render() {
-	if(gob == null || gob.getres() == null) {return null;}
+	String resid;
+	if(gob == null || (resid = gob.resid()) == null) {return null;}
 	
-	up(POS.getOrDefault(gob.resid(), 1));
+	up(POS.getOrDefault(resid, 1));
 	BufferedImage[] parts = new BufferedImage[]{
 	    growth(),
 	    health(),
+	    icons(),
 	    content(),
 	    quality(),
 	    timer.img(),
@@ -139,7 +143,7 @@ public class GeneralGobInfo extends GobInfo {
 	if(health != null) {
 	    return health.text();
 	}
-
+	
 	return null;
     }
 
@@ -164,20 +168,16 @@ public class GeneralGobInfo extends GobInfo {
 	    }
 	} else if(isSpriteKind(gob, "Tree")) {
 	    if(GobInfoOpts.disabled(InfoPart.TREE_GROWTH)) {return null;}
-	    Message data = getDrawableData(gob);
-	    if(data != null && !data.eom()) {
-		data.skip(1);
-		scalePercent = data.eom() ? -1 : data.uint8();
-		if(scalePercent < 100 && scalePercent >= 0) {
-		    int growth = scalePercent;
-		    if(gob.is(GobTag.TREE)) {
-			growth = (int) (TREE_MULT * (growth - TREE_START));
-		    } else if(gob.is(GobTag.BUSH)) {
-			growth = (int) (BUSH_MULT * (growth - BUSH_START));
-		    }
-		    Color c = Utils.blendcol(growth / 100.0, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN);
-		    line = text(String.format("%d%%", growth), c);
+	    scalePercent = getTreeScale(gob);
+	    if(scalePercent < 100 && scalePercent >= 0) {
+		int growth = scalePercent;
+		if(gob.is(GobTag.TREE)) {
+		    growth = (int) (TREE_MULT * (growth - TREE_START));
+		} else if(gob.is(GobTag.BUSH)) {
+		    growth = (int) (BUSH_MULT * (growth - BUSH_START));
 		}
+		Color c = Utils.blendcol(growth / 100.0, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN);
+		line = text(String.format("%d%%", growth), c);
 	    }
 	}
 
@@ -185,6 +185,13 @@ public class GeneralGobInfo extends GobInfo {
 	    return line.img;
 	}
 	return null;
+    }
+    
+    private static int getTreeScale(Gob gob) {
+	Message data = getDrawableData(gob);
+	if(data == null || data.eom()) {return -1;}
+	data.skip(1);
+	return data.eom() ? -1 : data.uint8();
     }
     
     public float growthScale() {
@@ -197,7 +204,7 @@ public class GeneralGobInfo extends GobInfo {
     public String contents() {
 	if(contents == null) {
 	    contents = getContents(true).orElse("");
-	} 
+	}
 	return contents;
     }
     
@@ -258,6 +265,52 @@ public class GeneralGobInfo extends GobInfo {
 		.toArray(BufferedImage[]::new));
 	}
 	return null;
+    }
+    
+    private BufferedImage icons() {
+	boolean seed = false;
+	boolean leaf = false;
+	boolean skip = true;
+	
+	GobContents.GobData data = GobContents.getData(gob);
+	if(data == null) {return null;}
+	
+	if(isSpriteKind(gob, "Tree")) {
+	    int sdt = gob.sdt();
+	    seed = (sdt & 1) != 1;
+	    leaf = (sdt & 2) != 2;
+	    
+	    skip = GobInfoOpts.disabled(InfoPart.TREE_CONTENTS) || getTreeScale(gob) >= 0;
+	}
+	
+	if(skip) {return null;}
+	
+	BufferedImage[] parts = {
+	    seed && GobInfoOpts.enabled(TreeSubPart.SEEDS) ? getIcon(data.Seed) : null,
+	    leaf && GobInfoOpts.enabled(TreeSubPart.LEAVES) ? getIcon(data.Leaf) : null,
+	    GobInfoOpts.enabled(TreeSubPart.BARK) ? getIcon(data.Bark) : null,
+	    GobInfoOpts.enabled(TreeSubPart.BOUGH) ? getIcon(data.Bough) : null,
+	};
+	
+	for (BufferedImage part : parts) {
+	    if(part == null) {continue;}
+	    return ItemInfo.catimgs(1, parts);
+	}
+	return null;
+    }
+    
+    private static final Map<String, BufferedImage> iconCache = new HashMap<>();
+    
+    private static BufferedImage getIcon(String name) {
+	if(name == null) {return null;}
+	if(iconCache.containsKey(name)) {
+	    return iconCache.get(name);
+	}
+	
+	BufferedImage img = Resource.remote().loadwait(name).layer(Resource.imgc).img;
+	img = PUtils.convolvedown(img, UI.scale(20, 20), CharWnd.iconfilter);
+	iconCache.put(name, img);
+	return img;
     }
     
     private static Message getDrawableData(Gob gob) {

@@ -147,6 +147,7 @@
       <fileset dir="resources/compiled" />
       <fileset dir="resources" includes="item_data/**"/>
       <file file="etc/radar.json"/>
+      <file file="etc/gob_contents.json5"/>
       <file file="etc/gob_path.json"/>
       <file file="etc/gob_radius.json"/>
       <file file="etc/autochoose.json"/>

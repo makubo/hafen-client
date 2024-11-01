@@ -87,6 +87,7 @@ public class OCache implements Iterable<Gob> {
 	disposables.add(CFG.SKIP_HIDING_RADAR_TREES.observe(cfg -> gobAction(Gob::visibilityUpdated)));
 	disposables.add(CFG.DISPLAY_GOB_INFO.observe(cfg -> gobAction(Gob::infoUpdated)));
 	disposables.add(CFG.DISPLAY_GOB_INFO_DISABLED_PARTS.observe(cfg -> gobAction(Gob::infoUpdated)));
+	disposables.add(CFG.DISPLAY_GOB_INFO_TREE_ENABLED_PARTS.observe(cfg -> gobAction(Gob::infoUpdated)));
 	disposables.add(CFG.DISPLAY_GOB_INFO_SHORT.observe(cfg -> gobAction(Gob::infoUpdated)));
 	disposables.add(CFG.HIGHLIGHT_PARTY_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
 	disposables.add(CFG.HIGHLIGHT_SELF_IN_COMBAT.observe(cfg -> gobAction(Gob::colorUpdated)));
