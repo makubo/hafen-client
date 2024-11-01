@@ -2278,7 +2278,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	
 	if(CFG.QUEUE_PATHS.get()) {
 	    if(button == 1) {
-		if(ui.modmeta) {
+		if(ui.modflags() == UI.MOD_SHIFT) {
 		    args[3] = 0;
 		    send = ui.gui.pathQueue.add(mc);
 		} else {
