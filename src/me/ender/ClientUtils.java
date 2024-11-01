@@ -86,7 +86,7 @@ public class ClientUtils {
 	customNamesInit = true;
 	try {
 	    Gson gson = new GsonBuilder().create();
-	    customNames.putAll(gson.fromJson(Config.loadJarFile("tile_names.json"), new TypeToken<Map<String, String>>() {
+	    customNames.putAll(gson.fromJson(Config.loadJarFile("res_names.json"), new TypeToken<Map<String, String>>() {
 	    }.getType()));
 	} catch (Exception ignored) {}
     }
