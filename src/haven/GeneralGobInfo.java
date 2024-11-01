@@ -278,7 +278,8 @@ public class GeneralGobInfo extends GobInfo {
 	    seed = (sdt & 1) != 1;
 	    leaf = (sdt & 2) != 2;
 	    
-	    skip = GobInfoOpts.disabled(InfoPart.TREE_CONTENTS) || getTreeScale(gob) >= 0;
+	    int scale = getTreeScale(gob);
+	    skip = GobInfoOpts.disabled(InfoPart.TREE_CONTENTS) || (scale >= 0 && scale < 100);
 	}
 	
 	if(skip) {return null;}
