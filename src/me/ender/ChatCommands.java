@@ -42,9 +42,14 @@ public class ChatCommands {
 	return party != null ? party : area;
     }
     
+    private static final Pattern HIGHLIGHT = Pattern.compile("^@((-?\\d+;-?\\d+;)?-?\\d+)$");
+    
+    public static boolean matchesCommand(String msg) {
+	return HIGHLIGHT.matcher(msg).matches();
+    }
+    
     public static boolean processCommand(UI ui, String msg) {
-	Pattern highlight = Pattern.compile("^@((-?\\d+;-?\\d+;)?-?\\d+)$");
-	Matcher matcher = highlight.matcher(msg);
+	Matcher matcher = HIGHLIGHT.matcher(msg);
 	if(matcher.matches()) {
 	    try {
 		String[] parts = matcher.group(1).split(";");
