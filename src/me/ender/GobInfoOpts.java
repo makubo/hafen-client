@@ -63,8 +63,8 @@ public class GobInfoOpts extends WindowX {
 	composer.add(new Label("Options:"));
 	composer.hpad(composer.hpad() + 2 * PAD);
 	composer.add(new OptWnd.CFGBox("Shorten text of the object contents", CFG.DISPLAY_GOB_INFO_SHORT, "Will remove some not very relevant parts of the contents name", true));
+	composer.add(new OptWnd.CFGBox("Hide tree contents for growing trees", CFG.DISPLAY_GOB_INFO_TREE_HIDE_GROWING_PARTS, "Will not show seeds/leaves/etc. for not fully grown trees", true));
 	
-	composer.vpad(UI.scale(18));
 	composer.hpad(composer.hpad() - 2 * PAD);
 	composer.add(new Label("Tree parts:"));
 	composer.hpad(composer.hpad() + 2 * PAD);

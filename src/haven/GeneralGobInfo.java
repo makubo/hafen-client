@@ -47,7 +47,7 @@ public class GeneralGobInfo extends GobInfo {
 	POS.put("gfx/terobjs/iconsign", 5);
 	POS.put("gfx/terobjs/cheeserack", 17);
     }
-
+    
     protected GeneralGobInfo(Gob owner) {
 	super(owner);
 	q = gobQ.getOrDefault(gob.id, 0);
@@ -65,7 +65,7 @@ public class GeneralGobInfo extends GobInfo {
     protected boolean enabled() {
 	return CFG.DISPLAY_GOB_INFO.get();
     }
-
+    
     @Override
     protected Tex render() {
 	String resid;
@@ -127,7 +127,7 @@ public class GeneralGobInfo extends GobInfo {
 	health = null;
 	super.dispose();
     }
-
+    
     private BufferedImage quality() {
 	if(GobInfoOpts.disabled(InfoPart.QUALITY)) {return null;}
 	if(q != 0) {
@@ -146,11 +146,11 @@ public class GeneralGobInfo extends GobInfo {
 	
 	return null;
     }
-
+    
     private BufferedImage growth() {
 	Text.Line line = null;
 	scalePercent = -1;
- 
+	
 	if(isSpriteKind(gob, "GrowingPlant", "TrellisPlant")) {
 	    if(GobInfoOpts.disabled(InfoPart.PLANT_GROWTH)) {return null;}
 	    int maxStage = 0;
@@ -180,7 +180,7 @@ public class GeneralGobInfo extends GobInfo {
 		line = text(String.format("%d%%", growth), c);
 	    }
 	}
-
+	
 	if(line != null) {
 	    return line.img;
 	}
@@ -239,7 +239,7 @@ public class GeneralGobInfo extends GobInfo {
 	
 	return contents;
     }
-
+    
     private BufferedImage content() {
 	this.contents = null;
 	Optional<String> contents = getContents(false);
@@ -279,7 +279,8 @@ public class GeneralGobInfo extends GobInfo {
 	    leaf = (sdt & 2) != 2;
 	    
 	    int scale = getTreeScale(gob);
-	    skip = GobInfoOpts.disabled(InfoPart.TREE_CONTENTS) || (scale >= 0 && scale < 100);
+	    skip = GobInfoOpts.disabled(InfoPart.TREE_CONTENTS)
+		|| (CFG.DISPLAY_GOB_INFO_TREE_HIDE_GROWING_PARTS.get() && scale >= 0 && scale < 100);
 	}
 	
 	if(skip) {return null;}
@@ -360,7 +361,7 @@ public class GeneralGobInfo extends GobInfo {
     private static String shorten(String text) {
 	return text.replaceAll(" Hide|Dried |Bar of | Leaf| Leaves", "");
     }
-
+    
     @Override
     public String toString() {
 	Resource res = gob.getres();
