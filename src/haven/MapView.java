@@ -26,7 +26,7 @@
 
 package haven;
 
-import static haven.MCache.tilesz;
+import static haven.MCache.*;
 import static haven.OCache.posres;
 
 import auto.Bot;
@@ -45,6 +45,7 @@ import haven.render.sl.Uniform;
 import haven.render.sl.Type;
 import haven.res.gfx.fx.msrad.MSRad;
 import haven.rx.Reactor;
+import me.ender.ChatCommands;
 
 public class MapView extends PView implements DTarget, Console.Directory, Widget.CursorQuery.Handler {
     public static final Resource.Named inspectCursor = Resource.local().loadwait("gfx/hud/curs/studyx").indir();
@@ -2232,16 +2233,20 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 		    }
 		    if(clickb == 3) {FlowerMenu.lastGob(gob);}
 		    if(ui.modmeta && clickb == 1) {
-			ChatUI.Channel chat = ui.gui.chat.sel;
-			if(chat instanceof ChatUI.EntryChannel) {
-			    ((ChatUI.EntryChannel) chat).send(String.format("@%d", gob.id));
-			}
+			ChatCommands.sendGobHighlight(ui, gob.id);
 			return;
 		    }
 		}
 	    } else if(ui.gui.mapfile.domark) {
 		ui.gui.mapfile.addMarker(mc.floor(tilesz));
 		return;
+	    } else if(ui.modmeta && clickb == 1) {
+		Coord gc = mc.floor(tilesz).div(MCache.cmaps);
+		MCache.Grid grid = MapView.this.ui.sess.glob.map.getgrid(gc);
+		if(grid != null) {
+		    ChatCommands.sendPointHighlight(ui, grid.id, mc.floor().sub(gc.mul(tilesz2).mul(MCache.cmaps)));
+		    return;
+		}
 	    }
 	    if(clickb == 1) {Bot.cancelCurrent();}
 	    

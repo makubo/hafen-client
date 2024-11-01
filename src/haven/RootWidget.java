@@ -26,6 +26,8 @@
 
 package haven;
 
+import me.ender.gob.GobEffects;
+
 import java.util.*;
 import java.awt.Color;
 
@@ -36,12 +38,14 @@ public class RootWidget extends ConsoleHost implements UI.MessageWidget, Widget.
     Profile guprof, grprof, ggprof;
     private Text lastmsg;
     private double msgtime;
+    public final GobEffects effects;
 	
     
     public RootWidget(UI ui, Coord sz) {
 	super(ui, new Coord(0, 0), sz);
 	setfocusctl(true);
 	hasfocus = true;
+	effects = new GobEffects(ui);
     }
 	
     public boolean getcurs(CursorQuery ev) {
@@ -160,7 +164,13 @@ public class RootWidget extends ConsoleHost implements UI.MessageWidget, Widget.
 	msg(msg, color);
 	ui.sfxrl(sfx);
     }
-
+    
+    @Override
+    public void tick(double dt) {
+	effects.tick(dt);
+	super.tick(dt);
+    }
+    
     public void error(String msg) {
 	ui.error(msg);
     }
