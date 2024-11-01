@@ -1,3 +1,8 @@
+$size[14]{$u{Update for 01.11.24:}
+  * added option to display tree contents (seeds, leaves, bough, bark) (Options -> Display -> cog near Show object info)
+  * made ALT+Click highlight points too, not only gobs
+  * made ALT+Click send message in private chat, if open, otherwise sends to party chat or area chat, regardless of currently active chat
+ 
 $size[14]{$u{Update for 25.10.24:}
   * merged loftar's changes
   * fixed map window reacting to hotkeys while hidden
