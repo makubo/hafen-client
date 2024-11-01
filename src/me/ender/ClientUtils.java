@@ -50,7 +50,7 @@ public class ClientUtils {
     }
     
     public static String prettyResName(String resname) {
-	if(resname == null) {return "???";}
+	if(resname == null || resname.isEmpty()) {return "???";}
 	tryInitCustomNames();
 	if(customNames.containsKey(resname)) {
 	    return customNames.get(resname);
@@ -71,6 +71,8 @@ public class ClientUtils {
 		resname = resname.substring(0, resname.length() - 4) + " Tree";
 	    }
 	    resname += " Log";
+	} else if(fullname.startsWith("gfx/terobjs/barrel-")) {
+	    resname = fullname.substring(fullname.lastIndexOf("-") + 1);
 	}
 	
 	//handle flour

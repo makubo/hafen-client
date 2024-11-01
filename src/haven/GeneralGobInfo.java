@@ -217,8 +217,6 @@ public class GeneralGobInfo extends GobInfo {
 	    if(!force && GobInfoOpts.disabled(InfoPart.BARREL)) {return contents;}
 	    contents = gob.ols.stream()
 		.map(Gob.Overlay::name)
-		.filter(name -> name.startsWith("gfx/terobjs/barrel-"))
-		.map(name -> name.substring(name.lastIndexOf("-") + 1))
 		.map(ClientUtils::prettyResName)
 		.findAny();
 	    
