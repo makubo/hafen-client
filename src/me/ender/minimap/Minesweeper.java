@@ -9,6 +9,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.List;
 
 import static haven.MapFile.*;
 
@@ -19,13 +20,15 @@ public class Minesweeper {
     private static final Coord2d TILE_CENTER = MCache.tilesz.div(2);
     public static final RenderTree.Node NIL = RenderTree.Node.nil;
     
+    private final Object lock = new Object();
+    private final Set<Long> gridIds = new HashSet<>();
     private final Map<Long, byte[]> values = new HashMap<>();
     private final Map<Long, SweeperNode[]> cuts = new HashMap<>();
     private final MapFile file;
     
     public Minesweeper(MapFile file) {
 	this.file = file;
-	MapFileUtils.load(file, this::load, INDEX);
+	MapFileUtils.load(file, this::loadIndex, INDEX);
     }
     
     public static void process(Sprite.Owner owner, int count) {
@@ -42,17 +45,21 @@ public class Minesweeper {
 	Coord tc = gc.sub(grid.gc.mul(MCache.cmaps));
 	long id = grid.id;
 	
-	Map<Long, byte[]> grids = gui.minesweeper.values;
-	byte[] values;
-	if(grids.containsKey(id)) {
-	    values = grids.get(id);
-	} else {
-	    values = new byte[TILES];
-	    grids.put(id, values);
-	    gui.minesweeper.storeIndex();
+	Minesweeper minesweeper = gui.minesweeper;
+	synchronized (minesweeper.lock) {
+	    Map<Long, byte[]> grids = minesweeper.values;
+	    byte[] values;
+	    if(minesweeper.loadGrid(id)) {
+		values = grids.get(id);
+	    } else {
+		values = new byte[TILES];
+		grids.put(id, values);
+		minesweeper.gridIds.add(id);
+		minesweeper.storeIndex();
+	    }
+	    values[index(tc)] = (byte) count;
+	    minesweeper.storeGrid(id, values);
 	}
-	values[index(tc)] = (byte) count;
-	gui.minesweeper.storeGrid(id, values);
     }
     
     private static int index(Coord tc) {
@@ -71,34 +78,62 @@ public class Minesweeper {
     
     private RenderTree.Node getcut(MCache.Grid grid, Coord cc) {
 	SweeperNode[] nodes;
-	if(!cuts.containsKey(grid.id)) {
-	    if(!values.containsKey(grid.id)) {return NIL;}
-	    nodes = new SweeperNode[MCache.cutn.x * MCache.cutn.y];
-	    cuts.put(grid.id, nodes);
-	} else {
-	    nodes = cuts.get(grid.id);
-	}
 	int index = cc.x + cc.y * MCache.cutn.x;
-	
-	if(nodes[index] == null) {
-	    nodes[index] = new SweeperNode(values.get(grid.id), cc);
+	synchronized (lock) {
+	    if(!cuts.containsKey(grid.id)) {
+		if(!loadGrid(grid.id)) {return NIL;}
+		nodes = new SweeperNode[MCache.cutn.x * MCache.cutn.y];
+		cuts.put(grid.id, nodes);
+	    } else {
+		nodes = cuts.get(grid.id);
+	    }
+	    
+	    if(nodes[index] == null) {
+		byte[] v = values.get(grid.id);
+		if(v == null) {return NIL;}
+		nodes[index] = new SweeperNode(v, cc);
+	    }
 	}
-	
 	return nodes[index];
     }
     
-    private void storeIndex() {
-	OutputStream fp;
-	try {
-	    fp = file.sstore(INDEX);
-	} catch (IOException e) {
-	    throw (new StreamMessage.IOError(e));
+    public static void trim(Session sess, List<Long> removed) {
+	UI ui = sess.ui;
+	if(ui == null) {return;}
+	GameUI gui = ui.gui;
+	if(gui == null) {return;}
+	if(gui.minesweeper != null) {
+	    gui.minesweeper.trim(removed);
 	}
-	Set<Long> grids = values.keySet();
-	try (StreamMessage out = new StreamMessage(fp)) {
-	    out.adduint8(1);
-	    for (Long id : grids) {
-		out.addint64(id);
+    }
+    
+    private void trim(List<Long> removed) {
+	synchronized (lock) {
+	    if(removed == null) {
+		values.clear();
+		cuts.clear();
+	    } else {
+		for (Long id : removed) {
+		    values.remove(id);
+		    cuts.remove(id);
+		}
+	    }
+	}
+    }
+    
+    private void storeIndex() {
+	synchronized (lock) {
+	    OutputStream fp;
+	    try {
+		fp = file.sstore(INDEX);
+	    } catch (IOException e) {
+		throw (new StreamMessage.IOError(e));
+	    }
+	    try (StreamMessage out = new StreamMessage(fp)) {
+		out.adduint8(1);
+		for (Long id : gridIds) {
+		    out.addint64(id);
+		}
 	    }
 	}
     }
@@ -118,29 +153,46 @@ public class Minesweeper {
 	}
     }
     
-    private void load(StreamMessage data) {
-	int ver = data.uint8();
-	if(ver == 1) {
-	    while (!data.eom()) {
-		loadGrid(data.int64());
+    private boolean loadIndex(StreamMessage data) {
+	synchronized (lock) {
+	    int ver = data.uint8();
+	    if(ver == 1) {
+		while (!data.eom()) {
+		    gridIds.add(data.int64());
+		}
+	    } else {
+		warn("unknown mapfile ender-minesweeper version: %d", ver);
+		return false;
 	    }
-	} else {
-	    warn("unknown mapfile ender-minesweeper version: %d", ver);
 	}
+	return true;
     }
     
-    private void loadGrid(long id) {
-	MapFileUtils.load(file, data -> loadGrid(data, id), GRID_NAME, id);
+    private boolean loadGrid(long id) {
+	synchronized (lock) {
+	    if(!gridIds.contains(id)) {return false;}
+	    if(values.containsKey(id)) {return true;}
+	    
+	    if(!MapFileUtils.load(file, data -> loadGrid(data, id), GRID_NAME, id)) {
+		cuts.remove(id);
+		values.remove(id);
+		gridIds.remove(id);
+		storeIndex();
+		return false;
+	    }
+	}
+	return true;
     }
     
-    private void loadGrid(StreamMessage data, long id) {
+    private boolean loadGrid(StreamMessage data, long id) {
 	int ver = data.uint8();
 	if(ver == 1) {
 	    values.put(id, data.bytes(TILES));
 	} else {
-	    values.remove(id);
 	    warn("unknown mapfile ender-minesweeper-grid %d version: %d", id, ver);
+	    return false;
 	}
+	return true;
     }
     
     private static class SweeperNode implements RenderTree.Node, PView.Render2D {
