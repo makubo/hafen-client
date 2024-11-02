@@ -146,10 +146,12 @@ public class Minesweeper {
 	    throw (new StreamMessage.IOError(e));
 	}
 	try (StreamMessage out = new StreamMessage(fp)) {
-	    out.adduint8(1);
+	    out.adduint8(2);
+	    ZMessage zout = new ZMessage(out);
 	    for (byte v : grid) {
-		out.adduint8(v);
+		zout.adduint8(v);
 	    }
+	    zout.finish();
 	}
     }
     
@@ -186,8 +188,9 @@ public class Minesweeper {
     
     private boolean loadGrid(StreamMessage data, long id) {
 	int ver = data.uint8();
-	if(ver == 1) {
-	    values.put(id, data.bytes(TILES));
+	if(ver == 2) {
+	    Message zdata = new ZMessage(data);
+	    values.put(id, zdata.bytes(TILES));
 	} else {
 	    warn("unknown mapfile ender-minesweeper-grid %d version: %d", id, ver);
 	    return false;
