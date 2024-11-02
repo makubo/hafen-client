@@ -1,6 +1,7 @@
 $size[14]{$u{Update for 02.11.24:}
   * returned path queueing to ALT+LClick
   * changed object/place highlight to CTRL+ALT+LClick
+  * fixed Craft window not updating selected recipe when recipe is selected from input list
  
 $size[14]{$u{Update for 01.11.24:}
   * added option to display tree contents (seeds, leaves, bough, bark) (Options -> Display -> cog near Show object info)
