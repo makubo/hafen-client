@@ -46,6 +46,7 @@ import haven.render.sl.Type;
 import haven.res.gfx.fx.msrad.MSRad;
 import haven.rx.Reactor;
 import me.ender.ChatCommands;
+import me.ender.minimap.Minesweeper;
 
 public class MapView extends PView implements DTarget, Console.Directory, Widget.CursorQuery.Handler {
     public static final Resource.Named inspectCursor = Resource.local().loadwait("gfx/hud/curs/studyx").indir();
@@ -688,6 +689,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	disposables.add(CFG.COLOR_MINE_SUPPORT_OVERLAY.observe(this::updateSupportOverlayColor));
 	disposables.add(CFG.COLOR_TILE_GRID.observe(this::updateGridMat));
 	disposables.add(CFG.DISPLAY_FLAVOR.observe(terrain::updateFlavor));
+	disposables.add(CFG.SHOW_MINESWEEPER_OVERLAY.observe(terrain::updateMinesweeper));
 	updateSupportOverlay(null);
 	updateGridMat(null);
     }
@@ -950,9 +952,18 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 		    return CFG.DISPLAY_FLAVOR.get() ? map.getfo(cc) : noflav;
 		}
 	    };
+	final Grid<RenderTree.Node> minesweeper = new Grid<RenderTree.Node>(true) {
+	    RenderTree.Node getcut(Coord cc) {
+		return Minesweeper.getcut(ui, cc);
+	    }
+	};
 	
 	private void updateFlavor(CFG<Boolean> cfg) {
 	    if(!cfg.get()) {flavobjs.tick();}
+	}
+
+	private void updateMinesweeper(CFG<Boolean> cfg) {
+	    if(!cfg.get()) {minesweeper.tick();}
 	}
 
 	private Terrain() {
@@ -963,12 +974,14 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	    if(area != null) {
 		main.tick();
 		if(CFG.DISPLAY_FLAVOR.get()) {flavobjs.tick();}
+		if(CFG.SHOW_MINESWEEPER_OVERLAY.get()) {minesweeper.tick();}
 	    }
 	}
 
 	public void added(RenderTree.Slot slot) {
 	    slot.add(main);
 	    slot.add(flavobjs);
+	    slot.add(minesweeper);
 	    super.added(slot);
 	}
 

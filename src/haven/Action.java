@@ -21,6 +21,7 @@ public enum Action {
     TOGGLE_GOB_INFO(CFG.DISPLAY_GOB_INFO, "Display info", "Display crop/tree growth and object health overlay."),
     TOGGLE_GOB_HITBOX(Hitbox::toggle, "Display hitboxes"),
     TOGGLE_HIDE_TREES(CFG.HIDE_TREES, "Hide trees"),
+    TOGGLE_MINESWEEPER(CFG.SHOW_MINESWEEPER_OVERLAY, "Toggle minesweeper mode"),
     TOGGLE_GOB_RADIUS(CFG.SHOW_GOB_RADIUS, "Display radius", "Displays effective radius of beehives/mine supports etc."),
     TOGGLE_TILE_CENTERING(gui ->
     {

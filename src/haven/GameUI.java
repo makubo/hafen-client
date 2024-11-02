@@ -73,6 +73,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public Equipory equipory;
     public CharWnd chrwdg;
     public MapWnd2 mapfile;
+    public Minesweeper minesweeper;
     public TileHighlight.TileHighlightCFG tileHighlight;
     private Widget qqview;
     public BuddyWnd buddies;
@@ -1068,6 +1069,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 		mapfile = new MapWnd2(file, map, Utils.getprefc("wndsz-map", UI.scale(new Coord(700, 500))), "Map");
 		mapfile.show(Utils.getprefb("wndvis-map", false));
 		add(mapfile, Utils.getprefc("wndc-map", new Coord(50, 50)));
+		minesweeper = new Minesweeper(file);		
 	    }
 	    placemmap();
 	} else if(place == "menu") {

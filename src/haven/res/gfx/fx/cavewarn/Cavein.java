@@ -6,6 +6,8 @@ package haven.res.gfx.fx.cavewarn;
 import haven.*;
 import haven.render.*;
 import haven.res.lib.bollar.*;
+import me.ender.minimap.Minesweeper;
+
 import java.util.*;
 import java.nio.*;
 import java.awt.Color;
@@ -31,6 +33,7 @@ public class Cavein extends Sprite implements Sprite.CDel {
     public Cavein(Owner owner, Resource res, Message sdt) {
 	super(owner, res);
 	str = sdt.uint8();
+	Minesweeper.process(owner, (int) (str / 30f));
 	sz = new Coord3f(sdt.float8() * 11f, sdt.float8() * 11f, 0f);
 	off = new Coord3f(-sz.x / 2f, -sz.y / 2f, sdt.float8() * 11f);
 	life = sdt.uint8();
