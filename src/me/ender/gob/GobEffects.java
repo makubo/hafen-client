@@ -23,7 +23,7 @@ public class GobEffects {
     
     public void markPoint(MCache.Grid grid, Coord off) {
 	Coord rc = grid.gc.mul(MCache.tilesz2).mul(MCache.cmaps).add(off);
-	float z = (float) grid.getz(off.div(MCache.tilesz)) - 16f;
+	float z = (CFG.FLAT_TERRAIN.get() ? 0 : (float) grid.getz(off.div(MCache.tilesz))) - 16f;
 	
 	fxat(new Location(Transform.makexlate(new Matrix4f(), new Coord3f(rc.x, -rc.y, z)), "gobx"), tgtfx, 7);
     }
