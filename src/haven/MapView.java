@@ -2232,7 +2232,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 			return;
 		    }
 		    if(clickb == 3) {FlowerMenu.lastGob(gob);}
-		    if(ui.modmeta && clickb == 1) {
+		    if(ui.modflags(UI.MOD_CTRL_ALT) && clickb == 1) {
 			ChatCommands.sendGobHighlight(ui, gob.id);
 			return;
 		    }
@@ -2240,7 +2240,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	    } else if(ui.gui.mapfile.domark) {
 		ui.gui.mapfile.addMarker(mc.floor(tilesz));
 		return;
-	    } else if(ui.modmeta && clickb == 1) {
+	    } else if(ui.modflags(UI.MOD_CTRL_ALT) && clickb == 1) {
 		Coord gc = mc.floor(tilesz).div(MCache.cmaps);
 		MCache.Grid grid = MapView.this.ui.sess.glob.map.getgrid(gc);
 		if(grid != null) {
@@ -2278,7 +2278,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	
 	if(CFG.QUEUE_PATHS.get()) {
 	    if(button == 1) {
-		if(ui.modflags() == UI.MOD_SHIFT) {
+		if(ui.modflags() == UI.MOD_META) {
 		    args[3] = 0;
 		    send = ui.gui.pathQueue.add(mc);
 		} else {

@@ -53,6 +53,7 @@ import haven.render.Render;
 
 public class UI {
     public static int MOD_SHIFT = KeyMatch.S, MOD_CTRL = KeyMatch.C, MOD_META = KeyMatch.M, MOD_SUPER = KeyMatch.SUPER;
+    public static int MOD_CTRL_ALT = MOD_CTRL | MOD_META;
     enum KeyMod {
         SHIFT(MOD_SHIFT), CTRL(MOD_CTRL), ALT(MOD_META);
     
@@ -875,6 +876,11 @@ public class UI {
 	       (modctrl  ? MOD_CTRL  : 0) |
 	       (modmeta  ? MOD_META  : 0) |
 	       (modsuper ? MOD_SUPER : 0));
+    }
+    
+    /**Returns true if mods are EXACTLY as specified*/
+    public boolean modflags(int mods) {
+	return modflags() == mods;
     }
 
     public void message(String str, GameUI.MsgType type) {
