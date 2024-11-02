@@ -687,6 +687,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	disposables.add(CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.observe(this::updateSupportOverlay));
 	disposables.add(CFG.COLOR_MINE_SUPPORT_OVERLAY.observe(this::updateSupportOverlayColor));
 	disposables.add(CFG.COLOR_TILE_GRID.observe(this::updateGridMat));
+	disposables.add(CFG.DISPLAY_FLAVOR.observe(terrain::updateFlavor));
 	updateSupportOverlay(null);
 	updateGridMat(null);
     }
@@ -943,11 +944,16 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 		    return(map.getcut(cc));
 		}
 	    };
+	final RenderTree.Node noflav = new Nil();
 	final Grid flavobjs = new Grid<RenderTree.Node>(false) {
 		RenderTree.Node getcut(Coord cc) {
-		    return(map.getfo(cc));
+		    return CFG.DISPLAY_FLAVOR.get() ? map.getfo(cc) : noflav;
 		}
 	    };
+	
+	private void updateFlavor(CFG<Boolean> cfg) {
+	    if(!cfg.get()) {flavobjs.tick();}
+	}
 
 	private Terrain() {
 	}
@@ -956,15 +962,13 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	    super.tick();
 	    if(area != null) {
 		main.tick();
-		flavobjs.tick();
+		if(CFG.DISPLAY_FLAVOR.get()) {flavobjs.tick();}
 	    }
 	}
 
 	public void added(RenderTree.Slot slot) {
 	    slot.add(main);
-	    if(CFG.DISPLAY_FLAVOR.get()) {
-		slot.add(flavobjs);
-	    }
+	    slot.add(flavobjs);
 	    super.added(slot);
 	}
 
