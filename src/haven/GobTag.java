@@ -201,7 +201,7 @@ public enum GobTag {
             }
     
             if(name.startsWith("gfx/terobjs/trees")) {
-                if(name.endsWith("log") || name.endsWith("oldtrunk")) {
+                if(name.endsWith("log") || name.endsWith("oldtrunk") || name.contains("/driftwood")) {
                     tags.add(LOG);
                 } else if(name.contains("stump")) {
                     tags.add(STUMP);
