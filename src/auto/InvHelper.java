@@ -44,6 +44,23 @@ public class InvHelper {
 	String resname = item.item.resname();
 	return resname.endsWith("/waterskin") || resname.endsWith("/waterflask") || resname.endsWith("/glassjug") || resname.contains("/kuksa");
     }
+
+    static boolean isBucket(ContainedItem item) {
+	return isBucket(item.item);
+    }
+    
+    static boolean isBucket(WItem item) {
+	return item.item.resname().contains("/bucket");
+    }
+
+    static boolean canBeFilledWith(ContainedItem item, String what) {
+	return canBeFilledWith(item.item, what);
+    }
+
+    static boolean canBeFilledWith(WItem item, String what) {
+	Pair<Double, Double> fullness = item.fullness.get();
+	return fullness == null || (item.contains.get().is(what) && !Objects.equals(fullness.a, fullness.b));
+    }
     
     static boolean isNotFull(ContainedItem item) {
 	return isNotFull(item.item);
@@ -126,6 +143,23 @@ public class InvHelper {
 	    return items;
 	};
     }
+
+    static Supplier<List<ContainedItem>> HANDS_CONTAINED(GameUI gui) {
+	return () -> {
+	    List<ContainedItem> items = new LinkedList<>();
+	    if(gui.equipory != null) {
+		WItem item = gui.equipory.slots[Equipory.SLOTS.HAND_LEFT.idx];
+		if(item != null) {
+		    items.add(new EquipItem(item, gui.equipory, Equipory.SLOTS.HAND_LEFT));
+		}
+		item = gui.equipory.slots[Equipory.SLOTS.HAND_RIGHT.idx];
+		if(item != null) {
+		    items.add(new EquipItem(item, gui.equipory, Equipory.SLOTS.HAND_RIGHT));
+		}
+	    }
+	    return items;
+	};
+    }
     
     public static abstract class ContainedItem {
 	final WItem item;
@@ -191,5 +225,29 @@ public class InvHelper {
 	public void putBack() {
 	    belt.item.wdgmsg("itemact", 0);
 	}
+    }
+
+    private static class EquipItem extends ContainedItem {
+	private final Equipory equipory;
+	private final Equipory.SLOTS slot;
+
+	EquipItem(WItem item, Equipory equipory, Equipory.SLOTS slot) {
+	    super(item);
+	    this.equipory = equipory;
+	    this.slot = slot;
+	}
+
+	@Override
+	public boolean containerDisposed() {
+	    return equipory.disposed();
+	}
+
+	@Override
+	public void take() {
+	    item.item.wdgmsg("take", Coord.z);
+	}
+
+	@Override
+	public void putBack() {equipory.wdgmsg("drop", slot.idx);}
     }
 }

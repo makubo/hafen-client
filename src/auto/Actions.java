@@ -104,11 +104,13 @@ public class Actions {
 	    gui.error("You must be near tile or barrel with fresh water to refill drinks!");
 	    return;
 	}
-	
-	List<ITarget> targets = Stream.of(INVENTORY_CONTAINED(gui), BELT_CONTAINED(gui))
-	    .flatMap(x -> x.get().stream())
-	    .filter(InvHelper::isDrinkContainer)
-	    .filter(InvHelper::isNotFull)
+
+	List<ITarget> targets = Stream.of(
+		INVENTORY_CONTAINED(gui).get().stream().filter(InvHelper::isDrinkContainer),
+		BELT_CONTAINED(gui).get().stream().filter(InvHelper::isDrinkContainer),
+		HANDS_CONTAINED(gui).get().stream().filter(InvHelper::isBucket)
+	    ).flatMap(x -> x)
+	    .filter(x -> InvHelper.canBeFilledWith(x, "Water"))
 	    .map(ContainedTarget::new)
 	    .collect(Collectors.toList());
 	
