@@ -17,7 +17,7 @@ public enum Action {
     OPEN_QUEST_HELP(GameUI::toggleQuestHelper, "Open quest helper", "Opens window with uncompleted tasks for all active quests."),
     TOGGLE_CURSOR(GameUI::toggleHand, "Toggle cursor item", "Hide/show item on a cursor. Allows you to walk with item on cursor when hidden."),
     TOGGLE_STUDY(GameUI::toggleStudy, "Toggle study window"),
-    FILTER(gui -> gui.filter.toggle(), "Show item filter"),
+    FILTER(GameUI::toggleFilter, "Show item filter"),
     TOGGLE_GOB_INFO(CFG.DISPLAY_GOB_INFO, "Display info", "Display crop/tree growth and object health overlay."),
     TOGGLE_GOB_HITBOX(Hitbox::toggle, "Display hitboxes"),
     TOGGLE_HIDE_TREES(CFG.HIDE_TREES, "Hide trees"),

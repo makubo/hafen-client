@@ -30,6 +30,7 @@ import haven.Equipory.SLOTS;
 import haven.rx.BuffToggles;
 import haven.rx.Reactor;
 import integrations.mapv4.MappingClient;
+import me.ender.ClientUtils;
 import me.ender.QuestHelper;
 import me.ender.StatMeterWdg;
 import me.ender.minimap.*;
@@ -229,16 +230,16 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
 	public abstract int beltslot(Coord c);
 
-	public boolean mousedown(Coord c, int button) {
-	    int slot = beltslot(c);
+	public boolean mousedown(MouseDownEvent ev) {
+	    int slot = beltslot(ev.c);
 	    if(slot != -1) {
-		if(button == 1)
+		if(ev.b == 1)
 		    act(slot, new MenuGrid.Interaction(1, ui.modflags()));
-		if(button == 3)
+		if(ev.b == 3)
 		    GameUI.this.wdgmsg("setbelt", slot, null);
 		return(true);
 	    }
-	    return(super.mousedown(c, button));
+	    return(super.mousedown(ev));
 	}
 
 	public boolean drop(Coord c, Coord ul) {
@@ -338,7 +339,6 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	buffs = ulpanel.add(new Bufflist(), portrait.c.x + portrait.sz.x + UI.scale(10), portrait.c.y + ((IMeter.fsz.y + UI.scale(2)) * 2) + UI.scale(5 - 2));
 	calendar = umpanel.add(new Cal(), Coord.z);
 	eqproxy = add(new EquipProxy(SLOTS.HAND_LEFT, SLOTS.HAND_RIGHT, SLOTS.BACK, SLOTS.BELT), new Coord(420, 5));
-	filter = add(new FilterWnd());
 	syslog = chat.add(new ChatUI.Log("System"));
 	opts = add(new OptWnd());
 	opts.hide();
@@ -563,7 +563,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
     public void toggleCraftList() {
 	if(craftlist == null){
-	    craftlist = add(new ActWindow("Craft…", "paginae/craft/.+"));
+	    craftlist = add(new ActWindow("Craft…", "paginae/craft/.+"), ClientUtils.getScreenCenter(ui));
 	    craftlist.addtwdg(new IButton("gfx/hud/btn-help", "","-d","-h"){
 		@Override
 		public void click() {
@@ -579,7 +579,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
     public void toggleBuildList() {
 	if(buildlist == null){
-	    buildlist = add(new ActWindow("Build…", "paginae/bld/.+"));
+	    buildlist = add(new ActWindow("Build…", "paginae/bld/.+"), ClientUtils.getScreenCenter(ui));
 	    buildlist.addtwdg(new IButton("gfx/hud/btn-help", "","-d","-h"){
 		@Override
 		public void click() {
@@ -595,7 +595,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
     public void toggleActList() {
 	if(actlist == null){
-	    actlist = add(new ActWindow("Act…", "paginae/act/.+|paginae/pose/.+|paginae/gov/.+|paginae/add/.+|gfx/fx/msrad|ui/tt/q/quality"));
+	    actlist = add(new ActWindow("Act…", "paginae/act/.+|paginae/pose/.+|paginae/gov/.+|paginae/add/.+|gfx/fx/msrad|ui/tt/q/quality"), ClientUtils.getScreenCenter(ui));
 	} else if(actlist.visible) {
 	    actlist.hide();
 	} else {
@@ -616,10 +616,17 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	}
 	Utils.setprefb("chatvis", chat.targetshow);
     }
-
+    
+    public void toggleFilter() {
+	if(filter == null) {
+	    filter = add(new FilterWnd(), ClientUtils.getScreenCenter(ui));
+	}
+	filter.toggle();
+    }
+    
     public void toggleCraftDB() {
 	if(craftwnd == null) {
-	    craftwnd = add(new CraftDBWnd());
+	    craftwnd = add(new CraftDBWnd(), ClientUtils.getScreenCenter(ui));
 	} else {
 	    craftwnd.close();
 	}
@@ -1099,7 +1106,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    updhand();
 	    synchronized (heldNotifier) { heldNotifier.notifyAll(); }
 	} else if(place == "chr") {
-	    studywnd = add(new StudyWnd());
+	    studywnd = add(new StudyWnd(), ClientUtils.getScreenCenter(ui));
 	    studywnd.hide();
 	    chrwdg = add((CharWnd)child, Utils.getprefc("wndc-chr", new Coord(300, 50)));
 	    chrwdg.hide();
@@ -1294,7 +1301,6 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	private static final Resource.Anim progt = Resource.local().loadwait("gfx/hud/prog").layer(Resource.animc);
 	public double prog;
 	private TexI curi;
-	private String tip;
 
 	public Progress(double prog) {
 	    super(progt.f[0][0].ssz);
@@ -1318,7 +1324,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
 	    double d = Math.abs(prog - this.prog);
 	    int dec = Math.max(0, (int)Math.round(-Math.log10(d)) - 2);
-	    this.tip = String.format("%." + dec + "f%%", prog * 100);
+	    this.tooltip = String.format("%." + dec + "f%%", prog * 100);
 	    this.prog = prog;
 	}
 
@@ -1328,12 +1334,6 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 
 	public boolean checkhit(Coord c) {
 	    return(Utils.checkhit(curi.back, c, 10));
-	}
-
-	public Object tooltip(Coord c, Widget prev) {
-	    if(checkhit(c))
-		return(tip);
-	    return(super.tooltip(c, prev));
 	}
     }
 
@@ -1571,7 +1571,8 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    String cur = polowners.get(id);
 	    if(map != null) {
 		if((o != null) && (cur == null)) {
-		    map.setpoltext(id, "Entering " + o);
+		    if(n)
+			map.setpoltext(id, "Entering " + o);
 		} else if((o == null) && (cur != null)) {
 		    map.setpoltext(id, "Leaving " + cur);
 		}
@@ -1663,6 +1664,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    super("gfx/hud/" + base, "", "-d", "-h");
 	    invisibleKeys = true;
 	    setgkey(gkey);
+	    allowGlobalKeysWhenHidden(true);
 	    settip(tooltip);
 	}
     }
@@ -1672,6 +1674,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    super("gfx/hud/" + base, "", "-d", "-h", "-dh");
 	    invisibleKeys = true;
 	    setgkey(gkey);
+	    allowGlobalKeysWhenHidden(true);
 	    settip(tooltip);
 	}
     }
@@ -1748,11 +1751,11 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public static final KeyBinding kb_hide = KeyBinding.get("ui-toggle", KeyMatch.nil);
     public static final KeyBinding kb_logout = KeyBinding.get("logout", KeyMatch.nil);
     public static final KeyBinding kb_switchchr = KeyBinding.get("logout-cs", KeyMatch.nil);
-    public boolean globtype(char key, KeyEvent ev) {
-	if(key == ':') {
+    public boolean globtype(GlobKeyEvent ev) {
+	if(ev.c == ':') {
 	    entercmd();
 	    return(true);
-	} else if((Screenshooter.screenurl.get() != null) && kb_shoot.key().match(ev)) {
+	} else if(kb_shoot.key().match(ev) && (Screenshooter.screenurl.get() != null)) {
 	    Screenshooter.take(this, Screenshooter.screenurl.get());
 	    return(true);
 	} else if(kb_hide.key().match(ev)) {
@@ -1767,15 +1770,11 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	} else if(kb_chat.key().match(ev)) {
 	    toggleChat();
 	    return(true);
-	} else if((key == 27) && (map != null) && !map.hasfocus) {
+	} else if((ev.c == 27) && (map != null) && !map.hasfocus) {
 	    setfocus(map);
 	    return(true);
 	}
-	return(super.globtype(key, ev));
-    }
-    
-    public boolean mousedown(Coord c, int button) {
-	return(super.mousedown(c, button));
+	return(super.globtype(ev));
     }
 
     private int uimode = 1;
@@ -2008,11 +2007,12 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    }
 	}
 	
-	public boolean globtype(char key, KeyEvent ev) {
-	    if(ui.modctrl) {return (false);}
-	    boolean M = (ev.getModifiersEx() & (KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) != 0;
+	public boolean globtype(GlobKeyEvent ev) {
+	    //skip matching if CTRL pressed to not clash with global hotkeys
+	    if(ev.mods == KeyMatch.C) {return super.globtype(ev);}
+	    boolean M = (ev.mods & KeyMatch.M) != 0;
 	    for(int i = 0; i < beltkeys.length; i++) {
-		if(ev.getKeyCode() == beltkeys[i]) {
+		if(ev.code == beltkeys[i]) {
 		    if(M) {
 			curbelt = i;
 			return(true);
@@ -2022,7 +2022,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 		    }
 		}
 	    }
-	    return(false);
+	    return(super.globtype(ev));
 	}
     }
     
@@ -2099,13 +2099,13 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	    super.draw(g);
 	}
 	
-	public boolean globtype(char key, KeyEvent ev) {
-	    if(ui.modctrl) {return (false);}
-	    int c = ev.getKeyCode();
-	    if((c < KeyEvent.VK_0) || (c > KeyEvent.VK_9))
-		return(false);
-	    int i = Utils.floormod(c - KeyEvent.VK_0 - 1, 10);
-	    boolean M = (ev.getModifiersEx() & (KeyEvent.META_DOWN_MASK | KeyEvent.ALT_DOWN_MASK)) != 0;
+	public boolean globtype(GlobKeyEvent ev) {
+	    //skip matching if CTRL pressed to not clash with global hotkeys
+	    if(ev.mods == KeyMatch.C) {return super.globtype(ev);}
+	    if((ev.code < KeyEvent.VK_0) || (ev.code > KeyEvent.VK_9))
+		return(super.globtype(ev));
+	    int i = Utils.floormod(ev.code - KeyEvent.VK_0 - 1, 10);
+	    boolean M = (ev.mods & KeyMatch.M) != 0;
 	    if(M) {
 		curbelt = i;
 	    } else {

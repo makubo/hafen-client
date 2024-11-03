@@ -50,7 +50,7 @@ public class ClientUtils {
     }
     
     public static String prettyResName(String resname) {
-	if(resname == null) {return "???";}
+	if(resname == null || resname.isEmpty()) {return "???";}
 	tryInitCustomNames();
 	if(customNames.containsKey(resname)) {
 	    return customNames.get(resname);
@@ -71,6 +71,8 @@ public class ClientUtils {
 		resname = resname.substring(0, resname.length() - 4) + " Tree";
 	    }
 	    resname += " Log";
+	} else if(fullname.startsWith("gfx/terobjs/barrel-")) {
+	    resname = fullname.substring(fullname.lastIndexOf("-") + 1);
 	}
 	
 	//handle flour
@@ -86,7 +88,7 @@ public class ClientUtils {
 	customNamesInit = true;
 	try {
 	    Gson gson = new GsonBuilder().create();
-	    customNames.putAll(gson.fromJson(Config.loadJarFile("tile_names.json"), new TypeToken<Map<String, String>>() {
+	    customNames.putAll(gson.fromJson(Config.loadJarFile("res_names.json"), new TypeToken<Map<String, String>>() {
 	    }.getType()));
 	} catch (Exception ignored) {}
     }
@@ -253,11 +255,11 @@ public class ClientUtils {
     @SuppressWarnings("unchecked")
     public static <T extends Number> T num2value(Number n, Class<T> type) {
 	if(Integer.class.equals(type)) {
-	    return (T) new Integer(n.intValue());
+	    return (T) (Integer) (n.intValue());
 	} else if(Long.class.equals(type)) {
-	    return (T) new Long(n.longValue());
+	    return (T) (Long) (n.longValue());
 	}
-	return (T) new Float(n.floatValue());
+	return (T) (Float) (n.floatValue());
     }
     
     @SafeVarargs
@@ -302,5 +304,9 @@ public class ClientUtils {
 	public JsonElement serialize(Color color, Type type, JsonSerializationContext serializer) {
 	    return new JsonPrimitive(color2hex(color));
 	}
+    }
+    
+    public static Coord getScreenCenter(UI ui) {
+	return ui.root.sz.div(2);
     }
 }

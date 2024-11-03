@@ -40,9 +40,9 @@ import java.util.Properties;
 import java.util.function.*;
 
 public class Config {
-    public static final File HOMEDIR = new File("").getAbsoluteFile();
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String LINE_SEPARATOR = System.lineSeparator();
     public static final Properties jarprops = getjarprops();
+    public static final File HOMEDIR = getHomeDir();
     public static final String confid = get().getprop("config.client-id", "unknown");
     public static final Variable<Boolean> par = Variable.def(() -> true);
     public final Properties localprops = getlocalprops();
@@ -89,6 +89,17 @@ public class Config {
 	} catch(IOException e) {
 	    throw(new Error(e));
 	}
+    }
+    
+    private static File getHomeDir() {
+	String dir = get().getprop("config.homedir", "workdir");
+	if("hashdir".equals(dir)) {
+	    File file = new File(HashDirCache.findbase().getParent() + File.separator + "ender-client");
+	    file.mkdirs();
+	    return file.getAbsoluteFile();
+	}
+	
+	return new File("").getAbsoluteFile();
     }
     
     public static File getFile(String name) {
@@ -311,9 +322,11 @@ public class Config {
 
     public static class Services {
 	public static final Variable<URI> directory = Config.Variable.propu("haven.svcdir", "");
+	public final URI rel;
 	public final Properties props;
 
-	public Services(Properties props) {
+	public Services(URI rel, Properties props) {
+	    this.rel = rel;
 	    this.props = props;
 	}
 
@@ -333,7 +346,7 @@ public class Config {
 		    props.put(p[0], p[1]);
 		}
 	    }
-	    return(new Services(props));
+	    return(new Services(uri, props));
 	}
 
 	private static Services global = null;
@@ -347,13 +360,20 @@ public class Config {
 	    }
 	}
 
+	public URI geturi(String name) {
+	    String val = props.getProperty(name);
+	    if(val == null)
+		return(null);
+	    return(rel.resolve(parseuri(val)));
+	}
+
 	public static Variable<URI> var(String name, String defval) {
 	    URI def = parseuri(defval);
 	    return new Variable<URI>(cfg -> {
 		    String pv = cfg.getprop("haven." + name, null);
-		    if(pv == null)
-			pv = Services.get().props.getProperty(name);
-		    return((pv == null) ? def : parseuri(pv));
+		    if(pv != null)
+			return(parseuri(pv));
+		    return(Services.get().geturi(name));
 	    });
 	}
     }

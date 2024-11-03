@@ -90,9 +90,8 @@ public class ISBox extends Widget implements DTarget {
 		add(value, UI.scale(45, 41));
 		value.canactivate = true;
 
-		take = new Button(UI.scale(40), "Take");
+		take = new Button(UI.scale(40), "Take", this::take);
 		add(take, UI.scale(100, 39));
-		take.canactivate = true;
 
 		sz = sz.add(0, UI.scale(25));
 		
@@ -123,27 +122,14 @@ public class ISBox extends Widget implements DTarget {
     }
 
     public Object tooltip(Coord c, Widget prev) {
-	try {
-	    if(res.get().layer(Resource.tooltip) != null)
-		return(res.get().layer(Resource.tooltip).t);
-	} catch(Loading ignored) {}
+	if(res.get().layer(Resource.tooltip) != null)
+	    return(res.get().layer(Resource.tooltip).t);
 	return(null);
     }
 
-    public boolean mousedown(Coord c, int button) {
-	if(take != null) {
-	    Coord cc = xlate(take.c, true);
-	    if(c.isect(cc, take.sz)) {
-		return take.mousedown(c.sub(cc), button);
-	    }
-	}
-	if(value != null) {
-	    Coord cc = xlate(value.c, true);
-	    if(c.isect(cc, value.sz)) {
-		return value.mousedown(c.sub(cc), button);
-	    }
-	}
-	if (button == 1) {
+    public boolean mousedown(MouseDownEvent ev) {
+	if(ev.propagate(this)) {return true;}
+	if (ev.b == 1) {
 	    if (ui.modshift ^ ui.modctrl) {           //SHIFT or CTRL means pull
 		int dir = ui.modctrl ? -1 : 1;        //CTRL means pull out, SHIFT pull in
 		int all = (dir > 0) ? av - rem : rem; //count depends on direction
@@ -154,19 +140,19 @@ public class ISBox extends Widget implements DTarget {
 	    }
 	    return (true);
 	}
-	return (false);
+	return (super.mousedown(ev));
     }
 
     public void transfer(int dir, int amount) {
 	for (int i = 0; i < amount; i++) {
-	    wdgmsg("xfer2", dir, 1); //modflags set to 1 to emulate only SHIFT pressed
+	    wdgmsg("xfer2", dir, KeyMatch.S);
 	}
     }
     
-    public boolean mousewheel(Coord c, int amount) {
-	if(amount < 0)
+    public boolean mousewheel(MouseWheelEvent ev) {
+	if(ev.a < 0)
 	    wdgmsg("xfer2", -1, ui.modflags());
-	if(amount > 0)
+	if(ev.a > 0)
 	    wdgmsg("xfer2", 1, ui.modflags());
 	return(true);
     }
@@ -188,23 +174,27 @@ public class ISBox extends Widget implements DTarget {
             super.uimsg(msg, args);
         }
     }
-
+    
     @Override
     public void wdgmsg(Widget sender, String msg, Object... args) {
-	if (sender == value || sender == take) {
-	    int amount = rem;
-	    try {
-		amount = Integer.parseInt(value.text());
-	    } catch (Exception ignored) {
-	    }
-	    if (amount > rem) {
-		amount = rem;
-	    }
-	    if (amount > 0) {
-		transfer(-1, amount);
-	    }
+	if(sender == value) {
+	    take();
 	} else {
 	    super.wdgmsg(sender, msg, args);
+	}
+    }
+    
+    private void take() {
+	int amount = rem;
+	try {
+	    amount = Integer.parseInt(value.text());
+	} catch (Exception ignored) {
+	}
+	if(amount > rem) {
+	    amount = rem;
+	}
+	if(amount > 0) {
+	    transfer(-1, amount);
 	}
     }
 
@@ -223,10 +213,10 @@ public class ISBox extends Widget implements DTarget {
 	}
 
 	@Override
-	public boolean keydown(KeyEvent ev) {
-	    int keyCode = ev.getKeyCode();
-	    if(keyCode == 0){
-		keyCode = ev.getKeyChar();
+	public boolean keydown(KeyDownEvent ev) {
+	    int keyCode = ev.code;
+	    if(keyCode == 0) {
+		keyCode = ev.awt.getKeyChar();
 	    }
 	    if (ALLOWED_KEYS.contains(keyCode)) {
 		return super.keydown(ev);

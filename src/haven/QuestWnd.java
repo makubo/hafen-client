@@ -354,8 +354,8 @@ public class QuestWnd extends Widget {
 		}
 	    }
 
-	    public boolean mousedown(Coord c, int btn) {
-		if((rtitle != null) && c.isect(Coord.z, rtitle.sz())) {
+	    public boolean mousedown(MouseDownEvent ev) {
+		if((rtitle != null) && ev.c.isect(Coord.z, rtitle.sz())) {
 		    CharWnd cw = getparent(GameUI.class).chrwdg;
 		    cw.show();
 		    cw.raise();
@@ -363,7 +363,7 @@ public class QuestWnd extends Widget {
 		    cw.questtab.showtab();
 		    return(true);
 		}
-		return(super.mousedown(c, btn));
+		return(super.mousedown(ev));
 	    }
 
 	    public void tick(double dt) {
@@ -586,10 +586,10 @@ public class QuestWnd extends Widget {
 		super.draw(g);
 	    }
 
-	    public boolean mousedown(Coord c, int button) {
-		if(super.mousedown(c, button))
+	    public boolean mousedown(MouseDownEvent ev) {
+		if(ev.propagate(this) || super.mousedown(ev))
 		    return(true);
-		if(button == 1) {
+		if(ev.b == 1) {
 		    if((QuestWnd.this.quest != null) && (q.id == QuestWnd.this.quest.questid()))
 			QuestWnd.this.wdgmsg("qsel", (Object)null);
 		    else
@@ -678,7 +678,7 @@ public class QuestWnd extends Widget {
 
     public int getObjectiveIndex(String name) {
 	Set<Quest.Box> wdgs = children(Quest.Box.class);
-	if(!wdgs.isEmpty()) {
+	if(name != null && !wdgs.isEmpty()) {
 	    for (Quest.Box wdg : wdgs) {
 		for (int i = 0; i < wdg.cond.length; i++) {
 		    if(wdg.cond[i].desc.contains(name)) {

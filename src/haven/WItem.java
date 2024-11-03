@@ -45,7 +45,7 @@ import rx.functions.Action3;
 import static haven.Inventory.sqsz;
 import static me.ender.WindowDetector.*;
 
-public class WItem extends Widget implements DTarget2 {
+public class WItem extends Widget implements DTarget {
     public static final Resource missing = Resource.local().loadwait("gfx/invobjs/missing");
     public static final Coord TEXT_PADD_TOP = new Coord(0, -3), TEXT_PADD_BOT = new Coord(0, 2);
     public static final Color DURABILITY_COLOR = new Color(214, 253, 255);
@@ -117,25 +117,21 @@ public class WItem extends Widget implements DTarget2 {
 	} else {
 	    hoverstart = now;
 	}
-	try {
-	    List<ItemInfo> info = item.info();
-	    if(info.size() < 1)
-		return(null);
-	    if(info != ttinfo) {
-		shorttip = longtip = null;
-		ttinfo = info;
-	    }
-	    if(now - hoverstart < 1.0) {
-		if(shorttip == null)
-		    shorttip = new ShortTip(info);
-		return(shorttip);
-	    } else {
-		if(longtip == null)
-		    longtip = new LongTip(info);
-		return(longtip);
-	    }
-	} catch(Loading e) {
-	    return("...");
+	List<ItemInfo> info = item.info();
+	if(info.size() < 1)
+	    return(null);
+	if(info != ttinfo) {
+	    shorttip = longtip = null;
+	    ttinfo = info;
+	}
+	if(now - hoverstart < 1.0) {
+	    if(shorttip == null)
+		shorttip = new ShortTip(info);
+	    return(shorttip);
+	} else {
+	    if(longtip == null)
+		longtip = new LongTip(info);
+	    return(longtip);
 	}
     }
 
@@ -458,24 +454,24 @@ public class WItem extends Widget implements DTarget2 {
 	return CFG.Q_SHOW_SINGLE.get() ? SingleType.Quality : null;
     }
 
-    public boolean mousedown(Coord c, int btn) {
-	if(checkXfer(btn)) {
+    public boolean mousedown(MouseDownEvent ev) {
+	if(checkXfer(ev.b)) {
 	    return true;
-	} else if(btn == 1) {
-	    item.wdgmsg("take", c);
+	} else if(ev.b == 1) {
+	    item.wdgmsg("take", ev.c);
 	    return true;
-	} else if(btn == 3) {
+	} else if(ev.b == 3) {
 	    synchronized (rClickListeners) {
 		if(rClickListeners.isEmpty()) {
 		    FlowerMenu.lastItem(this);
-		    item.wdgmsg("iact", c, ui.modflags());
+		    item.wdgmsg("iact", ev.c, ui.modflags());
 		} else {
 		    rClickListeners.forEach(action -> action.call(this, c, ui.modflags()));
 		}
 	    }
 	    return(true);
 	}
-	return(false);
+	return(super.mousedown(ev));
     }
     
     public void onRClick(Action3<WItem, Coord, Integer> action) {
@@ -510,14 +506,20 @@ public class WItem extends Widget implements DTarget2 {
 	double meter = meter();
 	if(meter <= 0) {return -1;}
 	
+	double remaining = -1;
 	if(WindowDetector.isWindowType(this, WND_SMELTER)) {
-	    double remaining = WELL_MINED.matches(info()) ? 41.25d : 55d; //ore smelting time in minutes
-	    remaining *= 60 * (1d - meter); //remaining seconds
-	    remaining -= (System.currentTimeMillis() - item.meterUpdated) / 1000d; //adjust for time passed since last update
-	    return (int) remaining;
+	    remaining = WELL_MINED.matches(info()) ? 41.25d : 55d; //ore smelting time in minutes
+	} else if(WindowDetector.isWindowType(this, WND_FINERY_FORGE)) {
+	    //TODO: check for coin melting time
+	    remaining = 9d; //bar smelting time in minutes
 	}
 	
-	return -1;
+	if(remaining > 0) {
+	    remaining *= 60 * (1d - meter); //remaining seconds
+	    remaining -= (System.currentTimeMillis() - item.meterUpdated) / 1000d; //adjust for time passed since last update
+	}
+	
+	return (int) remaining;
     }
 
     private boolean checkXfer(int button) {
@@ -560,24 +562,23 @@ public class WItem extends Widget implements DTarget2 {
 	if(inv != null) {inv.itemsChanged();}
     }
     
-    public boolean drop(WItem target, Coord cc, Coord ul) {
+    public boolean drop(Drop ev) {
 	return(false);
     }
 
-    public boolean iteminteract(WItem target, Coord cc, Coord ul) {
-	if(!GildingWnd.processGilding(ui,this, target)) {
+    public boolean iteminteract(DTarget.Interact ev) {
+	if(!GildingWnd.processGilding(ui,this, ev.src)) {
 	    item.wdgmsg("itemact", ui.modflags());
 	}
 	return(true);
     }
 
-    public boolean mousehover(Coord c, boolean on) {
-	boolean ret = super.mousehover(c, on);
+    public boolean mousehover(MouseHoverEvent ev, boolean on) {
 	if(on && (item.contents != null) && (!CFG.UI_STACK_SUB_INV_ON_SHIFT.get() || ui.modshift)) {
 	    item.hovering(this);
 	    return(true);
 	}
-	return(ret);
+	return(super.mousehover(ev, on));
     }
     
     public void tryDrop() {

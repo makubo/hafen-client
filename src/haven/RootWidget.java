@@ -26,98 +26,69 @@
 
 package haven;
 
+import me.ender.gob.GobEffects;
+
 import java.util.*;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
 
-public class RootWidget extends ConsoleHost implements UI.MessageWidget, Console.Directory {
+public class RootWidget extends ConsoleHost implements UI.MessageWidget, Widget.CursorQuery.Handler, Console.Directory {
     public static final Text.Foundry msgfoundry = new Text.Foundry(Text.dfont, 14);
     public static final Resource defcurs = Resource.local().loadwait("gfx/hud/curs/arw");
     public boolean modtip = false;
     Profile guprof, grprof, ggprof;
     private Text lastmsg;
     private double msgtime;
+    public final GobEffects effects;
 	
     
     public RootWidget(UI ui, Coord sz) {
 	super(ui, new Coord(0, 0), sz);
 	setfocusctl(true);
 	hasfocus = true;
-	cursor = defcurs.indir();
+	effects = new GobEffects(ui);
     }
 	
-    public boolean globtype(char key, KeyEvent ev) {
-	if(super.globtype(key, ev)) {
-	    return false;
+    public boolean getcurs(CursorQuery ev) {
+	Resource ret = defcurs;
+	if(cursor != null) {
+	    try {
+		ret = cursor.get();
+	    } catch(Loading l) {}
 	}
+	ev.set(ret);
+	return(false);
+    }
+
+    public boolean globtype(GlobKeyEvent ev) {
+	if(ev.propagate(this))
+	    return(true);
 	if(KeyBinder.handle(ui, ev)) {
-	    return false;
+	    return true;
 	}
-	if(key == '`') {
+	if(ev.c == '`') {
 	    if(UIPanel.profile.get()) {
 		add(new Profwnd(guprof, "UI profile"), UI.scale(100, 100));
 		add(new Profwnd(grprof, "GL profile"), UI.scale(500, 100));
-		    /* XXXRENDER
-		    GameUI gi = findchild(GameUI.class);
-		    if((gi != null) && (gi.map != null))
-			add(new Profwnd(gi.map.prof, "Map profile"), UI.scale(100, 250));
-		    */
+		/* XXXRENDER
+		   GameUI gi = findchild(GameUI.class);
+		   if((gi != null) && (gi.map != null))
+		   add(new Profwnd(gi.map.prof, "Map profile"), UI.scale(100, 250));
+		*/
 	    }
 	    if(UIPanel.profilegpu.get()) {
 		add(new Profwnd(ggprof, "GPU profile"), UI.scale(500, 250));
 	    }
-	} else if(key == ':') {
-	    if(super.globtype(key, ev)) {
-		return false;
-	    } else {
-		entercmd();
-		return true;
-	    }
-	} else if(key != 0) {
-	    wdgmsg("gk", (int) key);
+	    return(true);
+	} else if(ev.c == ':') {
+	    entercmd();
+	    return(true);
+	} else if(ev.c != 0) {
+	    wdgmsg("gk", (int)ev.c, ev.mods);
+	    return(true);
 	}
-	return true;
-    }
-
-    @Override
-    public boolean keydown(KeyEvent ev) {
-	return super.keydown(ev);
+	return(super.globtype(ev));
     }
     
-    @Override
-    public boolean keyup(KeyEvent ev) {
-	return super.keyup(ev);
-    }
-    
-    private boolean isCTRL(KeyEvent ev) {
-	return ev.getModifiersEx() == (ev.getModifiersEx() & KeyEvent.CTRL_DOWN_MASK)
-	    && KeyEvent.VK_CONTROL == ev.getExtendedKeyCode()
-	    && KeyEvent.VK_CONTROL == ev.getKeyCode();
-    }
-    
-    private boolean isALT(KeyEvent ev) {
-	return (
-	    ev.getModifiersEx() == (ev.getModifiersEx() & KeyEvent.ALT_DOWN_MASK)
-		&& KeyEvent.VK_ALT == ev.getExtendedKeyCode()
-		&& KeyEvent.VK_ALT == ev.getKeyCode()
-	) || (
-	    ev.getModifiersEx() == (ev.getModifiersEx() & KeyEvent.META_DOWN_MASK)
-		&& KeyEvent.VK_META == ev.getExtendedKeyCode()
-		&& KeyEvent.VK_META == ev.getKeyCode()
-	);
-    }
-    
-    private boolean isSHIFT(KeyEvent ev) {
-	return ev.getModifiersEx() == (ev.getModifiersEx() & KeyEvent.SHIFT_DOWN_MASK)
-	    && KeyEvent.VK_SHIFT == ev.getExtendedKeyCode()
-	    && KeyEvent.VK_SHIFT == ev.getKeyCode();
-    }
-    
-    @Override
-    public boolean mousedown(Coord c, int button) {
-	return super.mousedown(c, button);
-    }
-
     public void draw(GOut g) {
 	super.draw(g);
 	if(cmdline != null) {
@@ -193,7 +164,13 @@ public class RootWidget extends ConsoleHost implements UI.MessageWidget, Console
 	msg(msg, color);
 	ui.sfxrl(sfx);
     }
-
+    
+    @Override
+    public void tick(double dt) {
+	effects.tick(dt);
+	super.tick(dt);
+    }
+    
     public void error(String msg) {
 	ui.error(msg);
     }
