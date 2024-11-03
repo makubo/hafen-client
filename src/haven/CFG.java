@@ -22,6 +22,8 @@ public class CFG<T> {
     public static final CFG<Boolean> DISPLAY_FLAVOR = new CFG<>("display.flavor", true);
     public static final CFG<Boolean> DISPLAY_GOB_INFO = new CFG<>("display.gob_info", false);
     public static final CFG<Set<GobInfoOpts.InfoPart>> DISPLAY_GOB_INFO_DISABLED_PARTS = new CFG<>("display.gob_info_disabled_parts", new HashSet<>(), new TypeToken<Set<GobInfoOpts.InfoPart>>(){});
+    public static final CFG<Set<GobInfoOpts.TreeSubPart>> DISPLAY_GOB_INFO_TREE_ENABLED_PARTS = new CFG<>("display.gob_info_tree_enabled_parts", new HashSet<>(Arrays.asList(GobInfoOpts.TreeSubPart.SEEDS, GobInfoOpts.TreeSubPart.LEAVES)), new TypeToken<Set<GobInfoOpts.TreeSubPart>>(){});
+    public static final CFG<Boolean> DISPLAY_GOB_INFO_TREE_HIDE_GROWING_PARTS = new CFG<>("display.gob_info_tree_hide_growing_parts", true);
     public static final CFG<Boolean> DISPLAY_GOB_INFO_SHORT = new CFG<>("display.gob_info_shorten_content", false);
     public static final CFG<Boolean> DISPLAY_GOB_HITBOX_FILLED = new CFG<>("display.gob_hitbox_filled", false);
     public static final CFG<Boolean> DISPLAY_GOB_HITBOX = new CFG<>("display.gob_hitbox", false);
@@ -44,6 +46,7 @@ public class CFG<T> {
     public static final CFG<Integer> DISPLAY_SCALE_CUPBOARDS = new CFG<>("display.scale.cupboards", 100);
     public static final CFG<Integer> DISPLAY_SCALE_WALLS = new CFG<>("display.scale.walls", 100);
     public static final CFG<Boolean> DISPLAY_DECALS_ON_TOP = new CFG<>("display.decals_on_top", false);
+    public static final CFG<Boolean> DISPLAY_NO_MAT_CUPBOARDS = new CFG<>("display.no_mat.cupboards", false);
     public static final CFG<Boolean> DISPLAY_AURA_SPEED_BUFF = new CFG<>("display.aura.speed", false);
     public static final CFG<Boolean> DISPLAY_AURA_RABBIT = new CFG<>("display.aura.rabbit", false);
     public static final CFG<Boolean> DISPLAY_AURA_CRITTERS = new CFG<>("display.aura.critters", false);

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static haven.CraftDBWnd.Mode.*;
 import static haven.ItemFilter.*;
 
-public class CraftDBWnd extends WindowX implements DTarget2 {
+public class CraftDBWnd extends WindowX implements DTarget {
     private static final int PANEL_H = UI.scale(52);
     private static final Coord WND_SZ = UI.scale(635, 360).addy(PANEL_H);
     private static final Coord ICON_SZ = UI.scale(20, 20);
@@ -455,14 +455,14 @@ public class CraftDBWnd extends WindowX implements DTarget2 {
     }
 
     @Override
-    public boolean drop(WItem target, Coord cc, Coord ul) {
-	updateInfo(target);
+    public boolean drop(Drop ev) {
+	updateInfo(ev.src);
 	return true;
     }
 
     @Override
-    public boolean iteminteract(WItem target, Coord cc, Coord ul) {
-	updateInfo(target);
+    public boolean iteminteract(Interact ev) {
+	updateInfo(ev.src);
 	return true;
     }
     
@@ -525,11 +525,11 @@ public class CraftDBWnd extends WindowX implements DTarget2 {
     }
     
     @Override
-    public boolean keydown(KeyEvent ev) {
-	if(ignoredKey(ev)) {
+    public boolean keydown(KeyDownEvent ev) {
+	if(ignoredKey(ev.awt)) {
 	    return false;
 	}
-	switch (ev.getKeyCode()) {
+	switch (ev.code) {
 	    case KeyEvent.VK_ESCAPE:
 		if(!filter.line().isEmpty()) {
 		    changeMode(mode);
@@ -559,7 +559,7 @@ public class CraftDBWnd extends WindowX implements DTarget2 {
 	}
  
 	String before = filter.line();
-	if(filter.key(ev) && !before.equals(filter.line())) {
+	if(filter.key(ev.awt) && !before.equals(filter.line())) {
 	    needfilter();
 	    if(filter.line().isEmpty()) {
 		changeMode(mode);

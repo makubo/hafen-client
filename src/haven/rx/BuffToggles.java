@@ -128,7 +128,7 @@ public class BuffToggles {
 	}
 
 	@Override
-	public boolean mousedown(Coord c, int btn) {
+	public boolean mousedown(MouseDownEvent ev) {
 	    toggle.act();
 	    return true;
 	}

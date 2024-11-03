@@ -216,18 +216,14 @@ public class Buff extends Widget implements ItemInfo.ResOwner, Bufflist.Managed 
 	double now = Utils.rtime();
 	if(prev != this)
 	    hoverstart = now;
-	try {
-	    if(now - hoverstart < 1.0) {
-		if(shorttip == null)
-		    shorttip = new TexI(shorttip());
-		return(shorttip);
-	    } else {
-		if(longtip == null)
-		    longtip = new TexI(longtip());
-		return(longtip);
-	    }
-	} catch(Loading e) {
-	    return("...");
+	if(now - hoverstart < 1.0) {
+	    if(shorttip == null)
+		shorttip = new TexI(shorttip());
+	    return(shorttip);
+	} else {
+	    if(longtip == null)
+		longtip = new TexI(longtip());
+	    return(longtip);
 	}
     }
 
@@ -285,8 +281,8 @@ public class Buff extends Widget implements ItemInfo.ResOwner, Bufflist.Managed 
 	return (int) Math.floor(v * 100);
     }
 
-    public boolean mousedown(Coord c, int btn) {
-	wdgmsg("cl", c.sub(imgoff), btn, ui.modflags());
+    public boolean mousedown(MouseDownEvent ev) {
+	wdgmsg("cl", ev.c.sub(imgoff), ev.b, ui.modflags());
 	return(true);
     }
 }

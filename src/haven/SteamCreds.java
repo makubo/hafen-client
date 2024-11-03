@@ -26,7 +26,37 @@
 
 package haven;
 
-public interface DTarget2 {
-    boolean drop(WItem target, Coord cc, Coord ul);
-    boolean iteminteract(WItem target, Coord cc, Coord ul);
+import java.io.*;
+import com.codedisaster.steamworks.*;
+
+public class SteamCreds extends AuthClient.Credentials {
+    private final Steam api;
+    private final String name;
+
+    public SteamCreds() throws IOException {
+	if((api = Steam.get()) == null)
+	    throw(new IOException("Steam is not running"));
+	name = api.displayname();
+    }
+
+    public String name() {return(name);}
+
+    public String tryauth(AuthClient cl) throws IOException {
+	try(Steam.WebTicket tkt = api.webticket()) {
+	    Message rpl = cl.cmd("steam", Utils.byte2hex(tkt.data));
+	    String stat = rpl.string();
+	    if(stat.equals("ok")) {
+		String acct = rpl.string();
+		return(acct);
+	    } else if(stat.equals("no")) {
+		throw(new AuthException(rpl.string()));
+	    } else {
+		throw(new RuntimeException("Unexpected reply `" + stat + "' from auth server"));
+	    }
+	} catch(InterruptedException e) {
+	    throw(new IOException("interrupted", e));
+	} catch(Steam.SvcError e) {
+	    throw(new AuthException(e.getMessage()));
+	}
+    }
 }
