@@ -8,9 +8,10 @@ out
 /resources/compiled
 /resources/classes
 /resources/custom/
-nbproject/private/
-accounts.json
-config.json
-error.log
-i10n/ru/missing/
-windows.json
+/accounts.json
+/config.json
+/error.log
+/i10n/ru/missing/
+/windows.json
+/charterbook.json
+/autochoose.json
