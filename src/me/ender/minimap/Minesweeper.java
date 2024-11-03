@@ -5,9 +5,14 @@ import haven.render.Homo3D;
 import haven.render.Pipe;
 import haven.render.RenderTree;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.channels.Channels;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
@@ -45,20 +50,38 @@ public class Minesweeper {
 	Coord tc = gc.sub(grid.gc.mul(MCache.cmaps));
 	long id = grid.id;
 
-	Minesweeper minesweeper = gui.minesweeper;
-	synchronized (minesweeper.lock) {
-	    Map<Long, byte[]> grids = minesweeper.values;
+	gui.minesweeper.addValue(id, tc, count);
+    }
+    
+    private void addValue(long id, Coord tc, int value) {
+	synchronized (lock) {
+	    Map<Long, byte[]> grids = values;
 	    byte[] values;
-	    if(minesweeper.loadGrid(id)) {
+	    if(loadGrid(id)) {
 		values = grids.get(id);
 	    } else {
 		values = new byte[TILES];
 		grids.put(id, values);
-		minesweeper.gridIds.add(id);
-		minesweeper.storeIndex();
+		gridIds.add(id);
+		storeIndex();
 	    }
-	    values[index(tc)] = (byte) count;
-	    minesweeper.storeGrid(id, values);
+	    values[index(tc)] = (byte) value;
+	    storeGrid(id, values);
+	}
+    }
+
+    private void updateGrid(long grid, byte[] newValues) {
+	if(gridIds.contains(grid) && loadGrid(grid)) {
+	    byte[] curValues = values.get(grid);
+	    for (int i = 0; i < newValues.length; i++) {
+		if(newValues[i] == 0) {continue;}
+		curValues[i] = newValues[i];
+	    }
+	    storeGrid(grid, curValues);
+	} else {
+	    gridIds.add(grid);
+	    storeIndex();
+	    storeGrid(grid, newValues);
 	}
     }
 
@@ -157,17 +180,25 @@ public class Minesweeper {
 
     private boolean loadIndex(StreamMessage data) {
 	synchronized (lock) {
-	    int ver = data.uint8();
-	    if(ver == 1) {
-		while (!data.eom()) {
-		    gridIds.add(data.int64());
-		}
-	    } else {
-		warn("unknown mapfile ender-minesweeper version: %d", ver);
-		return false;
-	    }
+	    Set<Long> ids = doLoadIndex(data);
+	    if(ids == null) {return false;}
+	    gridIds.addAll(ids);
 	}
 	return true;
+    }
+
+    private static Set<Long> doLoadIndex(StreamMessage data) {
+	int ver = data.uint8();
+	if(ver == 1) {
+	    Set<Long> gridIds = new HashSet<>();
+	    while (!data.eom()) {
+		gridIds.add(data.int64());
+	    }
+	    return gridIds;
+	} else {
+	    warn("unknown mapfile ender-minesweeper version: %d", ver);
+	}
+	return null;
     }
 
     private boolean loadGrid(long id) {
@@ -187,15 +218,134 @@ public class Minesweeper {
     }
 
     private boolean loadGrid(StreamMessage data, long id) {
+	byte[] v = doLoadGrid(data, id);
+	if(v == null) {return false;}
+	values.put(id, v);
+	return true;
+    }
+
+    private static byte[] doLoadGrid(StreamMessage data, long id) {
 	int ver = data.uint8();
 	if(ver == 2) {
-	    Message zdata = new ZMessage(data);
-	    values.put(id, zdata.bytes(TILES));
+	    return new ZMessage(data).bytes(TILES);
 	} else {
 	    warn("unknown mapfile ender-minesweeper-grid %d version: %d", id, ver);
+	}
+	return null;
+    }
+
+    public static void doExport(MapFile mapFile, UI ui) {
+	java.awt.EventQueue.invokeLater(() -> {
+	    JFileChooser fc = new JFileChooser();
+	    fc.setFileFilter(new FileNameExtensionFilter("Exported Haven Minesweeper data", "hems"));
+	    if(fc.showSaveDialog(null) != JFileChooser.APPROVE_OPTION)
+		return;
+	    Path path = fc.getSelectedFile().toPath();
+	    if(path.getFileName().toString().indexOf('.') < 0)
+		path = path.resolveSibling(path.getFileName() + ".hems");
+
+	    doExport(mapFile, path, ui);
+	});
+    }
+
+    private static void doExport(MapFile mapFile, Path path, UI ui) {
+	new HackThread(() -> {
+	    boolean complete = false;
+	    try {
+		try {
+		    complete = MapFileUtils.load(mapFile, data -> doExport(mapFile, path, doLoadIndex(data)), INDEX);
+		} finally {
+		    if(!complete) {
+			Files.deleteIfExists(path);
+			ui.gui.msg("Error while exporting minesweeper data", GameUI.MsgType.ERROR);
+		    } else {
+			ui.gui.msg("Finished exporting minesweeper data", GameUI.MsgType.INFO);
+		    }
+		}
+	    } catch (IOException e) {
+		e.printStackTrace(Debug.log);
+		//gui.error("Unexpected error occurred when exporting map.");
+	    }
+	}, "Minesweeper exporter").start();
+    }
+
+    private static final byte[] EXPORT_SIG = "Haven Minesweeper 1".getBytes(Utils.ascii);
+
+    private static boolean doExport(MapFile mapFile, Path path, Set<Long> grids) {
+	if(grids == null || grids.isEmpty()) {return false;}
+	try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(path))) {
+	    StreamMessage msg = new StreamMessage(null, out);
+	    msg.addbytes(EXPORT_SIG);
+	    msg.adduint8(1);//version
+	    ZMessage zout = new ZMessage(msg);
+	    for (Long grid : grids) {
+		if(grid == null) {continue;}
+		long id = grid;
+		MapFileUtils.load(mapFile, (data) -> {
+		    byte[] src = doLoadGrid(data, id);
+		    if(src == null) {return false;}
+		    zout.addint64(id);
+		    zout.addbytes(src);
+		    return true;
+		}, GRID_NAME, grid);
+	    }
+	    zout.close();
+	} catch (IOException e) {
 	    return false;
 	}
 	return true;
+    }
+
+    public static void doImport(MapFile mapFile, UI ui) {
+	java.awt.EventQueue.invokeLater(() -> {
+	    JFileChooser fc = new JFileChooser();
+	    fc.setFileFilter(new FileNameExtensionFilter("Exported Haven Minesweeper data", "hems"));
+	    if(fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION)
+		return;
+	    doImport(mapFile, fc.getSelectedFile().toPath(), ui);
+	});
+    }
+
+    private static void doImport(MapFile mapFile, Path path, UI ui) {
+	new HackThread(() -> {
+	    boolean complete = false;
+	    try {
+		try (SeekableByteChannel fp = Files.newByteChannel(path)) {
+		    complete = doImport(mapFile, new BufferedInputStream(Channels.newInputStream(fp)), ui);
+		} finally {
+		    if(complete) {
+			ui.gui.msg("Finished importing minesweeper data", GameUI.MsgType.INFO);
+		    } else {
+			ui.gui.msg("Error while importing minesweeper data", GameUI.MsgType.ERROR);
+		    }
+		}
+	    } catch (IOException e) {
+		e.printStackTrace(Debug.log);
+		//gui.error("Unexpected error occurred when exporting map.");
+	    }
+	}, "Minesweeper exporter").start();
+    }
+
+    private static boolean doImport(MapFile mapFile, BufferedInputStream input, UI ui) {
+	Message data = new StreamMessage(input);
+	if(!Arrays.equals(EXPORT_SIG, data.bytes(EXPORT_SIG.length))) {return false;}
+	int ver = data.uint8();
+	if(ver == 1) {
+	    Minesweeper m = ui.gui.minesweeper;
+	    ZMessage zdata = new ZMessage(data);
+	    synchronized (m.lock) {
+		while (!zdata.eom()) {
+		    long grid = zdata.int64();
+		    byte[] values = zdata.bytes(TILES);
+
+		    m.updateGrid(grid, values);
+		}
+	    }
+
+	    return true;
+	}
+
+	return false;
     }
 
     private static class SweeperNode implements RenderTree.Node, PView.Render2D {

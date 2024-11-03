@@ -4,10 +4,8 @@ package haven;
 import me.ender.minimap.*;
 
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
+import java.util.List;
 
 import static haven.MCache.*;
 
@@ -230,5 +228,55 @@ public class MapWnd2 extends MapWnd {
 	public int hashCode() {
 	    return Objects.hash(gobid);
 	}
+    }
+
+    private static final List<Porter> exporters = Arrays.asList(
+	new Porter("Map") {
+	    @Override
+	    public void process(MapWnd2 mapWnd) {mapWnd.doExportMap();}
+	},
+	new Porter("Minesweeper") {
+	    @Override
+	    public void process(MapWnd2 mapWnd) {Minesweeper.doExport(mapWnd.file, mapWnd.ui);}
+	}
+    );
+
+    private void doExportMap() {super.exportmap();}
+
+    @Override
+    public void exportmap() {
+	SListMenu.of(UI.scale(120, 120), exporters,
+		e -> e.name,
+		e -> e.process(this))
+	    .addat(ui.root, ui.mc.add(UI.scale(5, 5)));
+    }
+
+    private static final List<Porter> importers = Arrays.asList(
+	new Porter("Map") {
+	    @Override
+	    public void process(MapWnd2 mapWnd) {mapWnd.doImportMap();}
+	},
+	new Porter("Minesweeper") {
+	    @Override
+	    public void process(MapWnd2 mapWnd) {Minesweeper.doImport(mapWnd.file, mapWnd.ui);}
+	}
+    );
+
+    private void doImportMap() {super.importmap();}
+
+    @Override
+    public void importmap() {
+	SListMenu.of(UI.scale(120, 120), importers,
+		e -> e.name,
+		e -> e.process(this))
+	    .addat(ui.root, ui.mc.add(UI.scale(5, 5)));
+    }
+
+    private static abstract class Porter {
+	public final String name;
+
+	private Porter(String name) {this.name = name;}
+
+	public abstract void process(MapWnd2 mapWnd);
     }
 }
