@@ -97,6 +97,7 @@ public enum GobTag {
         "/items/hoppedcow",
         "/items/mandrakespirited",
 	"/jellyfish",
+        "/kritter/tick/tick",
 	"/ladybug",
 	"/lobster",
         "/magpie",
