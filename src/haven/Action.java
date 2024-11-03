@@ -21,7 +21,6 @@ public enum Action {
     TOGGLE_GOB_INFO(CFG.DISPLAY_GOB_INFO, "Display info", "Display crop/tree growth and object health overlay."),
     TOGGLE_GOB_HITBOX(Hitbox::toggle, "Display hitboxes"),
     TOGGLE_HIDE_TREES(CFG.HIDE_TREES, "Hide trees"),
-    TOGGLE_MINESWEEPER(CFG.SHOW_MINESWEEPER_OVERLAY, "Toggle minesweeper mode"),
     TOGGLE_GOB_RADIUS(CFG.SHOW_GOB_RADIUS, "Display radius", "Displays effective radius of beehives/mine supports etc."),
     TOGGLE_TILE_CENTERING(gui ->
     {
@@ -54,7 +53,8 @@ public enum Action {
     FUEL_SMELTER_12(gui -> Actions.fuelGob(gui, "terobjs/smelter", "Coal", 12)),
     FUEL_OVEN_4(gui -> Actions.fuelGob(gui, "terobjs/oven", "Branch", 4)),
     TOGGLE_GOB_INFO_PLANTS(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.PLANT_GROWTH)),
-    TOGGLE_GOB_INFO_TREES(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.TREE_GROWTH)),
+    TOGGLE_GOB_INFO_TREE_GROWTH(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.TREE_GROWTH)),
+    TOGGLE_GOB_INFO_TREE_CONTENT(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.TREE_CONTENTS)),
     TOGGLE_GOB_INFO_HEALTH(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.HEALTH)),
     TOGGLE_GOB_INFO_BARREL(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.BARREL)),
     TOGGLE_GOB_INFO_SIGN(gui -> GobInfoOpts.toggle(GobInfoOpts.InfoPart.DISPLAY_SIGN)),

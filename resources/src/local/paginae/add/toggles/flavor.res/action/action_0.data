@@ -1,16 +1,12 @@
 #String pr
-paginae/act/add
+paginae/act/toggles
 #uint16 pver
 2
 #String name
-Minesweeper
+Display flavor objects
 #String preq
 
 #uint16 hk
 0
 #uint16 ad length
-2
-#String ad[0]
-@
-#String ad[1]
-minesweeper
+0

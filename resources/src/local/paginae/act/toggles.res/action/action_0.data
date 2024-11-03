@@ -1,13 +1,13 @@
-#ABUTTON LAYER
+#ABUTTON LAYER FOR RES qwe//\res\paginae\add\timer.res
 #String pr
-paginae/act/toggles
+paginae/act/add
 #uint16 pver
 2
 #String name
-Object Info
+Toggles
 #String preq
 
 #uint16 hk
-105
+111
 #uint16 ad length
 0

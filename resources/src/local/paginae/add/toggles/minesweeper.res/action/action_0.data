@@ -1,13 +1,16 @@
-#ABUTTON LAYER
 #String pr
 paginae/act/toggles
 #uint16 pver
 2
 #String name
-Object Info
+Minesweeper
 #String preq
 
 #uint16 hk
-105
-#uint16 ad length
 0
+#uint16 ad length
+2
+#String ad[0]
+@
+#String ad[1]
+minesweeper

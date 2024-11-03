@@ -1,13 +1,12 @@
-#ABUTTON LAYER
 #String pr
 paginae/act/toggles
 #uint16 pver
 2
 #String name
-Object Info
+Flat terrain
 #String preq
 
 #uint16 hk
-105
+0
 #uint16 ad length
 0
