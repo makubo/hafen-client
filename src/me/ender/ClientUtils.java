@@ -71,7 +71,7 @@ public class ClientUtils {
 		resname = resname.substring(0, resname.length() - 4) + " Tree";
 	    }
 	    resname += " Log";
-	} else if(fullname.startsWith("gfx/terobjs/barrel-")) {
+	} else if(fullname.startsWith(ResName.BARREL_WITH_CONTENTS)) {
 	    resname = fullname.substring(fullname.lastIndexOf("-") + 1);
 	}
 	
