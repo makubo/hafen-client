@@ -174,7 +174,11 @@ public class L10N {
 		int k = m.groupCount();
 		result = format;
 		for (int i = 1; i <= k; i++) {
+                    String pre = result;
 		    result = result.replaceAll(String.format(SUBSTITUTE_DIRECT, i), m.group(i));
+                    if (!result.equals(pre)) {
+                        System.out.println("Pre pattern = " + pre + " | Post pattern = " + result );
+                    }
 		    String regex = String.format(SUBSTITUTE_TRANSLATED, i);
 		    if(result.matches(".*" + regex + ".*")) {//crude way to say 'any match'
 			result = result.replaceAll(regex, ingredient(m, i));
