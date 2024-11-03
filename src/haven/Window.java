@@ -37,7 +37,7 @@ import java.awt.image.BufferedImage;
 
 import static haven.PUtils.*;
 
-public class Window extends Widget implements DTarget {
+public class Window extends Widget {
     public static final Pipe.Op bgblend = FragColor.blend.nil;
     public static final Pipe.Op cblend  = FragColor.blend(new BlendMode(BlendMode.Function.ADD, BlendMode.Factor.SRC_ALPHA, BlendMode.Factor.INV_SRC_ALPHA,
 									BlendMode.Function.ADD, BlendMode.Factor.ONE, BlendMode.Factor.INV_SRC_ALPHA));
@@ -89,7 +89,6 @@ public class Window extends Widget implements DTarget {
     public static final String ON_PACK = "pack";
     
     public Deco deco;
-    public boolean dt = false;
     public String cap;
     public TexRaw gbuf = null;
     private FragColor gout;
@@ -155,7 +154,7 @@ public class Window extends Widget implements DTarget {
 	if(this instanceof GItem.ContentsWindow) {
 	    return false;
 	}
-	return true;
+	return visible();
     }
 
     protected void initCfg() {
@@ -238,18 +237,18 @@ public class Window extends Widget implements DTarget {
     }
 
     public abstract static class DragDeco extends Deco {
-	public boolean mousedown(Coord c, int button) {
-	    if(super.mousedown(c, button))
+	public boolean mousedown(MouseDownEvent ev) {
+	    if(ev.propagate(this))
 		return(true);
-	    if(checkhit(c)) {
+	    if(checkhit(ev.c)) {
 		Window wnd = (Window)parent;
 		wnd.parent.setfocus(wnd);
 		wnd.raise();
-		if(button == 1)
-		    wnd.drag(c);
+		if(ev.b == 1)
+		    wnd.drag(ev.c);
 		return(true);
 	    }
-	    return(false);
+	    return(super.mousedown(ev));
 	}
     }
 
@@ -275,8 +274,8 @@ public class Window extends Widget implements DTarget {
 		    wnd.close();
 		    return;
 		}
+		wnd.reqclose();
 	    }
-	    parent.wdgmsg("close");
 	}
 
 	public DefaultDeco dragsize(boolean v) {
@@ -376,35 +375,35 @@ public class Window extends Widget implements DTarget {
 
 	private UI.Grab szdrag;
 	private Coord szdragc;
-	public boolean mousedown(Coord c, int button) {
+	public boolean mousedown(MouseDownEvent ev) {
 	    if(dragsize) {
-		Coord cc = c.sub(ca.ul);
-		if((button == 1) && hitSizer(c)) {
+		Coord c = ev.c, cc = c.sub(ca.ul);
+		if((ev.b == 1) && hitSizer(c)) {
 		    szdrag = ui.grabmouse(this);
 		    szdragc = aa.sz().sub(c);
 		    return(true);
 		}
 	    }
-	    return(super.mousedown(c, button));
+	    return(super.mousedown(ev));
 	}
 	
 	protected boolean hitSizer(Coord c) {
 	    return (c.x < ca.br.x) && (c.y < ca.br.y) && (c.y >= ca.br.y - UI.scale(25) + (ca.br.x - c.x));
 	}
 
-	public void mousemove(Coord c) {
+	public void mousemove(MouseMoveEvent ev) {
 	    if(szdrag != null)
-		((Window)parent).resize(c.add(szdragc));
-	    super.mousemove(c);
+		((Window)parent).resize(ev.c.add(szdragc));
+	    super.mousemove(ev);
 	}
 
-	public boolean mouseup(Coord c, int button) {
-	    if((button == 1) && (szdrag != null)) {
+	public boolean mouseup(MouseUpEvent ev) {
+	    if((ev.b == 1) && (szdrag != null)) {
 		szdrag.remove();
 		szdrag = null;
 		return(true);
 	    }
-	    return(super.mouseup(c, button));
+	    return(super.mouseup(ev));
 	}
 
 	public boolean checkhit(Coord c) {
@@ -528,8 +527,6 @@ public class Window extends Widget implements DTarget {
 	if(msg == "pack") {
 	    report(ON_PACK);
 	    pack();
-	} else if(msg == "dt") {
-	    dt = Utils.bv(args[0]);
 	} else if(msg == "cap") {
 	    String cap = (String)args[0];
 	    chcap(cap.equals("") ? null : cap);
@@ -558,45 +555,53 @@ public class Window extends Widget implements DTarget {
 	return((deco == null) || deco.checkhit(c));
     }
 
-    public boolean mousedown(Coord c, int button) {
-	if(super.mousedown(c, button)) {
+    public boolean mousedown(MouseDownEvent ev) {
+	if(ev.propagate(this)) {
 	    parent.setfocus(this);
 	    raise();
 	    return(true);
 	}
-	return(false);
+	return(super.mousedown(ev));
     }
 
-    public boolean mouseup(Coord c, int button) {
+    public boolean mouseup(MouseUpEvent ev) {
 	if(dm != null) {
 	    dm.remove();
 	    dm = null;
 	    updateCfg();
-	} else {
-	    super.mouseup(c, button);
+	    return(true);
 	}
-	return(true);
+	return(super.mouseup(ev));
     }
 
-    public void mousemove(Coord c) {
-	if(dm != null) {
-	    this.c = this.c.add(c.add(doff.inv()));
-	} else {
-	    super.mousemove(c);
+    public void mousemove(MouseMoveEvent ev) {
+	super.mousemove(ev);
+	if(dm != null)
+	    move(this.c.add(ev.c.sub(doff)));
+    }
+
+    public boolean handle(Event ev) {
+	if(!ev.grabbed && (ev instanceof PointerEvent)) {
+	    if(deco != null) {
+		if(checkhit(((PointerEvent)ev).c)) {
+		    super.handle(ev);
+		    ev.propagate(this);
+		    return(true);
+		}
+	    } else {
+		super.handle(ev);
+		return(ev.propagate(this));
+	    }
 	}
+	return(super.handle(ev));
     }
-
-    public boolean mousehover(Coord c, boolean hovering) {
-	super.mousehover(c, hovering);
-	return(hovering);
-    }
-
+    
     public void close() {
 	ui.destroy(this);
     }
     
-    public boolean keydown(java.awt.event.KeyEvent ev) {
-	if(super.keydown(ev))
+    public boolean keydown(KeyDownEvent ev) {
+	if(ev.propagate(this))
 	    return(true);
 	if(key_esc.match(ev)) {
 	    if(justclose)
@@ -605,29 +610,7 @@ public class Window extends Widget implements DTarget {
 		reqclose();
 	    return(true);
 	}
-	return(false);
-    }
-
-    public boolean drop(Coord cc, Coord ul) {
-	if(dt) {
-	    wdgmsg("drop", cc);
-	    return(true);
-	}
-	return(false);
-    }
-
-    public boolean iteminteract(Coord cc, Coord ul) {
-	return(false);
-    }
-
-    public Object tooltip(Coord c, Widget prev) {
-	if(!checkhit(c))
-	    return(super.tooltip(c, prev));
-	Object ret = super.tooltip(c, prev);
-	if(ret != null)
-	    return(ret);
-	else
-	    return("");
+	return(super.keydown(ev));
     }
     
     @Override

@@ -16,7 +16,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GobTimerData {
-    private static Gob interacted = null; //TODO: expand to allow multiple gob/window types, not just smelters
+    private static Gob interacted = null;
+    private static String awaitWnd = null;
     private static final Map<Long, GobTimerData> MAP = new ConcurrentHashMap<>();
     private final long id;
     
@@ -28,6 +29,10 @@ public class GobTimerData {
 	    String name = target.resid();
 	    if("gfx/terobjs/smelter".equals(name)) {
 		interacted = target;
+		awaitWnd = WindowDetector.WND_SMELTER;
+	    } else if("gfx/terobjs/fineryforge".equals(name)) {
+		interacted = target;
+		awaitWnd = WindowDetector.WND_FINERY_FORGE;
 	    } else {
 		interacted = null;
 	    }
@@ -35,7 +40,7 @@ public class GobTimerData {
 	
 	Reactor.WINDOW.subscribe(pair -> {
 	    Gob g = interacted;
-	    if(Window.ON_PACK.equals(pair.b) && g != null && WindowDetector.isWindowType(pair.a, WindowDetector.WND_SMELTER)) {
+	    if(Window.ON_PACK.equals(pair.b) && g != null && WindowDetector.isWindowType(pair.a, awaitWnd)) {
 		g.info.timer.wnd = pair.a;
 		interacted = null;
 	    }

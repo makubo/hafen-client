@@ -26,7 +26,7 @@
 
 package haven;
 
-import static haven.MCache.tilesz;
+import static haven.MCache.*;
 import static haven.OCache.posres;
 
 import auto.Bot;
@@ -45,8 +45,9 @@ import haven.render.sl.Uniform;
 import haven.render.sl.Type;
 import haven.res.gfx.fx.msrad.MSRad;
 import haven.rx.Reactor;
+import me.ender.ChatCommands;
 
-public class MapView extends PView implements DTarget, Console.Directory {
+public class MapView extends PView implements DTarget, Console.Directory, Widget.CursorQuery.Handler {
     public static final Resource.Named inspectCursor = Resource.local().loadwait("gfx/hud/curs/studyx").indir();
     public static final Resource.Named trackCursor = Resource.local().loadwait("gfx/hud/curs/track").indir();
     public static boolean clickdb = false;
@@ -66,7 +67,9 @@ public class MapView extends PView implements DTarget, Console.Directory {
     public static double plobagran = Utils.getprefd("plobagran", 12);
     private static final Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
     private long mapupdate = 0;
-    String ttip = null;
+    String stip = null;
+    RichText otip = null;
+    boolean fullTip = false;
 
     private boolean showgrid;
 
@@ -93,7 +96,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    resized();
 	}
 
-	public boolean keydown(KeyEvent ev) {
+	public boolean keydown(KeyDownEvent ev) {
 	    return(false);
 	}
 
@@ -585,7 +588,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    return(true);
 	}
 
-	public boolean keydown(KeyEvent ev) {
+	public boolean keydown(KeyDownEvent ev) {
 	    if(kb_camleft.key().match(ev)) {
 		tangl = (float)(Math.PI * 0.5 * (Math.floor((tangl / (Math.PI * 0.5)) - 0.51) + 0.5));
 		return(true);
@@ -2016,6 +2019,10 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		lastmc = pc;
 	    }
 	}
+
+	public String toString() {
+	    return("#<plob>");
+	}
     }
 
     private Collection<String> olflash = null;
@@ -2118,8 +2125,6 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	}
     }
 
-    private UI.Grab camdrag = null;
-    
     public abstract class Maptest {
 	private final Coord pc;
 
@@ -2227,17 +2232,21 @@ public class MapView extends PView implements DTarget, Console.Directory {
 			return;
 		    }
 		    if(clickb == 3) {FlowerMenu.lastGob(gob);}
-		    if(ui.modmeta && clickb == 1) {
-			ChatUI.Channel chat = ui.gui.chat.sel;
-			if(chat instanceof ChatUI.EntryChannel) {
-			    ((ChatUI.EntryChannel) chat).send(String.format("@%d", gob.id));
-			}
+		    if(ui.modflags(UI.MOD_CTRL_ALT) && clickb == 1) {
+			ChatCommands.sendGobHighlight(ui, gob.id);
 			return;
 		    }
 		}
 	    } else if(ui.gui.mapfile.domark) {
 		ui.gui.mapfile.addMarker(mc.floor(tilesz));
 		return;
+	    } else if(ui.modflags(UI.MOD_CTRL_ALT) && clickb == 1) {
+		Coord gc = mc.floor(tilesz).div(MCache.cmaps);
+		MCache.Grid grid = MapView.this.ui.sess.glob.map.getgrid(gc);
+		if(grid != null) {
+		    ChatCommands.sendPointHighlight(ui, grid.id, mc.floor().sub(gc.mul(tilesz2).mul(MCache.cmaps)));
+		    return;
+		}
 	    }
 	    if(clickb == 1) {Bot.cancelCurrent();}
 	    
@@ -2269,7 +2278,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	
 	if(CFG.QUEUE_PATHS.get()) {
 	    if(button == 1) {
-		if(ui.modmeta) {
+		if(ui.modflags() == UI.MOD_META) {
 		    args[3] = 0;
 		    send = ui.gui.pathQueue.add(mc);
 		} else {
@@ -2292,10 +2301,12 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    this.grab = null;
     }
     
-    public boolean mousedown(Coord c, int button) {
+    private UI.Grab camdrag = null;
+
+    public boolean mousedown(MouseDownEvent ev) {
 	parent.setfocus(this);
 	Loader.Future<Plob> placing_l = this.placing;
-	if(button == 3) {
+	if(ev.b == 3) {
 	    if(isInspecting()) {
 		stopInspecting();
 		return true;
@@ -2307,62 +2318,62 @@ public class MapView extends PView implements DTarget, Console.Directory {
 		return true;
 	    }
 	}
-	if(button == 2) {
-	    if(((Camera)camera).click(c)) {
+	if(ev.b == 2) {
+	    if(camdrag == null && camera.click(ev.c)) {
 		camdrag = ui.grabmouse(this);
 	    }
 	} else if((placing_l != null) && placing_l.done()) {
 	    Plob placing = placing_l.get();
 	    if(placing.lastmc != null) {
-		wdgmsg("place", placing.rc.floor(posres), (int) Math.round(placing.a * 32768 / Math.PI), button, ui.modflags());
+		wdgmsg("place", placing.rc.floor(posres), (int) Math.round(placing.a * 32768 / Math.PI), ev.b, ui.modflags());
 		ui.gui.pathQueue.start(placing.rc);
 	    }
-	} else if((grab != null) && grab.mmousedown(c, button)) {
+	} else if((grab != null) && grab.mmousedown(ev.c, ev.b)) {
 	} else {
-	    new Click(c, button).run();
+	    new Click(ev.c, ev.b).run();
 	}
 	return(true);
     }
     
-    public void mousemove(Coord c) {
+    public void mousemove(MouseMoveEvent ev) {
 	if(grab != null)
-	    grab.mmousemove(c);
+	    grab.mmousemove(ev.c);
 	Loader.Future<Plob> placing_l = this.placing;
 	if(camdrag != null) {
-	    ((Camera)camera).drag(c);
+	    camera.drag(ev.c);
 	} else if((placing_l != null) && placing_l.done()) {
 	    Plob placing = placing_l.get();
-	    if((placing.lastmc == null) || !placing.lastmc.equals(c)) {
-		placing.new Adjust(c, ui.modflags()).run();
+	    if((placing.lastmc == null) || !placing.lastmc.equals(ev.c)) {
+		placing.new Adjust(ev.c, ui.modflags()).run();
 	    }
 	} else {
-	    inspect(c);
+	    inspect(ev.c);
 	}
     }
     
-    public boolean mouseup(Coord c, int button) {
-	if(button == 2) {
+    public boolean mouseup(MouseUpEvent ev) {
+	if(ev.b == 2) {
 	    if(camdrag != null) {
 		camera.release();
 		camdrag.remove();
 		camdrag = null;
 	    }
 	} else if(grab != null) {
-	    grab.mmouseup(c, button);
+	    grab.mmouseup(ev.c, ev.b);
 	}
 	return(true);
     }
 
-    public boolean mousewheel(Coord c, int amount) {
+    public boolean mousewheel(MouseWheelEvent ev) {
 	Loader.Future<Plob> placing_l = this.placing;
-	if((grab != null) && grab.mmousewheel(c, amount))
+	if((grab != null) && grab.mmousewheel(ev.c, ev.a))
 	    return(true);
 	if((placing_l != null) && placing_l.done()) {
 	    Plob placing = placing_l.get();
-	    if(placing.adjust.rotate(placing, amount, ui.modflags()))
+	    if(placing.adjust.rotate(placing, ev.a, ui.modflags()))
 		return(true);
 	}
-	return(((Camera)camera).wheel(c, amount));
+	return(camera.wheel(ev.c, ev.a));
     }
     
     public boolean drop(final Coord cc, Coord ul) {
@@ -2394,13 +2405,13 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	return(true);
     }
 
-    public boolean keydown(KeyEvent ev) {
+    public boolean keydown(KeyDownEvent ev) {
 	Loader.Future<Plob> placing_l = this.placing;
 	if((placing_l != null) && placing_l.done()) {
 	    Plob placing = placing_l.get();
-	    if((ev.getKeyCode() == KeyEvent.VK_LEFT) && placing.adjust.rotate(placing, -1, ui.modflags()))
+	    if((ev.code == KeyEvent.VK_LEFT) && placing.adjust.rotate(placing, -1, ui.modflags()))
 		return(true);
-	    if((ev.getKeyCode() == KeyEvent.VK_RIGHT) && placing.adjust.rotate(placing, 1, ui.modflags()))
+	    if((ev.code == KeyEvent.VK_RIGHT) && placing.adjust.rotate(placing, 1, ui.modflags()))
 		return(true);
 	}
 	if(camera.keydown(ev))
@@ -2409,20 +2420,25 @@ public class MapView extends PView implements DTarget, Console.Directory {
     }
 
     public static final KeyBinding kb_grid = KeyBinding.get("grid", KeyMatch.forchar('G', KeyMatch.C));
-    public boolean globtype(char c, KeyEvent ev) {
+    public boolean globtype(GlobKeyEvent ev) {
 	if(kb_grid.key().match(ev)) {
 	    showgrid(gridlines == null);
 	    return(true);
 	}
-	return(false);
+	return(super.globtype(ev));
     }
 
     public Object tooltip(Coord c, Widget prev) {
 	if(selection != null) {
 	    if(selection.tt != null)
 		return(selection.tt);
-	} else if(ttip != null) {
-	    return ttip;
+	} else if(stip != null) {
+	    if(fullTip != ui.modshift) {
+		fullTip = ui.modshift;
+		inspect(rootxlate(ui.mc));
+	    }
+	    if(otip == null) {otip = RichText.render(stip, 0);}
+	    return otip;
 	}
 	return(super.tooltip(c, prev));
     }
@@ -2712,7 +2728,7 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	if(cursor == inspectCursor) {
 	    cursor = null;
 	}
-	ttip = null;
+	ttip(null);
     }
     
     public void toggleInspectMode() {
@@ -2728,30 +2744,39 @@ public class MapView extends PView implements DTarget, Console.Directory {
 	    new Hittest(c) {
 		@Override
 		protected void hit(Coord pc, Coord2d mc, ClickData inf) {
-		    ttip = null;
+		    ttip(null);
 		    if(inf != null) {
 			Gob gob = Gob.from(inf.ci);
 			if(gob != null) {
-			    ttip = cursor == inspectCursor ? gob.inspect() : gob.tooltip();
+			    ttip(cursor == inspectCursor ? gob.inspect(fullTip) : gob.tooltip());
 			}
 		    } else if(cursor == inspectCursor) {
 			MCache mCache = ui.sess.glob.map;
 			int tile = mCache.gettile(mc.div(tilesz).floor());
 			Resource res = mCache.tilesetr(tile);
 			if(res != null) {
-			    ttip = res.name;
+			    ttip(res.name);
 			}
 		    }
 		}
 		
 		@Override
 		protected void nohit(Coord pc) {
-		    ttip = null;
+		    ttip(null);
 		}
 	    }.run();
 	} else {
-	    ttip = null;
+	    ttip(null);
 	}
+    }
+    
+    private void ttip(String tip) {
+	if(Objects.equals(tip, stip)) {return;}
+	if(otip != null) {
+	    otip.dispose();
+	    otip = null;
+	}
+	stip = tip;
     }
     
     public void toggleTrackingMode() {
@@ -2786,11 +2811,12 @@ public class MapView extends PView implements DTarget, Console.Directory {
     }
     
     @Override
-    public Resource getcurs(Coord c) {
+    public boolean getcurs(CursorQuery ev) {
 	if(ui.gui.mapfile != null && ui.gui.mapfile.domark) {
-	    return MapWnd.markcurs;
+	    ev.set(MapWnd.markcurs);
+	    return true;
 	}
-	return super.getcurs(c);
+	return false;
     }
     
     public CompletableFuture<Coord2d> hit(Coord c) {

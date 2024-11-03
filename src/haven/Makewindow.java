@@ -278,7 +278,7 @@ public class Makewindow extends Widget {
 	    } else {
 		hoverstart = now;
 	    }
-	    if(now - hoverstart >= 1.0) {
+	    if(now - hoverstart < 1.0) {
 		if(stip == null) {
 		    BufferedImage tip = spec.shorttip();
 		    Tex tt = (tip == null) ? null : new TexI(tip);
@@ -312,14 +312,14 @@ public class Makewindow extends Widget {
 	    this.idx = idx;
 	}
 
-	public boolean mousedown(Coord c, int button) {
-	    if(button == 1) {
+	public boolean mousedown(MouseDownEvent ev) {
+	    if(ev.b == 1) {
 		if(rpag == null)
 		    Makewindow.this.wdgmsg("findrcps", idx);
-		this.cc = c;
+		this.cc = ev.c;
 		return(true);
 	    }
-	    return(super.mousedown(c, button));
+	    return(super.mousedown(ev));
 	}
 
 	public void tick(double dt) {
@@ -328,7 +328,11 @@ public class Makewindow extends Widget {
 		if(!rpag.isEmpty()) {
 		    SListMenu.of(UI.scale(250, 120), rpag,
 				 pag -> pag.button().name(), pag -> pag.button().img(),
-				 pag -> pag.button().use(new MenuGrid.Interaction(1, ui.modflags())))
+			    pag -> {
+				pag.button().use(new MenuGrid.Interaction(1, ui.modflags()));
+				CraftDBWnd db = getparent(CraftDBWnd.class);
+				if(db != null) {db.select(pag, false);}
+			    })
 			.addat(this, cc.add(UI.scale(5, 5))).tick(dt);
 		}
 		cc = null;
@@ -434,27 +438,21 @@ public class Makewindow extends Widget {
 	Coord c;
 	if(!qmod.isEmpty()) {
 	    c = new Coord(qmx, qmy);
-	    try {
-		for(Indir<Resource> qm : qmod) {
-		    Tex t = qmicon(qm);
-		    Coord sz = t.sz();
-		    if(mc.isect(c, sz))
-			return(qm.get().flayer(Resource.tooltip).t);
-		    c = c.add(sz.x + UI.scale(1), 0);
-		}
-	    } catch(Loading l) {
+	    for(Indir<Resource> qm : qmod) {
+		Tex t = qmicon(qm);
+		Coord sz = t.sz();
+		if(mc.isect(c, sz))
+		    return(qm.get().flayer(Resource.tooltip).t);
+		c = c.add(sz.x + UI.scale(1), 0);
 	    }
 	}
 	if(!tools.isEmpty()) {
 	    c = new Coord(toolx, qmy);
-	    try {
-		for(Indir<Resource> tool : tools) {
-		    Coord tsz = qmicon(tool).sz();
-		    if(mc.isect(c, tsz))
-			return(tool.get().flayer(Resource.tooltip).t);
-		    c = c.add(tsz.x + UI.scale(1), 0);
-		}
-	    } catch(Loading l) {
+	    for(Indir<Resource> tool : tools) {
+		Coord tsz = qmicon(tool).sz();
+		if(mc.isect(c, tsz))
+		    return(tool.get().flayer(Resource.tooltip).t);
+		c = c.add(tsz.x + UI.scale(1), 0);
 	    }
 	}
 	return(super.tooltip(mc, prev));

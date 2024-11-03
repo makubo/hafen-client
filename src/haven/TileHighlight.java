@@ -241,17 +241,17 @@ public class TileHighlight {
 	    }
 	    
 	    @Override
-	    public boolean mousedown(Coord c, int button) {
-		int idx = idxat(c);
+	    public boolean mousedown(MouseDownEvent ev) {
+		int idx = idxat(ev.c);
 		if((idx >= 0) && (idx < listitems())) {
-		    Coord ic = c.sub(idxc(idx));
+		    Coord ic = ev.c.sub(idxc(idx));
 		    TileItem item = listitem(idx);
 		    if(ic.x < showc.x + CheckBox.sbox.sz().x) {
 			toggle(item.res);
 			return (true);
 		    }
 		}
-		return (super.mousedown(c, button));
+		return (super.mousedown(ev));
 	    }
 	}
 	

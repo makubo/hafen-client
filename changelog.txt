@@ -1,3 +1,59 @@
+$size[14]{$u{Update for 02.11.24:}
+  * returned path queueing to ALT+LClick
+  * changed object/place highlight to CTRL+ALT+LClick
+  * fixed Craft window not updating selected recipe when recipe is selected from input list
+ 
+$size[14]{$u{Update for 01.11.24:}
+  * added option to display tree contents (seeds, leaves, bough, bark) (Options -> Display -> cog near Show object info)
+  * made ALT+Click highlight spots on map too, not only gobs
+  * made ALT+Click send message in private chat, if open, otherwise sends to party chat or area chat, regardless of currently active chat
+  * changed movement queueing to SHIFT+LClick
+  * fixed world lighting not updating as time passes
+  * merged PR with KO translation update
+  * merged PR with ZH translation
+  * merged PR with mapper tweak to not upload character creation room
+  * fixed not-full-but-with-some-water kuksa being not detected for drink refills
+ 
+$size[14]{$u{Update for 25.10.24:}
+  * merged loftar's changes
+  * fixed map window reacting to hotkeys while hidden
+ 
+$size[14]{$u{Update for 23.10.24:}
+  * merged loftar's changes
+  * added option to make cupboards have default look regardless of materials (Options -> Display -> Cupboard use default materials)
+  * holding SHIFT while inspect custom cursor is on will show gob materials
+  * fixed not being able to click on UI if ALT-Tabbed from client while rotating camera with middle mouse button
+ 
+$size[14]{$u{Update for 18.10.24:}
+  * added smelt timer for finery forge
+ 
+$size[14]{$u{Update for 12.10.24:}
+  * fixed holding CTRL to drop item with drop protection on not working unless SHIFT or ALT are pressed too
+  * fixed Take button in stockpiles
+  * allow drink refill to fill Birchbark Kuksa
+  * fixed drink refill not recognizing water barrels if gob info display is disabled
+  * merged PR with KO translation
+  * fixed rabbit/critter and speed buff auras being not clickable if flat terrain is disabled
+  * fixed Study Window not registering clicks on curios
+  * merged loftar's code
+ 
+$size[14]{$u{Update for 07.10.24:}
+  * fixed combat keybinds
+  * fixed list inventory not updating in some cases
+ 
+$size[14]{$u{Update for 01.10.24:}
+ * merged loftar's changes in preparation to steam release
+ 
+$size[14]{$u{Update for 18.09.24:}
+  * fixed inability to upload new images to sketch
+  * fixed sketch preview window not closing
+ 
+$size[14]{$u{Update for 13.09.24:}
+  * merged loftar's changes
+ 
+$size[14]{$u{Update for 05.08.24:}
+  * merged loftar's changes
+ 
 $size[14]{$u{Update for 26.07.24:}
   * merged loftar's changes
  

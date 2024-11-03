@@ -113,23 +113,23 @@ public class Inventory extends Widget implements DTarget {
 	isz = sz;
     }
     
-    public boolean mousewheel(Coord c, int amount) {
+    public boolean mousewheel(MouseWheelEvent ev) {
 	if(locked){return false;}
 	if(ui.modshift) {
 	    ExtInventory minv = getparent(GameUI.class).maininvext;
 	    if(minv != this.parent) {
-		if(amount < 0)
+		if(ev.a < 0)
 		    wdgmsg("invxf", minv.wdgid(), 1);
-		else if(amount > 0)
+		else if(ev.a > 0)
 		    minv.wdgmsg("invxf", parent.wdgid(), 1);
 	    }
 	}
 	return(true);
     }
-
+    
     @Override
-    public boolean mousedown(Coord c, int button) {
-	return !locked && super.mousedown(c, button);
+    public boolean mousedown(MouseDownEvent ev) {
+	return locked || super.mousedown(ev);
     }
 
     public void addchild(Widget child, Object... args) {
