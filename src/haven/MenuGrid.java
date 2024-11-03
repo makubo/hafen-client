@@ -881,8 +881,8 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	makeLocal("paginae/add/buildlist", Action.OPEN_QUICK_BUILD);
 	makeLocal("paginae/add/craftlist", Action.OPEN_QUICK_CRAFT);
 	makeLocal("paginae/add/autobot", Action.BOT_PICK_ALL_HERBS);
-	makeLocal("paginae/add/toggles/hide_trees", Action.TOGGLE_HIDE_TREES, CFG.HIDE_TREES::get);
-	makeLocal("paginae/add/toggles/minesweeper", CFG.SHOW_MINESWEEPER_OVERLAY);
+	makeLocal("paginae/add/hide_trees", Action.TOGGLE_HIDE_TREES, CFG.HIDE_TREES::get);
+	makeLocal("paginae/add/minesweeper", CFG.SHOW_MINESWEEPER_OVERLAY);
 	makeLocal("paginae/add/toggles/flat_terrain", CFG.FLAT_TERRAIN);
 	makeLocal("paginae/add/toggles/flavor", CFG.DISPLAY_FLAVOR);
 	makeLocal("paginae/add/refill_drinks", Action.ACT_REFILL_DRINKS);
@@ -895,15 +895,15 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	makeLocal("paginae/add/auto/aggro_one", Action.AGGRO_ONE_PVE);
 	makeLocal("paginae/add/auto/aggro_one_pvp", Action.AGGRO_ONE_PVP);
 	makeLocal("paginae/add/auto/aggro_all", Action.AGGRO_ALL);
-	makeLocal("paginae/add/toggles/info/plant-growth", Action.TOGGLE_GOB_INFO_PLANTS, () -> GobInfoOpts.enabled(InfoPart.PLANT_GROWTH));
-	makeLocal("paginae/add/toggles/info/tree-growth", Action.TOGGLE_GOB_INFO_TREE_GROWTH, () -> GobInfoOpts.enabled(InfoPart.TREE_GROWTH));
-	makeLocal("paginae/add/toggles/info/tree-content", Action.TOGGLE_GOB_INFO_TREE_CONTENT, () -> GobInfoOpts.enabled(InfoPart.TREE_CONTENTS));
-	makeLocal("paginae/add/toggles/info/health", Action.TOGGLE_GOB_INFO_HEALTH, () -> GobInfoOpts.enabled(InfoPart.HEALTH));
-	makeLocal("paginae/add/toggles/info/barrel", Action.TOGGLE_GOB_INFO_BARREL, () -> GobInfoOpts.enabled(InfoPart.BARREL));
-	makeLocal("paginae/add/toggles/info/sign", Action.TOGGLE_GOB_INFO_SIGN, () -> GobInfoOpts.enabled(InfoPart.DISPLAY_SIGN));
-	makeLocal("paginae/add/toggles/info/cheese", Action.TOGGLE_GOB_INFO_CHEESE, () -> GobInfoOpts.enabled(InfoPart.CHEESE_RACK));
-	makeLocal("paginae/add/toggles/info/quality", Action.TOGGLE_GOB_INFO_QUALITY, () -> GobInfoOpts.enabled(InfoPart.QUALITY));
-	makeLocal("paginae/add/toggles/info/timer", Action.TOGGLE_GOB_INFO_TIMER, () -> GobInfoOpts.enabled(InfoPart.TIMER));
+	makeLocal("paginae/add/info/plant-growth", Action.TOGGLE_GOB_INFO_PLANTS, () -> GobInfoOpts.enabled(InfoPart.PLANT_GROWTH));
+	makeLocal("paginae/add/info/tree-growth", Action.TOGGLE_GOB_INFO_TREE_GROWTH, () -> GobInfoOpts.enabled(InfoPart.TREE_GROWTH));
+	makeLocal("paginae/add/info/tree-content", Action.TOGGLE_GOB_INFO_TREE_CONTENT, () -> GobInfoOpts.enabled(InfoPart.TREE_CONTENTS));
+	makeLocal("paginae/add/info/health", Action.TOGGLE_GOB_INFO_HEALTH, () -> GobInfoOpts.enabled(InfoPart.HEALTH));
+	makeLocal("paginae/add/info/barrel", Action.TOGGLE_GOB_INFO_BARREL, () -> GobInfoOpts.enabled(InfoPart.BARREL));
+	makeLocal("paginae/add/info/sign", Action.TOGGLE_GOB_INFO_SIGN, () -> GobInfoOpts.enabled(InfoPart.DISPLAY_SIGN));
+	makeLocal("paginae/add/info/cheese", Action.TOGGLE_GOB_INFO_CHEESE, () -> GobInfoOpts.enabled(InfoPart.CHEESE_RACK));
+	makeLocal("paginae/add/info/quality", Action.TOGGLE_GOB_INFO_QUALITY, () -> GobInfoOpts.enabled(InfoPart.QUALITY));
+	makeLocal("paginae/add/info/timer", Action.TOGGLE_GOB_INFO_TIMER, () -> GobInfoOpts.enabled(InfoPart.TIMER));
     }
     
     private void makeLocal(String path, CustomPaginaAction action, Supplier<Boolean> toggleState) {
