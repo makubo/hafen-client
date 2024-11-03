@@ -77,7 +77,7 @@ public class BotUtil {
 	synchronized (waiter) { waiter.notifyAll(); }
     }
     
-    static boolean isOnRadar(Gob gob) {
+    public static boolean isOnRadar(Gob gob) {
 	if(!CFG.AUTO_PICK_ONLY_RADAR.get()) {return true;}
 	Boolean onRadar = gob.isOnRadar();
 	return onRadar == null || onRadar;
