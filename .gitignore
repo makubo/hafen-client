@@ -5,9 +5,10 @@
 /build.properties
 *~
 out
-/resources/compiled
-/resources/classes
+/resources/compiled/
+/resources/classes/
 /resources/custom/
+/nbproject/private/
 /accounts.json
 /config.json
 /error.log
