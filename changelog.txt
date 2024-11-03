@@ -3,6 +3,8 @@ $size[14]{$u{Update for 03.11.24:}
   * added 'Xtended -> Minesweeper' to menu grid - stores amount of dust fallen when mining if you were present to witness it and can show those numbers when toggled on
   * added option to export/import minesweeper data when trying to export/import map
   * made Display Flavor objects option apply instantly
+  * added menu action to toggle flavor objects
+  * added menu action to toggle flat terrain
  
 $size[14]{$u{Update for 02.11.24:}
   * returned path queueing to ALT+LClick
