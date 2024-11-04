@@ -277,7 +277,7 @@ public class Equipory extends Widget implements DTarget {
 	super.attached();
 
 	Coord pos = pos("br");
-	if(!isMe()) {
+	if(isMe()) {
 	    adda(new OptWnd.CFGBox("Auto drop parasites", CFG.AUTO_DROP_PARASITES, "Drop leeches and ticks as soon as they attach to you.") {
 		@Override
 		public void set(boolean a) {
