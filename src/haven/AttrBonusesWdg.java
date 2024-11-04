@@ -51,6 +51,17 @@ public class AttrBonusesWdg extends Widget implements ItemInfo.Owner {
     
     @Override
     public void draw(GOut g) {
+	checkAttributes();
+	if(needUpdate) {
+	    doUpdate();
+	}
+	if(charWnd == null) {
+	    charWnd = ui.gui.chrwdg;
+	    if(charWnd != null) {needBuild = true;}
+	}
+	if(needBuild) {
+	    build();
+	}
 	if(needRedraw) {
 	    render();
 	}
@@ -81,22 +92,6 @@ public class AttrBonusesWdg extends Widget implements ItemInfo.Owner {
 	    needRedraw = false;
 	} catch (Loading ignored) {}
     }
-
-    @Override
-    public void tick(double dt) {
-	super.tick(dt);
-	checkAttributes();
-	if(needUpdate) {
-	    doUpdate();
-	}
-	if(charWnd == null) {
-	    charWnd = ui.gui.chrwdg;
-	    if(charWnd != null) {needBuild = true;}
-	}
-	if(needBuild) {
-	    build();
-	}
-    }
     
     private void checkAttributes() {
 	long tseq = ui.sess.glob.attrseq;
@@ -120,13 +115,6 @@ public class AttrBonusesWdg extends Widget implements ItemInfo.Owner {
 		.flatMap(Collection::stream)
 		.collect(Collectors.toList());
 	    
-	    int miningStrength = 0;
-	    for (Entry<Resource, Integer> e : tmp) {
-		if(e.getKey() == mining) {
-		    miningStrength = Math.max(miningStrength, e.getValue());
-		}
-	    }
-	    
 	    bonuses = tmp.stream()
 		.filter(e -> e.getKey() != mining)
 		.collect(
@@ -138,6 +126,13 @@ public class AttrBonusesWdg extends Widget implements ItemInfo.Owner {
 		);
 	    
 	    if(isMe) {
+		int miningStrength = 0;
+		for (Entry<Resource, Integer> e : tmp) {
+		    int value;
+		    if(e.getKey() == mining && miningStrength < (value = e.getValue())) {
+			miningStrength = value;
+		    }
+		}
 		if(miningStrength > 0) {
 		    bonuses.put(mining, miningStrength);
 		}

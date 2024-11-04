@@ -7,6 +7,9 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import haven.MenuGrid.Pagina;
+import haven.res.ui.tt.attrmod.AttrMod;
+import haven.res.ui.tt.slot.Slotted;
+import haven.res.ui.tt.slots.ISlots;
 import haven.resutil.Curiosity;
 import haven.resutil.FoodInfo;
 import me.ender.Reflect;
@@ -19,11 +22,9 @@ import java.util.stream.Collectors;
 import static haven.QualityList.SingleType.*;
 
 public class ItemData {
-    public static final String INFO_CLASS_GILDING = "haven.res.ui.tt.slot.Slotted";
-    public static final String INFO_CLASS_SLOTS = "haven.res.ui.tt.slots.ISlots";
     private static final ItemData EMPTY = new ItemData();
     private static Gson gson;
-    private static Map<String, ItemData> item_data = new LinkedHashMap<String, ItemData>(9, 0.75f, true) {
+    private static final Map<String, ItemData> item_data = new LinkedHashMap<String, ItemData>(9, 0.75f, true) {
 	private static final long serialVersionUID = 1L;
 
 	protected boolean removeEldestEntry(Map.Entry<String, ItemData> eldest) {
@@ -58,14 +59,14 @@ public class ItemData {
 
 	    if(ii instanceof Curiosity) {
 		curiosity = new Curiosity.Data((Curiosity) ii, q);
-	    } else if(ii instanceof FoodInfo){
+	    } else if(ii instanceof FoodInfo) {
 		food = new FoodInfo.Data((FoodInfo) ii, q);
-	    } else if("Gast".equals(className)){
-	        gast = new GastronomyData(ii, q);
-	    } else if(INFO_CLASS_SLOTS.equals(className)){
-		slots = SlotsData.make(ii);
-	    } else if(INFO_CLASS_GILDING.equals(className)){
-	        gilding = SlottedData.make(ii, q);
+	    } else if("Gast".equals(className)) {
+		gast = new GastronomyData(ii, q);
+	    } else if(ii instanceof ISlots) {
+		slots = SlotsData.make((ISlots) ii);
+	    } else if(ii instanceof Slotted) {
+		gilding = SlottedData.make((Slotted) ii, q);
 	    }
 	    
 	    Pair<Integer, Integer> a = ItemInfo.getArmor(info);
@@ -302,10 +303,10 @@ public class ItemData {
 	    }
 	    return params;
 	}
-	
-	public static Map<Resource, Integer> parse(List<ItemInfo> attrs, QualityList q){
+
+	public static Map<Resource, Integer> parse(List<ItemInfo> attrs, QualityList q) {
 	    Map<Resource, Integer> parsed = new HashMap<>(attrs.size());
-	    ItemInfo.parseAttrMods(parsed, attrs);
+	    ItemInfo.parseAttrMods(parsed, ItemInfo.findall(AttrMod.class, attrs));
 	    QualityList.Quality single = q.single(Quality);
 	    if(single == null) {
 		single = QualityList.DEFAULT;
@@ -347,16 +348,9 @@ public class ItemData {
 	    this.pmax = pmax;
 	    this.attrs = attrs;
 	}
-    
-	public static SlotsData make(ItemInfo info){
-            if(info!=null){
-		int left = Reflect.getFieldValueInt(info, "left");
-		double pmin = Reflect.getFieldValueDouble(info, "pmin");
-		double pmax = Reflect.getFieldValueDouble(info, "pmax");
-		Resource[] attrres = (Resource[]) Reflect.getFieldValue(info, "attrs");
-		return new SlotsData(left, pmin, pmax, attrres);
-	    }
-            return null;
+
+	public static SlotsData make(ISlots info) {
+	    return new SlotsData(info.left, info.pmin, info.pmax, info.attrs);
 	}
         
 	@Override
@@ -381,7 +375,7 @@ public class ItemData {
 	public final double pmin;
 	public final double pmax;
 	public final Resource[] attrs;
-	private Map<Resource, Integer> bonuses;
+	private final Map<Resource, Integer> bonuses;
 	
 	private SlottedData(double pmin, double pmax, Resource[] attrs, Map<Resource, Integer> bonuses) {
 	    this.pmin = pmin;
@@ -410,25 +404,9 @@ public class ItemData {
 	    }
 	    return ItemInfo.make(sess, "ui/tt/slot", params.toArray());
 	}
-	
-	
-	public static SlottedData make(ItemInfo info, QualityList q) {
-	    if(info != null) {
-		double pmin = Reflect.getFieldValueDouble(info, "pmin");
-		double pmax = Reflect.getFieldValueDouble(info, "pmax");
-		Resource[] attrres = (Resource[]) Reflect.getFieldValue(info, "attrs");
-		Object sub = Reflect.getFieldValue(info, "sub");
-		List<ItemInfo> bonusInfos;
-		if(sub instanceof List){
-		    //noinspection unchecked
-		    bonusInfos = (List<ItemInfo>) sub;
-		} else{
-		    bonusInfos = new ArrayList<>();
-		}
-		Map<Resource, Integer> bonuses = AttrData.parse(bonusInfos, q);
-		return new SlottedData(pmin, pmax, attrres, bonuses);
-	    }
-	    return null;
+
+	public static SlottedData make(Slotted info, QualityList q) {
+	    return new SlottedData(info.pmin, info.pmax, info.attrs, AttrData.parse(info.sub, q));
 	}
     }
     

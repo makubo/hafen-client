@@ -26,6 +26,9 @@
 
 package haven;
 
+import haven.res.ui.tt.attrmod.AttrMod;
+import haven.res.ui.tt.slot.Slotted;
+import haven.res.ui.tt.slots.ISlots;
 import me.ender.DamageTip;
 import me.ender.Reflect;
 
@@ -611,21 +614,19 @@ public abstract class ItemInfo {
     
     @SuppressWarnings("unchecked")
     public static Map<Resource, Integer> getBonuses(List<ItemInfo> infos, Map<String, Glob.CAttr> attrs) {
-	List<ItemInfo> slotInfos = ItemInfo.findall(ItemData.INFO_CLASS_SLOTS, infos);
-	List<ItemInfo> gilding = ItemInfo.findall(ItemData.INFO_CLASS_GILDING, infos);
+	List<ISlots> slotInfos = ItemInfo.findall(ISlots.class, infos);
+	List<Slotted> gilding = ItemInfo.findall(Slotted.class, infos);
 	Map<Resource, Integer> bonuses = new HashMap<>();
 	try {
-	    for (ItemInfo islots : slotInfos) {
-		List<Object> slots = (List<Object>) Reflect.getFieldValue(islots, "s");
-		for (Object slot : slots) {
-		    parseAttrMods(bonuses, (List) Reflect.getFieldValue(slot, "info"));
+	    for (ISlots islots : slotInfos) {
+		for (ISlots.SItem slot : islots.s) {
+		    parseAttrMods(bonuses, ItemInfo.findall(AttrMod.class, slot.info));
 		}
 	    }
-	    for (ItemInfo info : gilding) {
-		List<Object> slots = (List<Object>) Reflect.getFieldValue(info, "sub");
-		parseAttrMods(bonuses, slots);
+	    for (Slotted info : gilding) {
+		parseAttrMods(bonuses, ItemInfo.findall(AttrMod.class, info.sub));
 	    }
-	    parseAttrMods(bonuses, ItemInfo.findall("haven.res.ui.tt.attrmod.AttrMod", infos));
+	    parseAttrMods(bonuses, ItemInfo.findall(AttrMod.class, infos));
 	} catch (Exception ignored) {}
 	Pair<Integer, Integer> wear = ItemInfo.getWear(infos);
 	Pair<Integer, Integer> armor = ItemInfo.getArmor(infos);
@@ -659,8 +660,6 @@ public abstract class ItemInfo {
 		    Object spec = Reflect.getFieldValue(input, "spec");
 		    ResData resd = (ResData) Reflect.getFieldValue(spec, "res");
 		    Resource r = resd.res.get();
-		    //Resource.Tooltip tt = r.layer(Resource.tooltip);
-		    //System.out.printf("%s x %d%n", (tt != null) ? tt.t : r.name, num);
 		    result.add(new Pair<>(r, num));
 		}
 	    }
@@ -669,13 +668,12 @@ public abstract class ItemInfo {
     }
 
 
-    @SuppressWarnings("unchecked")
-    public static void parseAttrMods(Map<Resource, Integer> bonuses, List infos) {
-	for (Object inf : infos) {
-	    List<Object> mods = (List<Object>) Reflect.getFieldValue(inf, "mods");
-	    for (Object mod : mods) {
-		Resource attr = (Resource) Reflect.getFieldValue(mod, "attr");
-		int value = Reflect.getFieldValueInt(mod, "mod");
+    public static void parseAttrMods(Map<Resource, Integer> bonuses, List<AttrMod> infos) {
+	for (AttrMod inf : infos) {
+	    Collection<AttrMod.Mod> mods = inf.mods;
+	    for (AttrMod.Mod mod : mods) {
+		Resource attr = mod.attr;
+		int value = mod.mod;
 		if (bonuses.containsKey(attr)) {
 		    bonuses.put(attr, bonuses.get(attr) + value);
 		} else {
@@ -683,24 +681,6 @@ public abstract class ItemInfo {
 		}
 	    }
 	}
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Map<Resource, Integer> parseAttrMods2(List infos) {
-	Map<Resource, Integer> bonuses = new HashMap<>();
-	for (Object inf : infos) {
-	    List<Object> mods = (List<Object>) Reflect.getFieldValue(inf, "mods");
-	    for (Object mod : mods) {
-		Resource attr = (Resource) Reflect.getFieldValue(mod, "attr");
-		int value = Reflect.getFieldValueInt(mod, "mod");
-		if (bonuses.containsKey(attr)) {
-		    bonuses.put(attr, bonuses.get(attr) + value);
-		} else {
-		    bonuses.put(attr, value);
-		}
-	    }
-	}
-	return bonuses;
     }
 
     private static String dump(Object arg) {
