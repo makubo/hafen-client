@@ -17,6 +17,7 @@ import me.ender.Reflect;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static haven.QualityList.SingleType.*;
@@ -213,6 +214,13 @@ public class ItemData {
 	    gson = builder.create();
 	}
 	return gson;
+    }
+
+    public static boolean hasFoodInfo(GItem item) {
+	try {
+	    return item.info().stream().anyMatch(i -> i instanceof FoodInfo);
+	} catch (Loading ignored) {}
+	return false;
     }
 
     public interface ITipData {

@@ -32,6 +32,7 @@ import haven.res.ui.tt.slot.Slotted;
 import haven.res.ui.tt.slots.ISlots;
 import haven.resutil.Curiosity;
 import me.ender.ClientUtils;
+import me.ender.ItemHelpers;
 import me.ender.Reflect;
 
 import java.awt.*;
@@ -460,7 +461,9 @@ public class WItem extends Widget implements DTarget {
 	if(checkXfer(ev.b)) {
 	    return true;
 	} else if(ev.b == 1) {
-	    item.wdgmsg("take", ev.c);
+	    if(ItemHelpers.canTake(this)) {
+		item.wdgmsg("take", ev.c);
+	    }
 	    return true;
 	} else if(ev.b == 3) {
 	    synchronized (rClickListeners) {
