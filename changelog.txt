@@ -5,6 +5,7 @@ $size[14]{$u{Update for 04.11.24:}
   * do not try queueing path if cursor is not default
   * added option to auto drop all parasites (leeches and ticks)
   * added "Steal" and "Drop" buttons to equipment screen of other characters
+  * added option to preserve cutlery
  
 $size[14]{$u{Update for 03.11.24:}
   * allow drink refill to work on buckets in hands
