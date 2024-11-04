@@ -449,7 +449,7 @@ public abstract class ItemInfo {
 	return(ret);
     }
 
-    public static BufferedImage longtip(List<ItemInfo> info) {
+    public static BufferedImage longtip(List<? extends ItemInfo> info) {
 	Layout l = new Layout();
 	for(ItemInfo ii : info) {
 	    if(ii instanceof Tip) {
