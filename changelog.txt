@@ -1,3 +1,8 @@
+$size[14]{$u{Update for 04.11.24:}
+  * fixed AttrMod errors caused by player having VERY old resource cache
+  * fixed mapper crash during character creation
+  * fixed crash on viewing map icons on 1.15 UI scale
+ 
 $size[14]{$u{Update for 03.11.24:}
   * allow drink refill to work on buckets in hands
   * added 'Xtended -> Minesweeper' to menu grid - stores amount of dust fallen when mining if you were present to witness it and can show those numbers when toggled on
