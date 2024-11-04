@@ -295,11 +295,22 @@ public class Equipory extends Widget implements DTarget {
 
     private boolean isMe() {return this == ui.gui.equipory;}
 
+    private boolean hasBatCape;
+    long batSeq = -1;
+
+    public boolean hasBatCape() {
+	//look into making this caching flexible if we ever use this for more than bat capes
+	if(seq != batSeq) {
+	    hasBatCape = has("/batcape");
+	    batSeq = seq;
+	}
+	return hasBatCape;
+    }
+
     public boolean has(String name) {
-	for (WItem wItem : slots) {
+	for (GItem item : wmap.keySet()) {
 	    try {
-		if(wItem == null) {continue;}
-		return wItem.item.resname().contains(name);
+		return item.resname().contains(name);
 	    } catch (Loading ignored) {
 		return false;
 	    }

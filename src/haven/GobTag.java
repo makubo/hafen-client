@@ -247,7 +247,7 @@ public enum GobTag {
                     System.out.println(name);
                 }
                 if(name.contains("/bat")) {
-                    if(equipory == null || !equipory.has("/batcape")) {
+                    if(equipory == null || !equipory.hasBatCape()) {
                         tags.add(AGGRESSIVE);
                     }
                 }
