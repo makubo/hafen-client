@@ -152,7 +152,7 @@ public class Equipory extends Widget implements DTarget {
 	    }, bgc);
 //	ava.color = null;
 
-	bonuses = add(new AttrBonusesWdg(isz.y), isz.x + 5, 0);
+	bonuses = add(new AttrBonusesWdg(isz.y - UI.scale(20)), isz.x + 5, 0);
 	pack();
     }
 
@@ -275,15 +275,21 @@ public class Equipory extends Widget implements DTarget {
     @Override
     protected void attached() {
 	super.attached();
-	
-	if(isMe()) {
+
+	Coord pos = pos("br");
+	if(!isMe()) {
 	    adda(new OptWnd.CFGBox("Auto drop parasites", CFG.AUTO_DROP_PARASITES, "Drop leeches and ticks as soon as they attach to you.") {
 		@Override
 		public void set(boolean a) {
 		    super.set(a);
 		    if(a) {wmap.keySet().forEach(Equipory.this::checkForParasites);}
 		}
-	    }, bonuses.pos("br"), 1, 1);
+	    }, pos, 1, 1);
+	} else {
+	    int w = UI.scale(45);
+	    pos = adda(new Button(w, "Drop", false, this::dropAll).settip("Drop all equipped items"), pos, 1, 1)
+		.pos("ul").subs(3, 0);
+	    adda(new Button(w, "Steal", false, this::transferAll).settip("Take all equipped items"), pos, 1, 0);
 	}
     }
 
@@ -328,6 +334,10 @@ public class Equipory extends Widget implements DTarget {
 	lastParasiteCheck = now;
 	toCheckForParasites.removeIf(this::processParasite);
     }
+
+    private void dropAll() {wmap.keySet().forEach(GItem::drop);}
+
+    private void transferAll() {wmap.keySet().forEach(GItem::transfer);}
     
     public void sendDrop() {
 	sendDrop(-1);

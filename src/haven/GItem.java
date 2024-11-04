@@ -445,7 +445,10 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
     public void drop() {
 	onBound(widget -> wdgmsg("drop", Coord.z));
     }
-    
+
+    public void transfer() {
+	onBound(widget -> wdgmsg("transfer", Coord.z, 1));
+    }
 
     private Widget contparent() {
 	/* XXX: This is a bit weird, but I'm not sure what the alternative is... */
