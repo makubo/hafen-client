@@ -298,6 +298,7 @@ public class Equipory extends Widget implements DTarget {
     public boolean has(String name) {
 	for (WItem wItem : slots) {
 	    try {
+		if(wItem == null) {continue;}
 		return wItem.item.resname().contains(name);
 	    } catch (Loading ignored) {
 		return false;
