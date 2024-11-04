@@ -176,6 +176,7 @@ public class Equipory extends Widget implements DTarget {
 	    v.trimToSize();
 	    g.sendttupdate = true;
 	    wmap.put(g, v);
+	    checkForParasites(g);
 	    synchronized (ava) {seq++;}
 	} else {
 	    super.addchild(child, args);
@@ -264,16 +265,68 @@ public class Equipory extends Widget implements DTarget {
     public boolean iteminteract(Coord cc, Coord ul) {
 	return(false);
     }
-    
-    public boolean has(String name) {
-	return wmap.keySet().stream()
-	    .anyMatch(item -> {
-		try {
-		    return item.resname().contains(name);
-		} catch (Loading ignored) {
-		    return false;
+
+    @Override
+    public void tick(double dt) {
+	super.tick(dt);
+	processParasites();
+    }
+
+    @Override
+    protected void attached() {
+	super.attached();
+	
+	if(isMe()) {
+	    adda(new OptWnd.CFGBox("Auto drop parasites", CFG.AUTO_DROP_PARASITES, "Drop leeches and ticks as soon as they attach to you.") {
+		@Override
+		public void set(boolean a) {
+		    super.set(a);
+		    if(a) {wmap.keySet().forEach(Equipory.this::checkForParasites);}
 		}
-	    });
+	    }, bonuses.pos("br"), 1, 1);
+	}
+    }
+
+    private boolean isMe() {return this == ui.gui.equipory;}
+
+    public boolean has(String name) {
+	for (WItem wItem : slots) {
+	    try {
+		return wItem.item.resname().contains(name);
+	    } catch (Loading ignored) {
+		return false;
+	    }
+	}
+	return false;
+    }
+
+    private static final List<GItem> toCheckForParasites = new LinkedList<>();
+    private long lastParasiteCheck = 0;
+
+    private void checkForParasites(GItem item) {
+	if(CFG.AUTO_DROP_PARASITES.get() && !processParasite(item)) {
+	    toCheckForParasites.add(item);
+	}
+    }
+
+    private boolean processParasite(GItem item) {
+	try {
+	    String name = item.resname();
+	    if(name.contains("/leech") || name.contains("/tick")) {
+		item.wdgmsg("drop", Coord.z);
+	    }
+	    return true;
+	} catch (Loading ignored) {
+	    return false;
+	}
+    }
+
+    private void processParasites() {
+	if(!CFG.AUTO_DROP_PARASITES.get() || toCheckForParasites.isEmpty()) {return;}
+	long now = System.currentTimeMillis();
+	if(now - lastParasiteCheck < 50) {return;}
+	lastParasiteCheck = now;
+	toCheckForParasites.removeIf(this::processParasite);
     }
     
     public void sendDrop() {
