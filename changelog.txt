@@ -1,3 +1,8 @@
+$size[14]{$u{Update for 04.11.24:}
+  * fixed AttrMod errors caused by player having VERY old resource cache
+  * fixed mapper crash during character creation
+  * fixed crash on viewing map icons on 1.15 UI scale
+ 
 $size[14]{$u{Update for 02.11.24:}
   * returned path queueing to ALT+LClick
   * changed object/place highlight to CTRL+ALT+LClick
