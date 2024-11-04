@@ -1,5 +1,7 @@
 package haven;
 
+import haven.res.ui.tt.attrmod.AttrMod;
+
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.Map.Entry;
@@ -180,20 +182,14 @@ public class AttrBonusesWdg extends Widget implements ItemInfo.Owner {
 	} catch (Loading ignored) {}
     }
 
-    private ItemInfo make(Collection<Entry<Resource, Integer>> mods) {
-	if(mods.isEmpty()) {
+    private ItemInfo make(Collection<Entry<Resource, Integer>> values) {
+	if(values.isEmpty()) {
 	    return null;
 	}
-	Resource res = Resource.remote().load("ui/tt/attrmod").get();
-	ItemInfo.InfoFactory f = res.layer(Resource.CodeEntry.class).get(ItemInfo.InfoFactory.class);
-	Object[] args = new Object[mods.size() * 2 + 1];
-	int i = 1;
-	for (Entry<Resource, Integer> entry : mods) {
-	    args[i] = ui.sess.getresid(entry.getKey());
-	    args[i + 1] = entry.getValue();
-	    i += 2;
-	}
-	return f.build(this, null, args);
+	
+	return new AttrMod(this, values.stream()
+	    .map(m -> new AttrMod.Mod(m.getKey(), m.getValue()))
+	    .collect(Collectors.toList()));
     }
 
     private int BY_PRIORITY(Entry<Resource, Integer> o1, Entry<Resource, Integer> o2) {
