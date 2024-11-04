@@ -609,7 +609,13 @@ public class PUtils {
 	Coord sz = imgsz(img);
 	if(tsz.equals(sz))
 	    return(img);
-	return(convolve(img, tsz, uifilter));
+	
+	//TODO: find better solution
+	//this prevents error when map flag marker scaled to 1.15 has one dimension larger and another smaller than target size
+	if((sz.x >= tsz.x && sz.y >= tsz.y) || (sz.x <= tsz.x && sz.y <= tsz.y)) {
+	    return (convolve(img, tsz, uifilter));
+	}
+	return img;
     }
 
     public static void main(String[] args) throws Exception {
