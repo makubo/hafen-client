@@ -280,7 +280,7 @@ public class ItemData {
     
     private static String FEPPerHunger(double glut, double fepSum) {
 	return glut != 0
-	    ? Utils.odformat2(fepSum / (100 * glut), 2)
+	    ? Utils.odformat2(fepSum / (1000d * glut), 3)
 	    : fepSum == 0 ? "0" : "∞";
     }
     
