@@ -32,8 +32,8 @@ public class L10N {
 	WINDOW("window", true),
 	LABEL("label", true),
 	FLOWER("flower", true),
-        BIOME("biome"),
-        MSG("msg");
+	BIOME("biome"),
+	MSG("msg");
     
 	public final String name;
 	public final boolean useMatch;
