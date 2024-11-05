@@ -1,6 +1,7 @@
 package haven;
 
 import haven.QualityList.SingleType;
+import haven.res.ui.tt.gast.Gast;
 import haven.resutil.Curiosity;
 import haven.resutil.FoodInfo;
 import me.ender.ClientUtils;
@@ -572,15 +573,16 @@ public class ItemFilter {
 	
 	@Override
 	protected boolean match(ItemInfo item) {
-	    if(Reflect.is(item, "haven.res.ui.tt.gast.Gast")) {
+	    if(item instanceof Gast) {
+		Gast gast = (Gast) item;
 		if(text.isEmpty()) {
 		    return true;
 		}
 		if("fep".startsWith(text)) {
-		    return test(ClientUtils.round(100D * Reflect.getFieldValueDouble(item, "fev"), 1));
+		    return test(ClientUtils.round(100D * gast.fev, 1));
 		}
 		if("hunger".startsWith(text)) {
-		    return test(ClientUtils.round(100D * Reflect.getFieldValueDouble(item, "glut"), 1));
+		    return test(ClientUtils.round(100D * gast.glut, 1));
 		}
 	    }
 	    return false;

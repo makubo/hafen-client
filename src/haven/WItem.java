@@ -30,6 +30,7 @@ import haven.QualityList.SingleType;
 import haven.render.*;
 import haven.res.ui.tt.slot.Slotted;
 import haven.res.ui.tt.slots.ISlots;
+import haven.res.ui.tt.wear.Wear;
 import haven.resutil.Curiosity;
 import me.ender.ClientUtils;
 import me.ender.ItemHelpers;
@@ -212,9 +213,9 @@ public class WItem extends Widget implements DTarget {
     }));
     
     public final AttrCache<Tex> durability = new AttrCache<Tex>(this::info, AttrCache.cache(info -> {
-	Pair<Integer, Integer> wear = ItemInfo.getWear(info);
+	Wear wear = ItemInfo.getWear(info);
 	if(wear == null) return (null);
-	return Text.renderstroked(String.valueOf(wear.b - wear.a), DURABILITY_COLOR, Color.BLACK).tex();
+	return Text.renderstroked(String.valueOf(wear.m - wear.d), DURABILITY_COLOR, Color.BLACK).tex();
     })) {
 	@Override
 	public Tex get() {
@@ -223,9 +224,9 @@ public class WItem extends Widget implements DTarget {
     };
     
     public final AttrCache<Pair<Double, Color>> wear = new AttrCache<>(this::info, AttrCache.cache(info->{
-	Pair<Integer, Integer> wear = ItemInfo.getWear(info);
+	Wear wear = ItemInfo.getWear(info);
 	if(wear == null) return (null);
-	double bar = (float) (wear.b - wear.a) / wear.b;
+	double bar = (float) (wear.m - wear.d) / wear.m;
 	return new Pair<>(bar, Utils.blendcol(bar, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN));
     }));
     

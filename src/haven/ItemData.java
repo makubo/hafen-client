@@ -10,6 +10,7 @@ import haven.MenuGrid.Pagina;
 import haven.res.ui.tt.attrmod.AttrMod;
 import haven.res.ui.tt.slot.Slotted;
 import haven.res.ui.tt.slots.ISlots;
+import haven.res.ui.tt.wear.Wear;
 import haven.resutil.Curiosity;
 import haven.resutil.FoodInfo;
 import me.ender.Reflect;
@@ -75,16 +76,16 @@ public class ItemData {
 		armor = new ArmorData(a, q);
 	    }
 	    
-	    Pair<Integer, Integer> w = ItemInfo.getWear(info);
+	    Wear w = ItemInfo.getWear(info);
 	    if(w != null) {
 		QualityList.Quality single = q.single(Quality);
 		if(single == null) {
 		    single = QualityList.DEFAULT;
 		}
-		wear = (int) Math.round(w.b / (a != null ? single.value / 10.0 : single.multiplier));
+		wear = (int) Math.round(w.m / (a != null ? single.value / 10.0 : single.multiplier));
 	    }
 	    
-	    List<ItemInfo> attrs = ItemInfo.findall("haven.res.ui.tt.attrmod.AttrMod", info);
+	    List<AttrMod> attrs = ItemInfo.findall(AttrMod.class, info);
 	    if(!attrs.isEmpty()){
 		attributes = AttrData.parse(attrs, q);
 	    }
@@ -391,9 +392,13 @@ public class ItemData {
 	    return params;
 	}
 
-	public static Map<Resource, Integer> parse(List<ItemInfo> attrs, QualityList q) {
+	public static Map<Resource, Integer> parseInfo(List<ItemInfo> attrs, QualityList q) {
+	    return parse(ItemInfo.findall(AttrMod.class, attrs), q);
+	}
+
+	public static Map<Resource, Integer> parse(List<AttrMod> attrs, QualityList q) {
 	    Map<Resource, Integer> parsed = new HashMap<>(attrs.size());
-	    ItemInfo.parseAttrMods(parsed, ItemInfo.findall(AttrMod.class, attrs));
+	    ItemInfo.parseAttrMods(parsed, attrs);
 	    QualityList.Quality single = q.single(Quality);
 	    if(single == null) {
 		single = QualityList.DEFAULT;
@@ -493,7 +498,7 @@ public class ItemData {
 	}
 
 	public static SlottedData make(Slotted info, QualityList q) {
-	    return new SlottedData(info.pmin, info.pmax, info.attrs, AttrData.parse(info.sub, q));
+	    return new SlottedData(info.pmin, info.pmax, info.attrs, AttrData.parseInfo(info.sub, q));
 	}
     }
     

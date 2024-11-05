@@ -29,6 +29,7 @@ package haven;
 import haven.res.ui.tt.attrmod.AttrMod;
 import haven.res.ui.tt.slot.Slotted;
 import haven.res.ui.tt.slots.ISlots;
+import haven.res.ui.tt.wear.Wear;
 import me.ender.DamageTip;
 import me.ender.Reflect;
 
@@ -590,14 +591,8 @@ public abstract class ItemInfo {
 	return Contents.Content.EMPTY;
     }
     
-    public static Pair<Integer, Integer> getWear(List<ItemInfo> infos) {
-	infos = findall("haven.res.ui.tt.wear.Wear", infos);
-	for (ItemInfo info : infos) {
-	    if(Reflect.hasField(info, "m") && Reflect.hasField(info, "d")){
-		return new Pair<>(Reflect.getFieldValueInt(info, "d"), Reflect.getFieldValueInt(info, "m"));
-	    }
-	}
-	return null;
+    public static Wear getWear(List<ItemInfo> infos) {
+	return find(Wear.class, infos);
     }
 
     public static Pair<Integer, Integer> getArmor(List<ItemInfo> infos) {
@@ -628,9 +623,9 @@ public abstract class ItemInfo {
 	    }
 	    parseAttrMods(bonuses, ItemInfo.findall(AttrMod.class, infos));
 	} catch (Exception ignored) {}
-	Pair<Integer, Integer> wear = ItemInfo.getWear(infos);
+	Wear wear = ItemInfo.getWear(infos);
 	Pair<Integer, Integer> armor = ItemInfo.getArmor(infos);
-	if (wear != null && armor != null && !Objects.equals(wear.a, wear.b)) {
+	if(wear != null && armor != null && wear.d < wear.m) {
 	    bonuses.put(armor_hard, armor.a);
 	    bonuses.put(armor_soft, armor.b);
 	}

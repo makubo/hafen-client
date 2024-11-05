@@ -1,6 +1,7 @@
 package me.ender;
 
 import haven.*;
+import haven.res.ui.tt.wear.Wear;
 
 import java.util.Optional;
 import java.util.Set;
@@ -41,9 +42,9 @@ public class ItemHelpers {
 	    .filter(i -> i.isz.equals(DISHES_SZ) || i.isz.equals(TABLECLOTH_SZ))
 	    .flatMap(i -> i.children(WItem.class).stream())
 	    .filter(w -> {
-		Pair<Integer, Integer> wear = ItemInfo.getWear(w.item.info());
+		Wear wear = ItemInfo.getWear(w.item.info());
 		if(wear == null) {return false;}
-		return wear.b - wear.a <= DISH_HP_WARNING;
+		return wear.m - wear.d <= DISH_HP_WARNING;
 	    })
 	    .findFirst();
 
