@@ -3,6 +3,8 @@ $size[14]{$u{Update for 05.11.24:}
   * fixed drink refill not seeing water barrels
   * added beech nuts to tree contents
   * improved (but not fully fixed) detection of friendlies as enemies on login
+  * added option to show full item tooltip instantly (Options -> UI -> Instant full tooltips)
+  * fixed item filter not working for symbel stats
  
 $size[14]{$u{Update for 04.11.24:}
   * fixed AttrMod errors caused by player having VERY old resource cache
