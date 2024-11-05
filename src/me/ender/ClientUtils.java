@@ -62,7 +62,6 @@ public class ClientUtils {
 	}
 	int k = resname.lastIndexOf("/");
 	resname = resname.substring(k + 1);
-	resname = resname.substring(0, 1).toUpperCase() + resname.substring(1);
 	
 	//handle logs
 	if(fullname.contains("terobjs/trees/") && resname.endsWith("log")) {
@@ -79,6 +78,8 @@ public class ClientUtils {
 	if(resname.endsWith("flour")) {
 	    resname = resname.substring(0, resname.length() - 5) + " Flour";
 	}
+
+	resname = resname.substring(0, 1).toUpperCase() + resname.substring(1);
 	
 	return resname;
     }

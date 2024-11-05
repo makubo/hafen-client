@@ -289,7 +289,7 @@ public enum GobTag {
                 tags.add(SPEED);
             }
             
-            if("Water".equals(gob.contents())) {
+            if("water".equalsIgnoreCase(gob.contents())) {
                 tags.add(HAS_WATER);
             }
             
