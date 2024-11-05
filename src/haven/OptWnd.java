@@ -1316,7 +1316,10 @@ public class OptWnd extends WindowX {
 	
 	y += STEP;
 	panel.add(new CFGBox("Show timestamps in chat messages", CFG.SHOW_CHAT_TIMESTAMP), new Coord(x, y));
-    
+
+	y += STEP;
+	panel.add(new CFGBox("Instant full tooltips", CFG.UI_INSTANT_LONG_TIPS, "Items will show full tooltip immediately", true), x, y);
+
 	y += STEP;
 	panel.add(new CFGBox("Show food categories", CFG.DISPLAY_FOOD_CATEGORIES, "Shows list of food categories in the tooltip", true), x, y);
     
