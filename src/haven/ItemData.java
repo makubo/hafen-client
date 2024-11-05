@@ -237,7 +237,7 @@ public class ItemData {
 	if(character == null) {return;}
 	
 	List<FEPMod> mods = new ArrayList<>();
-	boolean showCategories = CFG.DISPLAY_FOD_CATEGORIES.get();
+	boolean showCategories = CFG.DISPLAY_FOOD_CATEGORIES.get();
 
 	character.getEnergyFEPMod().ifPresent(mods::add);
 	

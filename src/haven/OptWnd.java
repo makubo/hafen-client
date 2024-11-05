@@ -1318,7 +1318,7 @@ public class OptWnd extends WindowX {
 	panel.add(new CFGBox("Show timestamps in chat messages", CFG.SHOW_CHAT_TIMESTAMP), new Coord(x, y));
     
 	y += STEP;
-	panel.add(new CFGBox("Show food categories", CFG.DISPLAY_FOD_CATEGORIES, "Shows list of food categories in the tooltip", true), x, y);
+	panel.add(new CFGBox("Show food categories", CFG.DISPLAY_FOOD_CATEGORIES, "Shows list of food categories in the tooltip", true), x, y);
     
 	y += STEP;
 	panel.add(new CFGBox("Show biomes on minimap", CFG.MMAP_SHOW_BIOMES), x, y);

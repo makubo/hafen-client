@@ -33,7 +33,7 @@ public class CFG<T> {
     public static final CFG<Boolean> QUEUE_PATHS = new CFG<>("general.queue_path", false);
     public static final CFG<Boolean> HIDE_TREES = new CFG<>("display.hide_gobs", false);
     public static final CFG<Boolean> SKIP_HIDING_RADAR_TREES = new CFG<>("display.skip_hide_radar_gobs", false);
-    public static final CFG<Boolean> DISPLAY_FOD_CATEGORIES = new CFG<>("display.food_category", true);
+    public static final CFG<Boolean> DISPLAY_FOOD_CATEGORIES = new CFG<>("display.food_category", true);
     public static final CFG<Boolean> SHOW_GOB_RADIUS = new CFG<>("display.show_gob_radius", false);
     public static final CFG<Boolean> SHOW_MINESWEEPER_OVERLAY = new CFG<>("display.minesweeper_overlay", false);
     public static final CFG<Boolean> SHOW_MINE_SUPPORT_AS_OVERLAY = new CFG<>("display.mine_support_overlay", true);
