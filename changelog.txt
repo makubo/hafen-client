@@ -1,3 +1,9 @@
+$size[14]{$u{Update for 05.11.24:}
+  * added various FEP modifiers to food tooltips - satiation, hunger, low energy, verified and/or subbed account
+  * fixed drink refill not seeing water barrels
+  * added beech nuts to tree contents
+  * improved (but not fully fixed) detection of friendlies as enemies on login
+ 
 $size[14]{$u{Update for 04.11.24:}
   * fixed AttrMod errors caused by player having VERY old resource cache
   * fixed mapper crash during character creation
