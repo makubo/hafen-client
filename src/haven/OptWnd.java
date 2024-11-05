@@ -1107,7 +1107,7 @@ public class OptWnd extends WindowX {
 	panel.add(new CFGBox("Disable transition between tiles", CFG.NO_TILE_TRANSITION), x, y);
     
 	y += STEP;
-	panel.add(new CFGBox("Make terrain flat", CFG.FLAT_TERRAIN), x, y);
+	panel.add(new CFGBox("Make terrain flat", CFG.FLAT_TERRAIN, null, true), x, y);
 	
 	y += STEP;
 	panel.add(new CFGBox("Colorize ridge tiles", CFG.DISPLAY_RIDGE_BOX, "Makes it easier to properly approach ridge for climbing"), x, y);
