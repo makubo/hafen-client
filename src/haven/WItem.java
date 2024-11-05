@@ -61,7 +61,7 @@ public class WItem extends Widget implements DTarget {
     private Message csdt = Message.nil;
     private final List<Action3<WItem, Coord, Integer>> rClickListeners = new LinkedList<>();
     private boolean checkDrop = false;
-    private final CFG.Observer<Boolean> resetTooltip = cfg -> longtip = null;
+    private final CFG.Observer<Boolean> resetTooltip = cfg -> clearLongTip();
     private final Action0 itemMatched = this::itemMatched;
     
     public WItem(GItem item) {
@@ -372,7 +372,7 @@ public class WItem extends Widget implements DTarget {
 	
 	if(!Objects.equals(tip, cachedTipValue)) {
 	    cachedTipValue = tip;
-	    longtip = null;
+	    clearLongTip();
 	}
 	if(value != null) {
 	    if(!Objects.equals(value, cachedStudyValue)) {
@@ -456,6 +456,8 @@ public class WItem extends Widget implements DTarget {
     private SingleType getQualityType() {
 	return CFG.Q_SHOW_SINGLE.get() ? SingleType.Quality : null;
     }
+
+    public void clearLongTip() {longtip = null;}
 
     public boolean mousedown(MouseDownEvent ev) {
 	if(checkXfer(ev.b)) {

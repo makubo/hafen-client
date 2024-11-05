@@ -17,9 +17,9 @@ import me.ender.Reflect;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
+import static haven.BAttrWnd.Constipations.*;
 import static haven.QualityList.SingleType.*;
 
 public class ItemData {
@@ -221,6 +221,85 @@ public class ItemData {
 	    return item.info().stream().anyMatch(i -> i instanceof FoodInfo);
 	} catch (Loading ignored) {}
 	return false;
+    }
+
+    public static void modifyFoodTooltip(ItemInfo.Owner owner, Collection<BufferedImage> imgs, int[] types, double glut, double fepSum) {
+	imgs.add(RichText.render(String.format("Base FEP: $col[128,255,0]{%s}, FEP/Hunger: $col[128,255,0]{%s}", Utils.odformat2(fepSum, 2), FEPPerHunger(glut, fepSum)), 0).img);
+	
+	CharacterInfo character = null;
+	CharacterInfo.Constipation constipation = null;
+	try {
+	    character = owner.context(Session.class).character;
+	    constipation = character.constipation;
+	} catch (NullPointerException | OwnerContext.NoContext ignore) {}
+
+	if(character == null) {return;}
+	
+	List<FEPMod> mods = new ArrayList<>();
+	boolean showCategories = CFG.DISPLAY_FOD_CATEGORIES.get();
+
+	character.getEnergyFEPMod().ifPresent(mods::add);
+	
+	//satiation
+	if(types.length > 0) {
+	    //TODO: find a way to get actual categories like meat, dairy, offal etc.
+	    if(showCategories) {imgs.add(Text.render("Categories:").img);}
+
+	    double satiation = 1;
+	    for (int type : types) {
+		CharacterInfo.Constipation.Data c = constipation.get(type);
+		if(c != null) {
+		    if(showCategories) {imgs.add(constipation.render(FoodInfo.class, c));}
+		    satiation = Math.min(satiation, c.value);
+		}
+	    }
+	    if(satiation != 1) {mods.add(new FEPMod(satiation, "satiation"));}
+	}
+	
+	//hunger
+	if(Math.abs(character.gluttony - 1) > 0.005d) {
+	    mods.add(new FEPMod(character.gluttony, "hunger"));
+	}
+	
+	//TODO: add table bonuses
+
+	//account
+	character.getAccountFEPBonus().ifPresent(mods::add);
+
+	if(mods.isEmpty()) {return;}
+	double fullMult = 1;
+
+	imgs.add(RichText.render("Effectiveness:").img);
+	for (FEPMod mod : mods) {
+	    imgs.add(mod.img());
+	    fullMult *= mod.val;
+	}
+	double adjustedFEP = fepSum * fullMult;
+	imgs.add(RichText.render(String.format("Adjusted FEP: %s, FEP/Hunger: $col[200,150,255]{%s}", RichText.color(Utils.odformat2(adjustedFEP, 2), color(fullMult)), FEPPerHunger(glut, adjustedFEP)), 0).img);
+    }
+    
+    private static String FEPPerHunger(double glut, double fepSum) {
+	return glut != 0
+	    ? Utils.odformat2(fepSum / (100 * glut), 2)
+	    : fepSum == 0 ? "0" : "∞";
+    }
+    
+    public static class FEPMod {
+	public final double val;
+	public final String text;
+	private BufferedImage img;
+
+	public FEPMod(double val, String text) {
+	    this.val = val;
+	    this.text = text;
+	}
+	
+	public BufferedImage img() {
+	    if(img == null) {
+		img = RichText.render(String.format("     ×%s %s", RichText.color(String.format("%.2f", val), color(val)), text), 0).img;
+	    }
+	    return img;
+	}
     }
 
     public interface ITipData {

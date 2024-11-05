@@ -113,7 +113,7 @@ public class BAttrWnd extends Widget {
     public static class Constipations extends SListBox<Constipations.El, Widget> {
 	public static final PUtils.Convolution tflt = new PUtils.Hanning(1);
 	public static final Color hilit = new Color(255, 255, 0, 48);
-	public static final Color buffed = new Color(160, 255, 160), full = new Color(250, 230, 64), none = new Color(250, 19, 43);
+	public static final Color buffed = new Color(64, 255, 64), full = new Color(250, 230, 64), none = new Color(250, 19, 43);
 	public final List<El> els = new ArrayList<El>();
 	public static final Comparator<El> ecmp = (a, b) -> {
 	    if(a.a < b.a)
@@ -518,6 +518,7 @@ public class BAttrWnd extends Widget {
 	    feps.update(args);
 	} else if(nm == "glut") {
 	    glut.update(args);
+	    ui.sess.character.updateGluttony(glut.gmod);
 	} else if(nm == "ftrig") {
 	    feps.trig(ui.sess.getresv(args[0]));
 	} else if(nm == "lvl") {
@@ -533,6 +534,7 @@ public class BAttrWnd extends Widget {
 		    t.sdt = new MessageBuf((byte[])args[a++]);
 		double m = Utils.dv(args[a++]);
 		cons.update(t, m);
+		ui.sess.character.constipation.update(t, m);
 	    }
 	} else {
 	    super.uimsg(nm, args);

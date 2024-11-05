@@ -3,6 +3,9 @@ package me.ender;
 import haven.*;
 
 import java.util.Optional;
+import java.util.Set;
+
+import static me.ender.ResName.*;
 
 public class ItemHelpers {
     private static final Coord DISHES_SZ = Coord.of(3, 3);
@@ -21,10 +24,15 @@ public class ItemHelpers {
 	return true;
     }
 
+    public static void invalidateFoodItemTooltips(UI ui) {
+	Set<WItem> children = ui.root.children(WItem.class);
+	children.forEach(w -> {if(ItemData.hasFoodInfo(w.item)) {w.clearLongTip();}});
+    }
+
     private static String preserveDishes(WItem item, UI ui) {
 	if(!ItemData.hasFoodInfo(item.item)) {return null;}
 
-	if(!ui.isCursor("gfx/hud/curs/eat")) {return null;}
+	if(!ui.isCursor(CURSOR_EAT)) {return null;}
 
 	Window wnd = item.getparent(Window.class);
 	if(wnd == null) {return null;}

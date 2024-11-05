@@ -153,6 +153,9 @@ public class RootWidget extends ConsoleHost implements UI.MessageWidget, Widget.
 	} else {
 	    super.uimsg(msg, args);
 	}
+	if(msg == "curs") {
+	    ui.sess.character.updateCursor(cursor);
+	}
     }
 
     public void msg(String msg, Color color) {

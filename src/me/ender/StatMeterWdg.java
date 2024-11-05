@@ -54,7 +54,7 @@ public class StatMeterWdg extends DraggableWidget {
     protected double meter(int idx) {
 	IMeter imeter = imeter();
 	if(imeter == null) {return -1;}
-	return imeter.meters.size() > idx ? imeter.meters.get(idx).a : -1;
+	return imeter.meter(idx);
     }
     
     @Override
