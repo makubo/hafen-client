@@ -42,7 +42,6 @@ import static haven.Text.*;
 
 public class OptWnd extends WindowX {
     public static final Coord PANEL_POS = new Coord(220, 30);
-    public static final Coord Q_TYPE_PADDING = new Coord(3, 0);
     private final Panel display, general, camera, shortcuts, mapping, uipanel, combat;
     private final Panel color;
     public final Panel main;
@@ -1528,37 +1527,4 @@ public class OptWnd extends WindowX {
 	    cfg.set(val);
 	}
     }
-
-    public class QualityBox extends Dropbox<QualityList.SingleType> {
-	protected final CFG<QualityList.SingleType> cfg;
-
-	public QualityBox(int w, int listh, int itemh, CFG<QualityList.SingleType> cfg) {
-	    super(w, listh, itemh);
-	    this.cfg = cfg;
-	    this.sel = cfg.get();
-	}
-
-	@Override
-	protected QualityList.SingleType listitem(int i) {
-	    return QualityList.SingleType.values()[i];
-	}
-
-	@Override
-	protected int listitems() {
-	    return QualityList.SingleType.values().length;
-	}
-
-	@Override
-	protected void drawitem(GOut g, QualityList.SingleType item, int i) {
-	    g.image(item.tex(), Q_TYPE_PADDING);
-	}
-
-	@Override
-	public void change(QualityList.SingleType item) {
-	    super.change(item);
-	    if(item != null) {
-		cfg.set(item);
-	    }
-	}
-    };
 }
