@@ -918,11 +918,17 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
     }
 
     private void makeLocal(String path, CFG<Boolean> cfg) {
-	makeLocal(path, (ctx) -> cfg.set(!cfg.get()), cfg::get);
+	makeLocal(path, (ctx, iact) -> {
+	    cfg.set(!cfg.get());
+	    return true;
+	}, cfg::get);
     }
     
     private void makeLocal(String path, Action action, Supplier<Boolean> toggleState) {
-	makeLocal(path, ctx -> action.run(ctx.context(UI.class).gui), toggleState);
+	makeLocal(path, (ctx, iact) -> {
+	    action.run(ctx.context(UI.class).gui);
+	    return true;
+	}, toggleState);
     }
     
 }
