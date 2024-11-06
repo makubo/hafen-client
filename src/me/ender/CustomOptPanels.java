@@ -1,6 +1,7 @@
 package me.ender;
 
 import haven.*;
+import me.ender.ui.CFGBox;
 
 import static haven.OptWnd.*;
 

@@ -1,6 +1,7 @@
 package me.ender;
 
 import haven.*;
+import me.ender.ui.CFGBox;
 import me.ender.ui.CFGSlider;
 
 import java.util.Set;
@@ -63,9 +64,9 @@ public class GobInfoOpts extends WindowX {
 	composer.y(0).hpad(UI.scale(150));
 	composer.add(new Label("Options:"));
 	composer.hpad(composer.hpad() + 2 * PAD);
-	composer.add(new OptWnd.CFGBox("Shorten text of the object contents", CFG.DISPLAY_GOB_INFO_SHORT, "Will remove some not very relevant parts of the contents name", true));
-	composer.add(new OptWnd.CFGBox("Hide tree contents for growing trees", CFG.DISPLAY_GOB_INFO_TREE_HIDE_GROWING_PARTS, "Will not show seeds/leaves/etc. for not fully grown trees", true));
-	composer.add(new OptWnd.CFGBox("Show scale for big trees", CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG, "Will not show scale for big enough trees", true));
+	composer.add(new CFGBox("Shorten text of the object contents", CFG.DISPLAY_GOB_INFO_SHORT, "Will remove some not very relevant parts of the contents name", true));
+	composer.add(new CFGBox("Hide tree contents for growing trees", CFG.DISPLAY_GOB_INFO_TREE_HIDE_GROWING_PARTS, "Will not show seeds/leaves/etc. for not fully grown trees", true));
+	composer.add(new CFGBox("Show scale for big trees", CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG, "Will not show scale for big enough trees", true));
 	composer.add(new CFGSlider(UI.scale(140), 101, 200, CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG_THRESHOLD, composer.add(new Label("")), "Big tree threshold: %d%%"));
 	
 	composer.hpad(composer.hpad() - 2 * PAD);

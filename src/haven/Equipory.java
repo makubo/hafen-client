@@ -26,6 +26,8 @@
 
 package haven;
 
+import me.ender.ui.CFGBox;
+
 import java.util.*;
 import static haven.Inventory.invsq;
 
@@ -278,7 +280,7 @@ public class Equipory extends Widget implements DTarget {
 
 	Coord pos = pos("br");
 	if(isMe()) {
-	    adda(new OptWnd.CFGBox("Auto drop parasites", CFG.AUTO_DROP_PARASITES, "Drop leeches and ticks as soon as they attach to you.") {
+	    adda(new CFGBox("Auto drop parasites", CFG.AUTO_DROP_PARASITES, "Drop leeches and ticks as soon as they attach to you.") {
 		@Override
 		public void set(boolean a) {
 		    super.set(a);

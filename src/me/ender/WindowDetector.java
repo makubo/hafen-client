@@ -3,6 +3,7 @@ package me.ender;
 import haven.*;
 import haven.rx.CharterBook;
 import haven.rx.Reactor;
+import me.ender.ui.CFGBox;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -134,7 +135,7 @@ public class WindowDetector {
 	Button btn = wnd.getchild(Button.class);
 	if(btn == null) {return;}
 	
-	btn.c = wnd.add(new OptWnd.CFGBox("Preserve cutlery", CFG.PRESERVE_SYMBEL), btn.pos("ul"))
+	btn.c = wnd.add(new CFGBox("Preserve cutlery", CFG.PRESERVE_SYMBEL), btn.pos("ul"))
 	    .settip("Prevent eating from this table if some of the cutlery is almost broken").pos("bl");//.adds(0, 5);
     }
 }

@@ -33,6 +33,7 @@ import haven.render.*;
 import me.ender.CFGColorBtn;
 import me.ender.GobInfoOpts;
 import me.ender.CustomOptPanels;
+import me.ender.ui.CFGBox;
 
 import java.awt.event.KeyEvent;
 import java.util.Set;
@@ -1514,52 +1515,6 @@ public class OptWnd extends WindowX {
 	super.show();
     }
 
-    public static class CFGBox extends CheckBox implements CFG.Observer<Boolean> {
-
-	protected final CFG<Boolean> cfg;
-
-	public CFGBox(String lbl, CFG<Boolean> cfg) {
-	    this(lbl, cfg, null, false);
-	}
-
-	public CFGBox(String lbl, CFG<Boolean> cfg, String tip) {
-	    this(lbl, cfg, tip, false);
-	}
-
-	public CFGBox(String lbl, CFG<Boolean> cfg, String tip, boolean observe) {
-	    super(lbl);
-	    set = null;
-	    this.cfg = cfg;
-	    defval();
-	    if(tip != null) {
-		tooltip = Text.render(tip).tex();
-	    }
-	    if(observe){ cfg.observe(this); }
-	}
-
-	protected void defval() {
-	    a = cfg.get();
-	}
-
-	@Override
-	public void set(boolean a) {
-	    this.a = a;
-	    cfg.set(a);
-	    if(set != null) {set.accept(a);}
-	}
-
-	@Override
-	public void destroy() {
-	    cfg.unobserve(this);
-	    super.destroy();
-	}
-
-	@Override
-	public void updated(CFG<Boolean> cfg) {
-	    a = cfg.get();
-	}
-    }
-    
     public static class CFGHSlider extends HSlider {
 	private final CFG<Integer> cfg;
 	
