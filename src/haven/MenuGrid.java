@@ -34,6 +34,7 @@ import me.ender.CustomPagina;
 import me.ender.CustomPaginaAction;
 import me.ender.GobInfoOpts;
 import me.ender.GobInfoOpts.InfoPart;
+import me.ender.minimap.Minesweeper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -882,7 +883,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 	makeLocal("paginae/add/craftlist", Action.OPEN_QUICK_CRAFT);
 	makeLocal("paginae/add/autobot", Action.BOT_PICK_ALL_HERBS);
 	makeLocal("paginae/add/hide_trees", Action.TOGGLE_HIDE_TREES, CFG.HIDE_TREES::get);
-	makeLocal("paginae/add/minesweeper", CFG.SHOW_MINESWEEPER_OVERLAY);
+	makeLocal("paginae/add/minesweeper", Minesweeper::paginaAction, CFG.SHOW_MINESWEEPER_OVERLAY::get);
 	makeLocal("paginae/add/toggles/flat_terrain", CFG.FLAT_TERRAIN);
 	makeLocal("paginae/add/toggles/flavor", CFG.DISPLAY_FLAVOR);
 	makeLocal("paginae/add/refill_drinks", Action.ACT_REFILL_DRINKS);

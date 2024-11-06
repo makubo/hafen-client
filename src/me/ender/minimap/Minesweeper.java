@@ -4,6 +4,7 @@ import haven.*;
 import haven.render.Homo3D;
 import haven.render.Pipe;
 import haven.render.RenderTree;
+import me.ender.CustomCursors;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -24,6 +25,7 @@ public class Minesweeper {
     private static final int TILES = MCache.cmaps.x * MCache.cmaps.y;
     private static final Coord2d TILE_CENTER = MCache.tilesz.div(2);
     private static final RenderTree.Node NIL = RenderTree.Node.nil;
+    public static final byte CLEAR = (byte) 0x00;
     public static final byte SAFE = (byte) 0xff;
     public static final byte DANGER = (byte) 0xfe;
 
@@ -45,21 +47,36 @@ public class Minesweeper {
 	GameUI gui = gob.context(GameUI.class);
 	if(gui == null) {return;}
 
-	markPoint(gob.rc, count, gui, gob.glob.map);
+	markPoint(gob.rc, count, gui, false);
     }
 
-    public static void markPoint(Coord2d rc, int count, GameUI gui, MCache map) {
+    public static void markPoint(Coord2d rc, int count, GameUI gui, boolean safe) {
 	Coord gc = rc.floor(MCache.tilesz);
-	MCache.Grid grid = map.getgridt(gc);
+	MCache.Grid grid = gui.ui.sess.glob.map.getgridt(gc);
 	if(grid == null) {return;}
 
 	Coord tc = gc.sub(grid.gc.mul(MCache.cmaps));
 	long id = grid.id;
 
-	gui.minesweeper.addValue(id, tc, count);
+	gui.minesweeper.addValue(id, tc, count, safe);
     }
 
-    private void addValue(long id, Coord tc, int value) {
+    public static boolean paginaAction(OwnerContext ctx, MenuGrid.Interaction iact) {
+	boolean was = CFG.SHOW_MINESWEEPER_OVERLAY.get();
+	if(iact != null && iact.modflags == UI.MOD_SHIFT) {
+	    MapView map = ctx.context(UI.class).gui.map;
+	    CustomCursors.toggleSweeperMode(map);
+	    if(!was && CustomCursors.isSweeping(map)) {
+		CFG.SHOW_MINESWEEPER_OVERLAY.set(true);
+		return true;
+	    }
+	    return false;
+	}
+	CFG.SHOW_MINESWEEPER_OVERLAY.set(!was);
+	return true;
+    }
+
+    private void addValue(long id, Coord tc, int value, boolean safe) {
 	synchronized (lock) {
 	    Map<Long, byte[]> grids = values;
 	    byte[] values;
@@ -71,7 +88,10 @@ public class Minesweeper {
 		gridIds.add(id);
 		storeIndex();
 	    }
-	    values[index(tc)] = (byte) value;
+	    byte current = values[index(tc)];
+	    if(!safe || current == CLEAR || current == SAFE || current == DANGER) {
+		values[index(tc)] = (byte) value;
+	    }
 	    storeGrid(id, values);
 	}
     }
@@ -355,7 +375,7 @@ public class Minesweeper {
     }
 
     private static class SweeperNode implements RenderTree.Node, PView.Render2D {
-	private static final Text.Foundry TEXT_FND = new Text.Foundry(Text.sansbold, 12);
+	private static final Text.Foundry TEXT_FND = new Text.Foundry(Text.monobold, 12);
 	private static final Color SAFE_COL = new Color(32, 220, 80);
 	private static final Color DANGER_COL = new Color(240, 32, 100);
 	private static final Color[] COLORS = new Color[]{
@@ -385,7 +405,7 @@ public class Minesweeper {
 	    String text;
 	    if(val == SAFE) {
 		color = SAFE_COL;
-		text = "•";
+		text = "·";
 	    } else if(val == DANGER) {
 		color = DANGER_COL;
 		text = "×";
