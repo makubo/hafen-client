@@ -25,6 +25,7 @@ public class Minesweeper {
     private static final Coord2d TILE_CENTER = MCache.tilesz.div(2);
     private static final RenderTree.Node NIL = RenderTree.Node.nil;
     public static final byte SAFE = (byte) 0xff;
+    public static final byte DANGER = (byte) 0xfe;
 
     private final Object lock = new Object();
     private final Set<Long> gridIds = new HashSet<>();
@@ -37,17 +38,17 @@ public class Minesweeper {
 	MapFileUtils.load(file, this::loadIndex, INDEX);
     }
 
-    public static void process(Sprite.Owner owner, int count) {
+    public static void markAtGob(Sprite.Owner owner, int count) {
 	if(!(owner instanceof Gob)) {return;}
 	Gob gob = (Gob) owner;
 
 	GameUI gui = gob.context(GameUI.class);
 	if(gui == null) {return;}
 
-	process(gob.rc, count, gui, gob.glob.map);
+	markPoint(gob.rc, count, gui, gob.glob.map);
     }
 
-    public static void process(Coord2d rc, int count, GameUI gui, MCache map) {
+    public static void markPoint(Coord2d rc, int count, GameUI gui, MCache map) {
 	Coord gc = rc.floor(MCache.tilesz);
 	MCache.Grid grid = map.getgridt(gc);
 	if(grid == null) {return;}
@@ -57,7 +58,7 @@ public class Minesweeper {
 
 	gui.minesweeper.addValue(id, tc, count);
     }
-    
+
     private void addValue(long id, Coord tc, int value) {
 	synchronized (lock) {
 	    Map<Long, byte[]> grids = values;
@@ -355,7 +356,8 @@ public class Minesweeper {
 
     private static class SweeperNode implements RenderTree.Node, PView.Render2D {
 	private static final Text.Foundry TEXT_FND = new Text.Foundry(Text.sansbold, 12);
-	private static final Color SAFE_COL = new Color(32,220,80);
+	private static final Color SAFE_COL = new Color(32, 220, 80);
+	private static final Color DANGER_COL = new Color(240, 32, 100);
 	private static final Color[] COLORS = new Color[]{
 	    new Color(150, 200, 245),
 	    new Color(142, 225, 207),
@@ -377,13 +379,16 @@ public class Minesweeper {
 	}
 
 	private static Tex getTex(byte val) {
-	    if(val <= 0 && val != SAFE) {return null;}
+	    if(val <= 0 && val != SAFE && val != DANGER) {return null;}
 	    if(CACHE.containsKey(val)) {return CACHE.get(val);}
 	    Color color;
 	    String text;
 	    if(val == SAFE) {
 		color = SAFE_COL;
 		text = "•";
+	    } else if(val == DANGER) {
+		color = DANGER_COL;
+		text = "×";
 	    } else {
 		color = COLORS[Utils.clip(val - 1, 0, COLORS.length - 1)];
 		text = String.valueOf(val);

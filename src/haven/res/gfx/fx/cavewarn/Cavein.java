@@ -33,7 +33,7 @@ public class Cavein extends Sprite implements Sprite.CDel {
     public Cavein(Owner owner, Resource res, Message sdt) {
 	super(owner, res);
 	str = sdt.uint8();
-	Minesweeper.process(owner, (int) (str / 30f));
+	Minesweeper.markAtGob(owner, (int) (str / 30f));
 	sz = new Coord3f(sdt.float8() * 11f, sdt.float8() * 11f, 0f);
 	off = new Coord3f(-sz.x / 2f, -sz.y / 2f, sdt.float8() * 11f);
 	life = sdt.uint8();
