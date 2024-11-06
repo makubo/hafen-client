@@ -44,8 +44,12 @@ public class Minesweeper {
 	GameUI gui = gob.context(GameUI.class);
 	if(gui == null) {return;}
 
-	Coord gc = gob.rc.floor(MCache.tilesz);
-	MCache.Grid grid = gob.glob.map.getgridt(gc);
+	process(gob.rc, count, gui, gob.glob.map);
+    }
+
+    public static void process(Coord2d rc, int count, GameUI gui, MCache map) {
+	Coord gc = rc.floor(MCache.tilesz);
+	MCache.Grid grid = map.getgridt(gc);
 	if(grid == null) {return;}
 
 	Coord tc = gc.sub(grid.gc.mul(MCache.cmaps));
