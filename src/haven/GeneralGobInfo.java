@@ -170,7 +170,7 @@ public class GeneralGobInfo extends GobInfo {
 	} else if(isSpriteKind(gob, "Tree")) {
 	    if(GobInfoOpts.disabled(InfoPart.TREE_GROWTH)) {return null;}
 	    scalePercent = getTreeScale(gob);
-	    if(scalePercent < 100 && scalePercent >= 0) {
+	    if(scalePercent >= 0 && (scalePercent < 100 || (CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG.get() && scalePercent >= CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG_THRESHOLD.get()))) {
 		int growth = scalePercent;
 		if(gob.is(GobTag.TREE)) {
 		    growth = (int) (TREE_MULT * (growth - TREE_START));

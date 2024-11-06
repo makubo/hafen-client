@@ -24,6 +24,8 @@ public class CFG<T> {
     public static final CFG<Set<GobInfoOpts.InfoPart>> DISPLAY_GOB_INFO_DISABLED_PARTS = new CFG<>("display.gob_info_disabled_parts", new HashSet<>(), new TypeToken<Set<GobInfoOpts.InfoPart>>(){});
     public static final CFG<Set<GobInfoOpts.TreeSubPart>> DISPLAY_GOB_INFO_TREE_ENABLED_PARTS = new CFG<>("display.gob_info_tree_enabled_parts", new HashSet<>(Arrays.asList(GobInfoOpts.TreeSubPart.SEEDS, GobInfoOpts.TreeSubPart.LEAVES)), new TypeToken<Set<GobInfoOpts.TreeSubPart>>(){});
     public static final CFG<Boolean> DISPLAY_GOB_INFO_TREE_HIDE_GROWING_PARTS = new CFG<>("display.gob_info_tree_hide_growing_parts", true);
+    public static final CFG<Boolean> DISPLAY_GOB_INFO_TREE_SHOW_BIG = new CFG<>("display.gob_info_tree_show_big", true);
+    public static final CFG<Integer> DISPLAY_GOB_INFO_TREE_SHOW_BIG_THRESHOLD = new CFG<>("display.gob_info_show_big_threshold", 110);
     public static final CFG<Boolean> DISPLAY_GOB_INFO_SHORT = new CFG<>("display.gob_info_shorten_content", false);
     public static final CFG<Boolean> DISPLAY_GOB_HITBOX_FILLED = new CFG<>("display.gob_hitbox_filled", false);
     public static final CFG<Boolean> DISPLAY_GOB_HITBOX = new CFG<>("display.gob_hitbox", false);
