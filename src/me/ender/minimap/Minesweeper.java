@@ -23,7 +23,8 @@ public class Minesweeper {
     private static final String GRID_NAME = "ender-ms-grid-%x";
     private static final int TILES = MCache.cmaps.x * MCache.cmaps.y;
     private static final Coord2d TILE_CENTER = MCache.tilesz.div(2);
-    public static final RenderTree.Node NIL = RenderTree.Node.nil;
+    private static final RenderTree.Node NIL = RenderTree.Node.nil;
+    public static final byte SAFE = (byte) 0xff;
 
     private final Object lock = new Object();
     private final Set<Long> gridIds = new HashSet<>();
@@ -350,6 +351,7 @@ public class Minesweeper {
 
     private static class SweeperNode implements RenderTree.Node, PView.Render2D {
 	private static final Text.Foundry TEXT_FND = new Text.Foundry(Text.sansbold, 12);
+	private static final Color SAFE_COL = new Color(32,220,80);
 	private static final Color[] COLORS = new Color[]{
 	    new Color(136, 226, 255),
 	    new Color(102, 255, 217),
@@ -371,12 +373,20 @@ public class Minesweeper {
 	}
 
 	private static Tex getTex(byte val) {
-	    if(val <= 0) {return null;}
-	    if(!CACHE.containsKey(val)) {
-		Color color = COLORS[Utils.clip(val - 1, 0, COLORS.length - 1)];
-		CACHE.put(val, Text.renderstroked(String.valueOf(val), color, Color.BLACK, TEXT_FND).tex());
+	    if(val <= 0 && val != SAFE) {return null;}
+	    if(CACHE.containsKey(val)) {return CACHE.get(val);}
+	    Color color;
+	    String text;
+	    if(val == SAFE) {
+		color = SAFE_COL;
+		text = "•";
+	    } else {
+		color = COLORS[Utils.clip(val - 1, 0, COLORS.length - 1)];
+		text = String.valueOf(val);
 	    }
-	    return CACHE.get(val);
+	    Tex tex = Text.renderstroked(text, color, Color.BLACK, TEXT_FND).tex();
+	    CACHE.put(val, tex);
+	    return tex;
 	}
 
 	public Coord3f origin(Coord tc) {
