@@ -353,14 +353,14 @@ public class Minesweeper {
 	private static final Text.Foundry TEXT_FND = new Text.Foundry(Text.sansbold, 12);
 	private static final Color SAFE_COL = new Color(32,220,80);
 	private static final Color[] COLORS = new Color[]{
-	    new Color(136, 226, 255),
-	    new Color(102, 255, 217),
-	    new Color(102, 255, 127),
-	    new Color(233, 255, 34),
+	    new Color(150, 200, 245),
+	    new Color(142, 225, 207),
+	    new Color(182, 210, 127),
+	    new Color(233, 225, 34),
 	    new Color(250, 195, 56),
 	    new Color(255, 150, 65),
-	    new Color(234, 61, 83),
-	    new Color(213, 77, 249),
+	    new Color(230, 80, 32),
+	    new Color(235, 20, 16),
 	};
 	private static final Map<Byte, Tex> CACHE = new HashMap<>();
 
