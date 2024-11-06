@@ -34,6 +34,7 @@ import me.ender.CFGColorBtn;
 import me.ender.GobInfoOpts;
 import me.ender.CustomOptPanels;
 import me.ender.ui.CFGBox;
+import me.ender.ui.CFGSlider;
 
 import java.awt.event.KeyEvent;
 import java.util.Set;
@@ -984,13 +985,11 @@ public class OptWnd extends WindowX {
 	panel.adda(new Speedget.SpeedSelector(UI.scale(100)), new Coord(x + tsz.x + UI.scale(5), y + tsz.y / 2), 0, 0.5);
     
 	y += 2 * STEP;
-	Label label = panel.add(new Label(String.format("Auto pickup radius: %.2f", CFG.AUTO_PICK_RADIUS.get() / 11.0)), x, y);
+	Label label = panel.add(new Label(""), x, y);
 	y += UI.scale(15);
-	panel.add(new CFGHSlider(UI.scale(150), CFG.AUTO_PICK_RADIUS, 33, 352) {
+	panel.add(new CFGSlider(UI.scale(150), 33, 352, CFG.AUTO_PICK_RADIUS, label, "Auto pickup radius: %.02f") {
 	    @Override
-	    public void changed() {
-		label.settext(String.format("Auto pickup radius: %.02f", val / 11.0));
-	    }
+	    protected void updateLabel() {this.label.settext(String.format(format, val / 11.0));}
 	}, x, y);
     
 	y += STEP;
@@ -1179,11 +1178,11 @@ public class OptWnd extends WindowX {
 	
 	x += UI.scale(250);
 	y = START;
-	
-	y = addSlider(CFG.DISPLAY_SCALE_CUPBOARDS, "Cupboard scale", "Scale cupboard vertically, changes are applied on open/close of cupboard or zone reload.", panel, x, y, STEP);
-	
+
+	y = addSlider(CFG.DISPLAY_SCALE_CUPBOARDS, 15, 100, "Cupboard scale: %d%%", "Scale cupboard vertically, changes are applied on open/close of cupboard or zone reload.", panel, x, y, STEP);
+
 	y += STEP;
-	y = addSlider(CFG.DISPLAY_SCALE_WALLS, "Wall scale", "Scale palisade and brick wall vertically, changes are applied on zone reload.", panel, x, y, STEP);
+	y = addSlider(CFG.DISPLAY_SCALE_WALLS, 15, 100, "Wall scale: %d%%", "Scale palisade and brick wall vertically, changes are applied on zone reload.", panel, x, y, STEP);
 	
 	y += STEP;
 	panel.add(new CFGBox("Cupboard use default materials", CFG.DISPLAY_NO_MAT_CUPBOARDS, "All cupboards will have default look", true), x, y);
@@ -1214,24 +1213,13 @@ public class OptWnd extends WindowX {
 	panel.pack();
 	title.c.x = (panel.sz.x - title.sz.x) / 2;
     }
-    
-    private int addSlider(CFG<Integer> cfg, String text, String tip, Panel panel, int x, int y, int STEP) {
-	final Label label = panel.add(new Label(text), x, y);
+
+    private int addSlider(CFG<Integer> cfg, int min, int max, String format, String tip, Panel panel, int x, int y, int STEP) {
+	final Label label = panel.add(new Label(""), x, y);
 	label.settip(tip);
 	
 	y += STEP;
-	panel.add(new HSlider(UI.scale(200), 15, 100, cfg.get()) {
-	    protected void attach(UI ui) {
-		super.attach(ui);
-		val = cfg.get();
-		label.settext(String.format("%s: %d%%", text, val));
-	    }
-	    
-	    public void changed() {
-		cfg.set(val);
-		label.settext(String.format("%s: %d%%", text, val));
-	    }
-	}, x, y).settip(tip);
+	panel.add(new CFGSlider(UI.scale(200), min, max, cfg, label, format), x, y).settip(tip);
 	
 	return y;
     }
@@ -1335,12 +1323,7 @@ public class OptWnd extends WindowX {
 	y += STEP;
 	Label label = panel.add(new Label(String.format("Minimum rows in list inventory: %d", CFG.UI_EXT_INV_MIN_ROWS.get())), x, y);
 	y += UI.scale(15);
-	panel.add(new CFGHSlider(UI.scale(150), CFG.UI_EXT_INV_MIN_ROWS, 3, 15) {
-	    @Override
-	    public void changed() {
-		label.settext(String.format("Minimum rows in list inventory: %d", val));
-	    }
-	}, x, y);
+	panel.add(new CFGSlider(UI.scale(150), 3, 15, CFG.UI_EXT_INV_MIN_ROWS, label, "Minimum rows in list inventory: %d"), x, y);
 	
 	y += STEP;
 	panel.add(new CFGBox("Unpack stacks in list inventory", CFG.UI_STACK_EXT_INV_UNPACK, "Show stacked items 'unpacked' in extra inventory's list"), x, y);
@@ -1512,19 +1495,5 @@ public class OptWnd extends WindowX {
     public void show() {
 	chpanel(main);
 	super.show();
-    }
-
-    public static class CFGHSlider extends HSlider {
-	private final CFG<Integer> cfg;
-	
-	public CFGHSlider(int w, CFG<Integer> cfg, int min, int max) {
-	    super(w, min, max, cfg.get());
-	    this.cfg = cfg;
-	}
-	
-	@Override
-	public void released() {
-	    cfg.set(val);
-	}
     }
 }

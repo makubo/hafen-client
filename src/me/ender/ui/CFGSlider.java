@@ -5,9 +5,9 @@ import haven.HSlider;
 import haven.Label;
 
 public class CFGSlider extends HSlider {
-    private final CFG<Integer> cfg;
-    private final Label label;
-    private final String format;
+    protected final CFG<Integer> cfg;
+    protected final Label label;
+    protected final String format;
 
     public CFGSlider(int w, int min, int max, CFG<Integer> cfg, Label label, String format) {
 	super(w, min, max, cfg.get());
@@ -28,7 +28,7 @@ public class CFGSlider extends HSlider {
 	updateLabel();
     }
 
-    private void updateLabel() {
+    protected void updateLabel() {
 	label.settext(String.format(format, val));
     }
 }
