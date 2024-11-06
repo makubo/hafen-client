@@ -16,25 +16,30 @@ public class ValueEntry extends TextEntry {
 	KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,
 	KeyEvent.VK_ENTER, KeyEvent.VK_BACK_SPACE, KeyEvent.VK_DELETE
     ));
-    private final Runnable action;
+    private final Runnable activate;
+    public Runnable update = null;
     public boolean clearOnFocus;
 
-    public ValueEntry(int w, String deftext, Runnable action) {
+    public ValueEntry(int w, Runnable activate) {
+	this(w, "", activate);
+    }
+
+    public ValueEntry(int w, String deftext, Runnable activate) {
 	super(w, deftext);
-	this.action = action;
+	this.activate = activate;
 	canactivate = true;
     }
 
     @Override
     public void gotfocus() {
 	super.gotfocus();
-	if(clearOnFocus) {settext("");}
+	if(clearOnFocus && value() < 0) {settext("");}
     }
 
     @Override
     public void wdgmsg(String msg, Object... args) {
-	if("activate".equals(msg) && action != null) {
-	    action.run();
+	if("activate".equals(msg) && activate != null) {
+	    activate.run();
 	} else {
 	    super.wdgmsg(msg, args);
 	}
@@ -52,12 +57,24 @@ public class ValueEntry extends TextEntry {
 	return false;
     }
 
+    @Override
+    protected void changed() {
+	super.changed();
+	if(update != null) {update.run();}
+    }
+
     public int value() {
 	try {
 	    return Integer.parseInt(text());
 	} catch (Exception ignored) {
 	}
 	return -1;
+    }
+
+    protected String transform(int value) {return value > 0 ? Integer.toString(value) : "∞";}
+
+    public void value(int value) {
+	settext(transform(value));
     }
 
 }

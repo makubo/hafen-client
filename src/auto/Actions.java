@@ -173,6 +173,18 @@ public class Actions {
 	    .actions(ITarget::rclick, BotUtil.selectFlower("Drink"))
 	    .start(item.ui, true);
     }
+
+    public static void craftCount(Makewindow make, int count) {
+	Bot.execute((target, bot) -> {
+	    int remaining = count;
+	    while (remaining > 0) {
+		if(make.disposed()) {bot.cancel();}
+		make.wdgmsg("make", 0);
+		if(!BotUtil.waitProgress(bot, 1000, 60000)) {bot.cancel();}
+		remaining--;
+	    }
+	}).start(make.ui, true);
+    }
     
     public static void aggroOnePVE(GameUI gui) {aggroOne(gui, false);}
     

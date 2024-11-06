@@ -46,6 +46,26 @@ public class BotUtil {
 	return result;
     }
     
+    /**returns true if wait was successful*/
+    static boolean waitProgress(Bot bot, long startTimeout, long finishTimeout) throws InterruptedException {
+	GameUI gui = bot.ui.gui;
+	long wait = startTimeout;
+	while (gui.prog == null) {
+	    wait -= 10;
+	    pause(10);
+	    if(wait < 0) {return false;}
+	    bot.checkCancelled();
+	}
+	wait = finishTimeout;
+	while (gui.prog != null) {
+	    wait -= 10;
+	    pause(10);
+	    if(wait < 0) {return false;}
+	    bot.checkCancelled();
+	}
+	return true;
+    }
+    
     private static <T> T doWaitLoad(Supplier<T> action) {
 	T result = null;
 	boolean ready = false;
