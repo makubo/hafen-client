@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 06.11.24:}
+  * added option to show growth scale for big trees (Options -> Display -> Show gob info cog)
+  * added ability to specify how many items to craft
+ 
 $size[14]{$u{Update for 05.11.24:}
   * added various FEP modifiers to food tooltips - satiation, hunger, low energy, verified and/or subbed account
   * fixed drink refill not seeing water barrels
