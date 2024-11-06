@@ -302,22 +302,22 @@ public class Minesweeper {
 	return true;
     }
 
-    public static void doImport(MapFile mapFile, UI ui) {
+    public static void doImport(UI ui) {
 	java.awt.EventQueue.invokeLater(() -> {
 	    JFileChooser fc = new JFileChooser();
 	    fc.setFileFilter(new FileNameExtensionFilter("Exported Haven Minesweeper data", "hems"));
 	    if(fc.showOpenDialog(null) != JFileChooser.APPROVE_OPTION)
 		return;
-	    doImport(mapFile, fc.getSelectedFile().toPath(), ui);
+	    doImport(fc.getSelectedFile().toPath(), ui);
 	});
     }
 
-    private static void doImport(MapFile mapFile, Path path, UI ui) {
+    private static void doImport(Path path, UI ui) {
 	new HackThread(() -> {
 	    boolean complete = false;
 	    try {
 		try (SeekableByteChannel fp = Files.newByteChannel(path)) {
-		    complete = doImport(mapFile, new BufferedInputStream(Channels.newInputStream(fp)), ui);
+		    complete = doImport(new BufferedInputStream(Channels.newInputStream(fp)), ui);
 		} finally {
 		    if(complete) {
 			ui.gui.msg("Finished importing minesweeper data", GameUI.MsgType.INFO);
@@ -332,7 +332,7 @@ public class Minesweeper {
 	}, "Minesweeper exporter").start();
     }
 
-    private static boolean doImport(MapFile mapFile, BufferedInputStream input, UI ui) {
+    private static boolean doImport(BufferedInputStream input, UI ui) {
 	Message data = new StreamMessage(input);
 	if(!Arrays.equals(EXPORT_SIG, data.bytes(EXPORT_SIG.length))) {return false;}
 	int ver = data.uint8();

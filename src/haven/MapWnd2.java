@@ -258,7 +258,7 @@ public class MapWnd2 extends MapWnd {
 	},
 	new Porter("Minesweeper") {
 	    @Override
-	    public void process(MapWnd2 mapWnd) {Minesweeper.doImport(mapWnd.file, mapWnd.ui);}
+	    public void process(MapWnd2 mapWnd) {Minesweeper.doImport(mapWnd.ui);}
 	}
     );
 
