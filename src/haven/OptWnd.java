@@ -35,6 +35,7 @@ import me.ender.GobInfoOpts;
 import me.ender.CustomOptPanels;
 import me.ender.ui.CFGBox;
 import me.ender.ui.CFGSlider;
+import me.ender.ui.DrinkMeter;
 
 import java.awt.event.KeyEvent;
 import java.util.Set;
@@ -1277,13 +1278,7 @@ public class OptWnd extends WindowX {
 	    @Override
 	    public void set(boolean a) {
 		super.set(a);
-		if(ui.gui != null && ui.gui.chrwdg != null) {
-		    if(a) {
-			ui.gui.addcmeter(new FEPMeter(ui.gui.chrwdg.battr.feps));
-		    } else {
-			ui.gui.delcmeter(FEPMeter.class);
-		    }
-		}
+		if(a) {FEPMeter.add(ui);} else {FEPMeter.rem(ui);}
 	    }
 	}, x, y);
     
@@ -1292,13 +1287,16 @@ public class OptWnd extends WindowX {
 	    @Override
 	    public void set(boolean a) {
 		super.set(a);
-		if(ui.gui != null && ui.gui.chrwdg != null) {
-		    if(a) {
-			ui.gui.addcmeter(new HungerMeter(ui.gui.chrwdg.battr.glut));
-		    } else {
-			ui.gui.delcmeter(HungerMeter.class);
-		    }
-		}
+		if(a) {HungerMeter.add(ui);} else {HungerMeter.rem(ui);}
+	    }
+	}, x, y);
+
+	y += STEP;
+	panel.add(new CFGBox("Show drinks meter", CFG.DRINKS_METER, "Will show how much tea and water you have") {
+	    @Override
+	    public void set(boolean a) {
+		super.set(a);
+		if(a) {DrinkMeter.add(ui);} else {DrinkMeter.rem(ui);}
 	    }
 	}, x, y);
 	

@@ -31,6 +31,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import haven.resutil.FoodInfo;
+import me.ender.ui.DrinkMeter;
+
 import static haven.CharWnd.*;
 import static haven.PUtils.*;
 
@@ -472,17 +474,6 @@ public class BAttrWnd extends Widget {
 		rtip = RichText.render(String.format("%s: %.1f\u2030\n%s: %d%%", lbl, lglut * 1000, L10N.label("Food efficacy"), Math.round(gmod * 100)), -1).tex();
 	    }
 	    return(rtip);
-	}
-    }
-    
-    @Override
-    protected void attached() {
-	super.attached();
-	if(CFG.HUNGER_METER.get()) {
-	    ui.gui.addcmeter(new HungerMeter(glut));
-	}
-	if(CFG.FEP_METER.get()) {
-	    ui.gui.addcmeter(new FEPMeter(feps));
 	}
     }
 

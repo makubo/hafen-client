@@ -119,6 +119,7 @@ public class CFG<T> {
     public static final CFG<Boolean> PROGRESS_NUMBER = new CFG<>("ui.progress_number", false);
     public static final CFG<Boolean> FEP_METER = new CFG<>("ui.fep_meter", false);
     public static final CFG<Boolean> HUNGER_METER = new CFG<>("ui.hunger_meter", false);
+    public static final CFG<Boolean> DRINKS_METER = new CFG<>("ui.drinks_meter", false);
     public static final CFG<Boolean> SHOW_BOT_MESSAGES = new CFG<>("ui.hide_bot_messages", true);
     
     //Color settings
