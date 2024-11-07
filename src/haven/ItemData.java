@@ -8,6 +8,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import haven.MenuGrid.Pagina;
 import haven.res.ui.tt.attrmod.AttrMod;
+import haven.res.ui.tt.level.Level;
 import haven.res.ui.tt.slot.Slotted;
 import haven.res.ui.tt.slots.ISlots;
 import haven.res.ui.tt.wear.Wear;
@@ -18,12 +19,17 @@ import me.ender.Reflect;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static haven.BAttrWnd.Constipations.*;
 import static haven.QualityList.SingleType.*;
 
 public class ItemData {
+    public static final String WATER = "Water";
+    public static final String TEA = "Tea";
+    
     private static final ItemData EMPTY = new ItemData();
     private static Gson gson;
     private static final Map<String, ItemData> item_data = new LinkedHashMap<String, ItemData>(9, 0.75f, true) {
@@ -515,5 +521,73 @@ public class ItemData {
 	public Resource read(JsonReader reader) throws IOException {
 	    return Resource.remote().loadwait(reader.nextString());
 	}
+    }
+
+    public static float getMaxCapacity(WItem item) {
+	Level level = item.fullness.get();
+	if(level != null) {return (float) level.max;}
+	
+	//TODO: find a better way - maybe config file?
+	String name = item.item.resname();
+	if(name.contains("/bucket")) {return 1000f;}
+	if(name.endsWith("/glassjug")) {return 500f;}
+	if(name.endsWith("/waterskin")) {return 300f;}
+	if(name.endsWith("/waterflask")) {return 200f;}
+	if(name.contains("/kuksa")) {return 80f;}
+
+	return 0f;
+    }
+
+    public static class Content {
+	private static final Pattern PARSE = Pattern.compile("([\\d.]*) ([\\w]+) of (.*)");
+	public final String name;
+	public final String unit;
+	public final float count;
+	public final QualityList q;
+	
+	public Content(String name, String unit, float count) {
+	    this(name, unit, count, QualityList.make(Collections.emptyList()));
+	}
+
+	public Content(String name, String unit, float count, QualityList q) {
+	    this.name = name;
+	    this.unit = unit;
+	    this.count = count;
+	    this.q = q;
+	}
+
+	public static Content parse(String name) {
+	    return parse(name, QualityList.make(Collections.emptyList()));
+	}
+
+	public static Content parse(String name, QualityList q) {
+	    Matcher m = PARSE.matcher(name);
+	    if(m.find()) {
+		float count = 0;
+		try {
+		    count = Float.parseFloat(m.group(1));
+		} catch (Exception ignored) {}
+		return new Content(m.group(3), m.group(2), count, q);
+	    }
+	    return new Content(name, "", 1, q);
+	}
+
+	public String name() {
+	    if("seeds".equals(unit)) {
+		return String.format("Seeds of %s", name);
+	    }
+	    return name;
+	}
+    
+	public boolean is(String what) {
+	    if(name == null || what == null) {
+		return false;
+	    }
+	    return name.contains(what);
+	}
+	
+	public boolean empty() {return count == 0 || name == null;}
+    
+	public static final Content EMPTY = new Content(null, null, 0);
     }
 }

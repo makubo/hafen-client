@@ -110,7 +110,7 @@ public class Actions {
 		BELT_CONTAINED(gui).get().stream().filter(InvHelper::isDrinkContainer),
 		HANDS_CONTAINED(gui).get().stream().filter(InvHelper::isBucket)
 	    ).flatMap(x -> x)
-	    .filter(x -> InvHelper.canBeFilledWith(x, "Water"))
+	    .filter(x -> InvHelper.canBeFilledWith(x, ItemData.WATER))
 	    .map(ContainedTarget::new)
 	    .collect(Collectors.toList());
 	
@@ -163,8 +163,8 @@ public class Actions {
     public static void drink(GameUI gui) {
 	Collection<Supplier<List<WItem>>> everywhere = Arrays.asList(HANDS(gui), INVENTORY(gui), BELT(gui));
 	ClientUtils.chainOptionals(
-	    () -> findFirstThatContains("Tea", everywhere),
-	    () -> findFirstThatContains("Water", everywhere)
+	    () -> findFirstMatching(HAS_TEA, everywhere),
+	    () -> findFirstMatching(HAS_WATER, everywhere)
 	).ifPresent(Actions::drink);
     }
     

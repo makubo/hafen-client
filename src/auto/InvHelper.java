@@ -1,6 +1,7 @@
 package auto;
 
 import haven.*;
+import haven.res.ui.tt.level.Level;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -8,9 +9,24 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class InvHelper {
+    public static Predicate<WItem> HAS_TEA = contains(ItemData.TEA);
+    public static Predicate<WItem> HAS_WATER = contains(ItemData.WATER);
+    
     
     private static List<WItem> items(Widget inv) {
 	return inv != null ? new ArrayList<>(inv.children(WItem.class)) : new LinkedList<>();
+    }
+
+    static Optional<WItem> findFirstMatching(Predicate<WItem> what, Collection<Supplier<List<WItem>>> where) {
+	for (Supplier<List<WItem>> place : where) {
+	    Optional<WItem> w = place.get().stream()
+		.filter(what)
+		.findFirst();
+	    if(w.isPresent()) {
+		return w;
+	    }
+	}
+	return Optional.empty();
     }
     
     static Optional<WItem> findFirstThatContains(String what, Collection<Supplier<List<WItem>>> where) {
@@ -39,8 +55,8 @@ public class InvHelper {
     static boolean isDrinkContainer(ContainedItem item) {
 	return isDrinkContainer(item.item);
     }
-    
-    static boolean isDrinkContainer(WItem item) {
+
+    public static boolean isDrinkContainer(WItem item) {
 	String resname = item.item.resname();
 	return resname.endsWith("/waterskin") || resname.endsWith("/waterflask") || resname.endsWith("/glassjug") || resname.contains("/kuksa");
     }
@@ -48,8 +64,8 @@ public class InvHelper {
     static boolean isBucket(ContainedItem item) {
 	return isBucket(item.item);
     }
-    
-    static boolean isBucket(WItem item) {
+
+    public static boolean isBucket(WItem item) {
 	return item.item.resname().contains("/bucket");
     }
 
@@ -57,9 +73,9 @@ public class InvHelper {
 	return canBeFilledWith(item.item, what);
     }
 
-    static boolean canBeFilledWith(WItem item, String what) {
-	Pair<Double, Double> fullness = item.fullness.get();
-	return fullness == null || (item.contains.get().is(what) && !Objects.equals(fullness.a, fullness.b));
+    public static boolean canBeFilledWith(WItem item, String what) {
+	Level fullness = item.fullness.get();
+	return fullness == null || (item.contains.get().is(what) && fullness.cur != fullness.max);
     }
     
     static boolean isNotFull(ContainedItem item) {
@@ -67,10 +83,15 @@ public class InvHelper {
     }
     
     static boolean isNotFull(WItem item) {
-	Pair<Double, Double> fullness = item.fullness.get();
-	return fullness == null || !Objects.equals(fullness.a, fullness.b);
+	Level fullness = item.fullness.get();
+	return fullness == null || fullness.cur != fullness.max;
     }
-    
+
+    public static boolean isEmpty(WItem item) {
+	Level fullness = item.fullness.get();
+	return fullness == null || fullness.cur == 0;
+    }
+
     static Collection<WItem> unstacked(WItem stack) {
 	Widget contents = stack.item.contents;
 	if(contents != null) {
@@ -92,16 +113,16 @@ public class InvHelper {
 	    .filter(wItem -> wItem.is(what))
 	    .findFirst();
     }
-    
-    static Supplier<List<WItem>> INVENTORY(GameUI gui) {
+
+    public static Supplier<List<WItem>> INVENTORY(GameUI gui) {
 	return () -> items(gui.maininv);
     }
     
     static Supplier<List<ContainedItem>> INVENTORY_CONTAINED(GameUI gui) {
 	return () -> items(gui.maininv).stream().map(w -> new InventoryItem(w, gui.maininv)).collect(Collectors.toList());
     }
-    
-    static Supplier<List<WItem>> BELT(GameUI gui) {
+
+    public static Supplier<List<WItem>> BELT(GameUI gui) {
 	return () -> {
 	    Equipory e = gui.equipory;
 	    if(e != null) {
@@ -127,7 +148,7 @@ public class InvHelper {
 	};
     }
     
-    static Supplier<List<WItem>> HANDS(GameUI gui) {
+    public static Supplier<List<WItem>> HANDS(GameUI gui) {
 	return () -> {
 	    List<WItem> items = new LinkedList<>();
 	    if(gui.equipory != null) {

@@ -331,10 +331,12 @@ public class ItemFilter {
 	}
 
 	@Override
-	protected boolean match(ItemInfo item) {
-	    ItemInfo.Contents.Content content = ItemInfo.getContent(item);
-	    if(content.empty()) {return false;}
-	    return content.name.toLowerCase().contains(text) && test(content.count);
+	public boolean matches(List<ItemInfo> infos) {
+	    ItemData.Content content = ItemInfo.getContent(infos);
+	    if(!content.empty()) {
+		return content.name.toLowerCase().contains(text) && test(content.count);
+	    }
+	    return match(QualityList.make(infos));
 	}
 
 	@Override

@@ -294,7 +294,6 @@ public abstract class ItemInfo {
     }
 
     public static class Contents extends Tip {
-        private static final Pattern PARSE = Pattern.compile("([\\d.]*) ([\\w]+) of (.*)");
 	public final List<ItemInfo> sub;
 	private static final Text.Line ch = Text.render("Contents:");
 	
@@ -318,68 +317,6 @@ public abstract class ItemInfo {
 		    public BufferedImage tipimg() {return(shorttip(sub));}
 		    public int order() {return(100);}
 		});
-	}
-    
-	public Content content() {
-	    QualityList q = QualityList.make(sub);
-	    for (ItemInfo i : sub) {
-		if(i instanceof Name) {
-		    return content(((Name) i).original, q);
-		}
-	    }
-	    return Content.EMPTY;
-	}
-	
-	public static Content content(String name){
-	    return content(name, QualityList.make(Collections.emptyList()));
-	}
-	
-	public static Content content(String name, QualityList q){
-	    Matcher m = PARSE.matcher(name);
-	    if(m.find()) {
-		float count = 0;
-		try {
-		    count = Float.parseFloat(m.group(1));
-		} catch (Exception ignored) {}
-		return new Content(m.group(3), m.group(2), count, q);
-	    }
-	    return new Content(name, "", 1, q);
-	} 
-    
-	public static class Content {
-	    public final String name;
-	    public final String unit;
-	    public final float count;
-	    public final QualityList q;
-	    
-	    public Content(String name, String unit, float count) {
-		this(name, unit, count, QualityList.make(Collections.emptyList()));
-	    }
-	    
-	    public Content(String name, String unit, float count, QualityList q) {
-		this.name = name;
-		this.unit = unit;
-		this.count = count;
-		this.q = q;
-	    }
-	    
-	    public String name() {
-		if("seeds".equals(unit)) {
-		    return String.format("Seeds of %s", name);
-		}
-		return name;
-	    }
-	
-	    public boolean is(String what) {
-		if(name == null || what == null) {
-		    return false;
-		}
-		return name.contains(what);
-	    }
-	    
-	    public boolean empty() {return count == 0 || name == null;}
-	
-	    public static final Content EMPTY = new Content(null, null, 0);
 	}
     }
 
@@ -485,6 +422,13 @@ public abstract class ItemInfo {
 	return(null);
     }
 
+    public static ItemInfo findlike(String cl, List<ItemInfo> il) {
+	for(ItemInfo inf : il) {
+	    if(Reflect.like(inf, cl)) {return inf;}
+	}
+	return(null);
+    }
+
     public static <T> List<T> findall(Class<T> cl, List<ItemInfo> il) {
 	List<T> ret = new LinkedList<>();
 	for(ItemInfo inf : il) {
@@ -569,26 +513,27 @@ public abstract class ItemInfo {
 	}
 	return null;
     }
-    
-    public static Contents.Content getContent(List<ItemInfo> infos) {
-	for (ItemInfo info : infos) {
-	    Contents.Content content = getContent(info);
-	    if(!content.empty()) {return content;}
+
+    public static ItemData.Content getContent(List<ItemInfo> infos) {
+	Contents contents = find(Contents.class, infos);
+	if(contents != null) {
+	    Name name = find(Name.class, contents.sub);
+	    if(name != null) {
+		return ItemData.Content.parse(name.original, QualityList.make(contents.sub));
+	    }
+	} else {
+	    //TODO: use NamedContents class when loftar moves it to package
+	    ItemInfo namedContents = findlike("NamedContents", infos);
+	    if(namedContents != null) {
+		//noinspection unchecked
+		List<ItemInfo> sub = (List<ItemInfo>) Reflect.getFieldValue(namedContents, "sub");
+		Text.Line ch = Reflect.getFieldValue(namedContents, "ch", Text.Line.class);
+		if(ch == null || sub == null) {return ItemData.Content.EMPTY;}
+		return ItemData.Content.parse(ch.text, QualityList.make(sub));
+	    }
 	}
-	return Contents.Content.EMPTY;
-    }
-    
-    public static Contents.Content getContent(ItemInfo info) {
-	if(info instanceof Contents) {
-	    return ((Contents) info).content();
-	} else if(Reflect.is(info, "NamedContents")) {
-	    //noinspection unchecked
-	    List<ItemInfo> sub = (List<ItemInfo>) Reflect.getFieldValue(info, "sub");
-	    Text.Line ch = Reflect.getFieldValue(info, "ch", Text.Line.class);
-	    if(ch == null || sub == null) {return Contents.Content.EMPTY;}
-	    return Contents.content(ch.text, QualityList.make(sub));
-	}
-	return Contents.Content.EMPTY;
+
+	return ItemData.Content.EMPTY;
     }
     
     public static Wear getWear(List<ItemInfo> infos) {
