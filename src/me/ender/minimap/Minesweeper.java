@@ -40,10 +40,15 @@ public class Minesweeper {
 	MapFileUtils.load(file, this::loadIndex, INDEX);
     }
 
-    public static void markAtGob(Sprite.Owner owner, int count) {
-	if(!(owner instanceof Gob)) {return;}
-	Gob gob = (Gob) owner;
+    public static void markDustSpawn(Sprite.Owner owner, float str) {
+	if(owner instanceof Gob) {markAtGob((Gob) owner, (byte) (str / 30f));}
+    }
 
+    public static void markMinedOutTile(Sprite.Owner owner) {
+	if(owner instanceof Gob) {markAtGob((Gob) owner, SAFE);}
+    }
+
+    private static void markAtGob(Gob gob, byte count) {
 	GameUI gui = gob.context(GameUI.class);
 	if(gui == null) {return;}
 

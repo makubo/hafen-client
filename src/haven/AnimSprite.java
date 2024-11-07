@@ -55,7 +55,7 @@ public class AnimSprite extends Sprite {
 		anims.add(ar.make());
 	}
 	if("gfx/terobjs/mineout".equals(res.name)) {
-	    Minesweeper.markAtGob(owner, Minesweeper.SAFE);
+	    Minesweeper.markMinedOutTile(owner);
 	}
 	this.anims = anims.toArray(new MeshAnim.Animation[0]);
 	Collection<RenderTree.Node> rl = new LinkedList<>();
