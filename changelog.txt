@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 07.11.24:}
+  * don't add fep multipliers to food tooltips in crafting menus
+  * added minesweeper cursor - hold SHIFT while activating minesweeper display - allows marking tiles as safe or dangerous
+ 
 $size[14]{$u{Update for 06.11.24:}
   * added option to show growth scale for big trees (Options -> Display -> Show gob info cog)
   * added ability to specify how many items to craft
