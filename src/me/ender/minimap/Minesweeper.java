@@ -45,7 +45,8 @@ public class Minesweeper {
     }
 
     public static void markMinedOutTile(Sprite.Owner owner) {
-	if(owner instanceof Gob) {markAtGob((Gob) owner, SAFE);}
+	//disabling this for now, as it will mark all tunnel tiles as safe 
+	//if(owner instanceof Gob) {markAtGob((Gob) owner, SAFE);}
     }
 
     private static void markAtGob(Gob gob, byte count) {
