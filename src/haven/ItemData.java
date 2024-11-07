@@ -227,6 +227,8 @@ public class ItemData {
     public static void modifyFoodTooltip(ItemInfo.Owner owner, Collection<BufferedImage> imgs, int[] types, double glut, double fepSum) {
 	imgs.add(RichText.render(String.format("Base FEP: $col[128,255,0]{%s}, FEP/Hunger: $col[128,255,0]{%s}", Utils.odformat2(fepSum, 2), FEPPerHunger(glut, fepSum)), 0).img);
 	
+	//this is not real item, don't add extra info
+	if(!(owner instanceof GItem)) {return;}
 	CharacterInfo character = null;
 	CharacterInfo.Constipation constipation = null;
 	try {
