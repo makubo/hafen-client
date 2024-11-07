@@ -1,6 +1,8 @@
 $size[14]{$u{Update for 07.11.24:}
   * don't add fep multipliers to food tooltips in crafting menus
   * added minesweeper cursor - hold SHIFT while activating minesweeper display - allows marking tiles as safe or dangerous
+  * fixed buffs being covered by meters if there's too many of them
+  * added option to show drinks meter (Option -> UI -> Show drinks meter) - it shows how much tea and water you have
  
 $size[14]{$u{Update for 06.11.24:}
   * added option to show growth scale for big trees (Options -> Display -> Show gob info cog)
