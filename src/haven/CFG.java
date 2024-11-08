@@ -17,7 +17,7 @@ import java.util.List;
 public class CFG<T> {
     public static final CFG<String> VERSION = new CFG<>("version", "");
     public static final CFG<Boolean> VIDEO_FULL_SCREEN = new CFG<>("video.full_screen", false);
-    public static final CFG<Boolean> DISPLAY_KINNAMES = new CFG<>("display.kinnames", true);
+//    public static final CFG<Boolean> DISPLAY_KINNAMES = new CFG<>("display.kinnames", true);
     public static final CFG<Boolean> DISPLAY_KINSFX = new CFG<>("display.kinsfx", true);
     public static final CFG<Boolean> DISPLAY_FLAVOR = new CFG<>("display.flavor", true);
     public static final CFG<Boolean> DISPLAY_GOB_INFO = new CFG<>("display.gob_info", false);

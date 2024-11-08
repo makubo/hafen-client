@@ -1114,9 +1114,9 @@ public class OptWnd extends WindowX {
 	
 	y += STEP;
 	panel.add(new CFGBox("Darken deep ocean tiles", CFG.COLORIZE_DEEP_WATER), x, y);
-	
-	y += STEP;
-	panel.add(new CFGBox("Always show kin names", CFG.DISPLAY_KINNAMES), x, y);
+//	this does nothing right now
+//	y += STEP;
+//	panel.add(new CFGBox("Always show kin names", CFG.DISPLAY_KINNAMES), x, y);
 	
 	y += STEP;
 	panel.add(new CFGBox("Play sound when kin changes status", CFG.DISPLAY_KINSFX), x, y);
