@@ -9,12 +9,14 @@ import java.awt.image.BufferedImage;
 /* >tt: NamedContents */
 @FromResource(name = "ui/tt/ncont", version = 2)
 public class NamedContents extends ItemInfo.Tip {
+    public final String name;
     public final List<ItemInfo> sub;
     public final Text.Line ch;
 
     public NamedContents(Owner owner, String name, List<ItemInfo> sub) {
 	super(owner);
 	ch = Text.render(name + ":");
+	this.name = name;
 	this.sub = sub;
     }
 

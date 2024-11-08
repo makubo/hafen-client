@@ -27,6 +27,7 @@
 package haven;
 
 import haven.res.ui.tt.attrmod.AttrMod;
+import haven.res.ui.tt.ncont.NamedContents;
 import haven.res.ui.tt.slot.Slotted;
 import haven.res.ui.tt.slots.ISlots;
 import haven.res.ui.tt.wear.Wear;
@@ -522,14 +523,9 @@ public abstract class ItemInfo {
 		return ItemData.Content.parse(name.original, QualityList.make(contents.sub));
 	    }
 	} else {
-	    //TODO: use NamedContents class when loftar moves it to package
-	    ItemInfo namedContents = findlike("NamedContents", infos);
+	    NamedContents namedContents = find(NamedContents.class, infos);
 	    if(namedContents != null) {
-		//noinspection unchecked
-		List<ItemInfo> sub = (List<ItemInfo>) Reflect.getFieldValue(namedContents, "sub");
-		Text.Line ch = Reflect.getFieldValue(namedContents, "ch", Text.Line.class);
-		if(ch == null || sub == null) {return ItemData.Content.EMPTY;}
-		return ItemData.Content.parse(ch.text, QualityList.make(sub));
+		return ItemData.Content.parse(namedContents.name, QualityList.make(namedContents.sub));
 	    }
 	}
 
