@@ -1,11 +1,13 @@
 /* Preprocessed source code */
+package haven.res.ui.tt.ncont;
+
 import haven.*;
 import java.util.*;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 /* >tt: NamedContents */
-@haven.FromResource(name = "ui/tt/ncont", version = 1)
+@haven.FromResource(name = "ui/tt/ncont", version = 2)
 public class NamedContents extends ItemInfo.Tip {
     public final List<ItemInfo> sub;
     public final Text.Line ch;
