@@ -1,3 +1,6 @@
+$size[14]{$u{Update for 08.11.24:}
+  * merger loftar's changes
+ 
 $size[14]{$u{Update for 07.11.24:}
   * don't add fep multipliers to food tooltips in crafting menus
   * added minesweeper cursor - hold SHIFT while activating minesweeper display - allows marking tiles as safe or dangerous
