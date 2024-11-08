@@ -546,7 +546,7 @@ public abstract class ItemInfo {
 	return null;
     }
 
-    private final static String[] mining_tools = {"Pickaxe", "Stone Axe", "Metal Axe", "Woodsman's Axe"};
+    private final static String[] mining_tools = {"Pickaxe", "Stone Axe", "Tinker's Throwing Axe", "Metal Axe", "Woodsman's Axe"};
     
     @SuppressWarnings("unchecked")
     public static Map<Resource, Integer> getBonuses(List<ItemInfo> infos, Map<String, Glob.CAttr> attrs) {
