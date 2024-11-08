@@ -337,7 +337,7 @@ public class Equipory extends Widget implements DTarget {
 	try {
 	    String name = item.resname();
 	    if(name.contains("/leech") || name.contains("/tick")) {
-		item.wdgmsg("drop", Coord.z);
+		item.drop();
 	    }
 	    return true;
 	} catch (Loading ignored) {
