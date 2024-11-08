@@ -1833,17 +1833,26 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public void presize() {
 	resize(parent.sz);
     }
-    
+
     public void setDetectGob(Gob gob) {
-        detectGob = gob;
+	detectGob = gob;
     }
     
-    public void msg(String msg, Color color, Color logcol) {
+    public static interface LogMessage extends UI.Notice {
+	public ChatUI.Channel.Message logmessage();
+    }
+
+    public void msg(UI.Notice msg) {
+	ChatUI.Channel.Message logged;
+	if(msg instanceof LogMessage)
+	    logged = ((LogMessage)msg).logmessage();
+	else
+	    logged = new ChatUI.Channel.SimpleMessage(msg.message(), msg.color());
 	msgtime = Utils.rtime();
-	lastmsg = RootWidget.msgfoundry.render(msg, color);
+	lastmsg = RootWidget.msgfoundry.render(msg.message(), msg.color());
 	Gob g = detectGob;
 	if(g != null) {
-	    Matcher m = GeneralGobInfo.GOB_Q.matcher(msg);
+	    Matcher m = GeneralGobInfo.GOB_Q.matcher(msg.message());
 	    if(m.matches()) {
 		try {
 		    int q = Integer.parseInt(m.group(1));
@@ -1852,20 +1861,8 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 		detectGob = null;
 	    }
 	}
-	syslog.append(msg, logcol);
-    }
-
-    public void msg(String msg, Color color) {
-	msg(msg, color, color);
-    }
-    
-    public void msg(String msg, Color color, boolean sfx) {
-	msg(msg, color, sfx ? UI.MessageWidget.msgsfx : null);
-    }
-    
-    public void msg(String msg, Color color, Audio.Clip sfx) {
-	msg(msg, color, color);
-	ui.sfxrl(sfx);
+	syslog.append(logged);
+	ui.sfxrl(msg.sfx());
     }
 
     public void error(String msg) {
