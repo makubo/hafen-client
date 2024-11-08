@@ -1870,12 +1870,12 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     }
     
     public void msg(String msg, MsgType type) {
-	msg(msg, type.color, type.sfx);
+	msg(new UI.SimpleMessage(msg, type.color, type.sfx));
     }
     
     public enum MsgType {
-	INFO(Color.WHITE, UI.MessageWidget.msgsfx), GOOD(Color.GREEN), BAD(Color.RED),
-	ERROR(new Color(192, 0, 0), new Color(255, 0, 0), UI.MessageWidget.errsfx);
+	INFO(Color.WHITE, UI.InfoMessage.sfx), GOOD(Color.GREEN), BAD(Color.RED),
+	ERROR(new Color(192, 0, 0), new Color(255, 0, 0), UI.ErrorMessage.sfx);
 	
 	public final Color color, logcol;
 	public final Audio.Clip sfx;

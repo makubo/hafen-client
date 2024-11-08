@@ -80,7 +80,9 @@ public class Equipory extends Widget implements DTarget {
 	BOOTS(15),     //15: Shoes
 	STORE_HAT(16), //16: Hat from store
 	EYES(17),      //17: Eyes
-	MOUTH(18);     //18: Mouth
+	MOUTH(18),     //18: Mouth
+	POUCH_LEFT(19),//19: Left Hand Pouch
+	POUCH_RIGHT(20);//20: Right Hand Pouch
     
 	public final int idx;
 	SLOTS(int idx) {

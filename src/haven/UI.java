@@ -953,26 +953,18 @@ public class UI {
     }
 
     public void message(String str, GameUI.MsgType type) {
-	if((cons!=null) && (gui!=null)){
+	if((cons != null) && (gui != null)) {
 	    gui.msg(str, type);
 	}
     }
 
-    public void message(String str, Color msgColor) {
-	if((cons != null) && (gui != null)) {
-	    gui.msg(str, msgColor);
-	}
-    }
-    
     public void message(String str, Color msgColor, boolean sfx) {
-	if((cons != null) && (gui != null)) {
-	    gui.msg(str, msgColor, sfx);
-	}
+	message(str, msgColor,sfx ? InfoMessage.sfx : null);
     }
     
     public void message(String str, Color msgColor, Audio.Clip sfx) {
 	if((cons != null) && (gui != null)) {
-	    gui.msg(str, msgColor, sfx);
+	    new SimpleMessage(str, msgColor, sfx);
 	}
     }
 
