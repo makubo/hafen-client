@@ -203,6 +203,15 @@ public class Actions {
     public static void aggroAll(GameUI gui) {
 	aggro(gui, getNearest(gui, Integer.MAX_VALUE, 165, gobIs(GobTag.PLAYER), gobIs(GobTag.AGGRO_TARGET), GobHelper::isNotFriendlySteed));
     }
+
+    public static void reAggroKritter(GameUI gui, long gobId) {
+	Gob target = gui.map.glob.oc.getgob(gobId);
+	if(target == null || target.anyOf(GobTag.KO, GobTag.DEAD)) {return;}
+	if(PositionHelper.distanceToPlayer(target) > 200) {return;}
+	String resid = target.resid();
+	if(resid == null || !resid.contains("gfx/kritter/")) {return;}
+	aggro(gui, Targets.of(target));
+    }
     
     static void aggro(GameUI gui, List<ITarget> targets) {
 	if(targets.isEmpty()) {

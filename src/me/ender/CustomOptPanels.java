@@ -123,6 +123,9 @@ public class CustomOptPanels {
 	panel.add(new CFGBox("Auto peace on combat start", CFG.COMBAT_AUTO_PEACE , "Automatically enter peaceful mode on combat start id enemy is aggressive - useful for taming"), x, y);
 	
 	y += STEP;
+	panel.add(new CFGBox("Re-aggro animals", CFG.COMBAT_RE_AGGRO), x, y).settip("Automatically re-start combat with animals that dropped out of combat with you.\nOnly really useful if 'Auto peace on combat start' is enabled.", true);
+
+	y += STEP;
 	panel.add(new CFGBox("Always mark current target", CFG.ALWAYS_MARK_COMBAT_TARGET , "Usually current target only marked when there's more than one"), x, y);
 	
 	y = AddCombatHighlight(panel, x, y, "Highlight party members in combat", CFG.HIGHLIGHT_PARTY_IN_COMBAT, CFG.MARK_PARTY_IN_COMBAT);
