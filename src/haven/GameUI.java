@@ -77,7 +77,7 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
     public TileHighlight.TileHighlightCFG tileHighlight;
     private Widget qqview;
     public BuddyWnd buddies;
-    public EquipProxy eqproxy;
+    public EquipProxy eqproxyHandBelt, eqproxyPouchBack;
     public FilterWnd filter;
     public Cal calendar;
     private final Zergwnd zerg;
@@ -339,7 +339,8 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	portrait = ulpanel.add(Frame.with(new Avaview(Avaview.dasz, plid, "avacam"), false), UI.scale(10, 10));
 	buffs = ulpanel.add(new Bufflist(), portrait.c.x + portrait.sz.x + UI.scale(10), portrait.c.y + ((IMeter.fsz.y + UI.scale(2)) * 2) + UI.scale(5 - 2));
 	calendar = umpanel.add(new Cal(), Coord.z);
-	eqproxy = add(new EquipProxy(SLOTS.HAND_LEFT, SLOTS.HAND_RIGHT, SLOTS.BACK, SLOTS.BELT), new Coord(420, 5));
+	eqproxyHandBelt = add(new EquipProxy(CFG.UI_SHOW_EQPROXY_HAND, SLOTS.HAND_LEFT, SLOTS.HAND_RIGHT, SLOTS.BELT), UI.scale(420, 5));
+	eqproxyPouchBack = add(new EquipProxy(CFG.UI_SHOW_EQPROXY_POUCH, "EquipProxy2", SLOTS.POUCH_LEFT, SLOTS.POUCH_RIGHT, SLOTS.BACK), UI.scale(420, 35));
 	syslog = chat.add(new ChatUI.Log("System"));
 	opts = add(new OptWnd());
 	opts.hide();
@@ -2109,8 +2110,8 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	}
 	
 	public boolean globtype(GlobKeyEvent ev) {
-	    //skip matching if CTRL pressed to not clash with global hotkeys
-	    if(ev.mods == KeyMatch.C) {return super.globtype(ev);}
+	    //skip matching if CTRL or ALT pressed to not clash with global hotkeys
+	    if(ev.mods == KeyMatch.C || ev.mods == KeyMatch.M) {return super.globtype(ev);}
 	    if((ev.code < KeyEvent.VK_0) || (ev.code > KeyEvent.VK_9))
 		return(super.globtype(ev));
 	    int i = Utils.floormod(ev.code - KeyEvent.VK_0 - 1, 10);

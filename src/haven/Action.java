@@ -6,9 +6,11 @@ import me.ender.GobInfoOpts;
 
 public enum Action {
     TOGGLE_TIMERS(GameUI::toggleTimers, "Toggle Timers"),
-    ACT_HAND_0(gui -> gui.eqproxy.activate(Equipory.SLOTS.HAND_LEFT, 1), "Left hand", "Left click on left hand slot."),
-    ACT_HAND_1(gui -> gui.eqproxy.activate(Equipory.SLOTS.HAND_RIGHT, 1), "Right hand", "Left click on right hand slot."),
-    ACT_BELT(gui -> gui.eqproxy.activate(Equipory.SLOTS.BELT, 3), "Belt", "Right click on belt slot."),
+    ACT_HAND_0(gui -> gui.eqproxyHandBelt.activate(Equipory.SLOTS.HAND_LEFT, 1), "Left hand", "Left click on left hand slot."),
+    ACT_HAND_1(gui -> gui.eqproxyHandBelt.activate(Equipory.SLOTS.HAND_RIGHT, 1), "Right hand", "Left click on right hand slot."),
+    ACT_BELT(gui -> gui.eqproxyHandBelt.activate(Equipory.SLOTS.BELT, 3), "Belt", "Right click on belt slot."),
+    ACT_POUCH_0(gui -> gui.eqproxyPouchBack.activate(Equipory.SLOTS.POUCH_LEFT, 3), "Left pouch", "Right click on pouch slot."),
+    ACT_POUCH_1(gui -> gui.eqproxyPouchBack.activate(Equipory.SLOTS.POUCH_RIGHT, 3), "Right pouch", "Right click on pouch slot."),
     ACT_DRINK(Actions::drink, "Drink", "Drinks water."),
     ACT_REFILL_DRINKS(Actions::refillDrinks, "Refill drinks", "Refills all water skins, flasks and jugs from nearby barrel or water tile."),
     OPEN_QUICK_CRAFT(GameUI::toggleCraftList, "Open craft list", "Opens list of items you can craft. Start typing to narrow the list. Press Enter or double-click to select recipe."),
