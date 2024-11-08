@@ -1,5 +1,6 @@
 $size[14]{$u{Update for 08.11.24:}
   * merger loftar's changes
+  * updated tree contents for Beech, Poplar and Willow
  
 $size[14]{$u{Update for 07.11.24:}
   * don't add fep multipliers to food tooltips in crafting menus
