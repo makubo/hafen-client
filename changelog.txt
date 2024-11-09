@@ -1,5 +1,12 @@
+$size[14]{$u{Update for 09.11.24:}
+  * added second floating equipment widget - for pouches and back
+  * floating equipment widgets can be toggled on or off in the Options -> UI -> Show hands and belt widget and Show pouches and back widget
+  * added mount the closest horse action - Xtended -> Automation -> Mount horse, default key bind - CTRL+Q
+  * fixed some messages (notably player/animal warnings) not being displayed
+  * added Willow Weep to wound treatments
+ 
 $size[14]{$u{Update for 08.11.24:}
-  * merger loftar's changes
+  * merged loftar's changes
   * updated tree contents for Beech, Poplar and Willow
  
 $size[14]{$u{Update for 07.11.24:}
