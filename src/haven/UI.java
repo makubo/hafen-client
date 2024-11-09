@@ -964,7 +964,7 @@ public class UI {
     
     public void message(String str, Color msgColor, Audio.Clip sfx) {
 	if((cons != null) && (gui != null)) {
-	    new SimpleMessage(str, msgColor, sfx);
+	    gui.msg(new SimpleMessage(str, msgColor, sfx));
 	}
     }
 
