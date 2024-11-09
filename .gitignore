@@ -12,7 +12,7 @@ out
 /accounts.json
 /config.json
 /error.log
-/i10n/ru/missing/
+/i10n/**/missing/
 /windows.json
 /charterbook.json
 /autochoose.json
