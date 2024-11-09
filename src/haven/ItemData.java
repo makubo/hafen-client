@@ -16,9 +16,12 @@ import haven.resutil.Curiosity;
 import haven.resutil.FoodInfo;
 import me.ender.Reflect;
 
+import java.awt.*;
+import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -590,5 +593,26 @@ public class ItemData {
 	public boolean empty() {return count == 0 || name == null;}
     
 	public static final Content EMPTY = new Content(null, null, 0);
+    }
+
+    public static class DebugInfo extends ItemInfo.Tip {
+	public static RichText.Foundry fnd = new RichText.Foundry(
+	    TextAttribute.FAMILY, "monospaced",
+	    TextAttribute.SIZE, 10,
+	    TextAttribute.FOREGROUND, Color.LIGHT_GRAY
+	);
+	public final BufferedImage img;
+
+	public DebugInfo(GItem item) {
+	    super(item);
+	    this.img = fnd.render(item.resname()).img;
+	}
+
+	@Override
+	public int order() {return 20000;}
+
+	public BufferedImage tipimg() {
+	    return (img);
+	}
     }
 }
