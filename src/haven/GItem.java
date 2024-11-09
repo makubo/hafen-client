@@ -312,6 +312,7 @@ public class GItem extends AWidget implements ItemInfo.SpriteOwner, GSprite.Owne
 	    Resource.Pagina pg = res.get().layer(Resource.pagina);
 	    if(pg != null)
 		info.add(new ItemInfo.Pagina(this, pg.text));
+	    if(ItemData.DBG) {info.add(new ItemInfo.AdHoc(this, res.get().name));}
 	    this.info = info;
 	}
 	return(this.info);

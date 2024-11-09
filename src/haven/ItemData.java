@@ -27,6 +27,7 @@ import static haven.BAttrWnd.Constipations.*;
 import static haven.QualityList.SingleType.*;
 
 public class ItemData {
+    public static boolean DBG = Config.get().getprop("ender.debug.items", "off").equals("on");
     public static final String WATER = "Water";
     public static final String TEA = "Tea";
     
