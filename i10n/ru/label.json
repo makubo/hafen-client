@@ -241,5 +241,6 @@
 	"Invert vertical camera rotation": "Инвертировать поворот камеры по вертикли",
 	"Invert horizontal camera rotation": "Инвертировать поворот камеры по горизонтали",
 	"Hide trees": "Спрятать деревья",
-	"Auto-pick stuff": "Автоподбор вещей"
+	"Auto-pick stuff": "Автоподбор вещей",
+        "The position where you last logged out is not available, because that location is claimed. Would you like to restart at your hearth fire instead\\?": "Место в котором Вы находились во время выхода из игры перешло в чье-то владение и не доступно. Хотите возродиться на Вашем костре жизни?"
 }
