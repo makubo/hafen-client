@@ -93,6 +93,7 @@ public class KeyBinder {
 	add(KeyEvent.VK_Z, CTRL,  TOGGLE_TILE_CENTERING);
 	add(KeyEvent.VK_Q, ALT,   BOT_PICK_ALL_HERBS);
 	add(KeyEvent.VK_W, ALT,   BOT_OPEN_GATE);
+	add(KeyEvent.VK_Q, CTRL,  BOT_MOUNT_HORSE);
 	add(AGGRO_ONE_PVE);
 	add(AGGRO_ONE_PVP);
 	add(AGGRO_ALL);

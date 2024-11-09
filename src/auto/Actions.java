@@ -185,6 +185,33 @@ public class Actions {
 	    }
 	}).start(make.ui, true);
     }
+
+    public static void mountClosestHorse(GameUI gui) {
+	List<ITarget> targets = getGobs(gui, 1, PositionHelper.byDistanceToPlayer,
+	    gob -> gob.anyOf(GobTag.MARE, GobTag.STALLION)
+		&& !gob.anyOf(GobTag.DEAD, GobTag.KO)
+		&& gob.occupants.isEmpty());
+
+	Bot.process(targets).actions(
+	    (target, bot) -> {
+		Gob gob = ((GobTarget) target).gob;
+
+		if(PositionHelper.distanceToPlayer(gob) < 20) {return;}
+		
+		Coord mc = gob.rc.floor(OCache.posres);
+		bot.ui.gui.menu.wdgmsg("act", "pose", "whistle", 0, mc, 0, gob.id, mc, 0, -1);
+
+		//wait for horse to be close
+		long timeout = 3000;
+		while (timeout > 0 && !gob.disposed() && PositionHelper.distanceToPlayer(gob) > 15.0) {
+		    BotUtil.pause(20);
+		    timeout -= 20;
+		}
+	    },
+	    ITarget::rclick,
+	    BotUtil.selectFlower("Giddyup!")
+	).start(gui.ui, true);
+    }
     
     public static void aggroOnePVE(GameUI gui) {aggroOne(gui, false);}
     
