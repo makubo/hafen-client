@@ -501,9 +501,9 @@ public class Minesweeper {
 		    Tex tex = getTex(values[index(ul.add(o))]);
 		    if(tex == null) {continue;}
 
-		    Coord sc = Homo3D.obj2view(origin(o), state, Area.sized(g.sz())).round2();
+		    Coord sc = Homo3D.obj2sc(origin(o), state, Area.sized(g.sz()));
+		    if(sc == null) {continue;}
 		    if(!sc.isect(Coord.z, g.sz())) {continue;}
-
 
 		    g.aimage(tex, sc, 0.5f, 0.5f);
 		}
