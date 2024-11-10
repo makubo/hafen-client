@@ -169,14 +169,13 @@ public class GeneralGobInfo extends GobInfo {
 	    }
 	} else if(isSpriteKind(gob, "Tree")) {
 	    if(GobInfoOpts.disabled(InfoPart.TREE_GROWTH)) {return null;}
-	    scalePercent = getTreeScale(gob);
-	    if(scalePercent >= 0 && (scalePercent < 100 || (CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG.get() && scalePercent >= CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG_THRESHOLD.get()))) {
-		int growth = scalePercent;
-		if(gob.is(GobTag.TREE)) {
-		    growth = (int) (TREE_MULT * (growth - TREE_START));
-		} else if(gob.is(GobTag.BUSH)) {
-		    growth = (int) (BUSH_MULT * (growth - BUSH_START));
-		}
+	    int growth = scalePercent = getTreeScale(gob);
+	    if(gob.is(GobTag.TREE)) {
+		growth = (int) (TREE_MULT * (growth - TREE_START));
+	    } else if(gob.is(GobTag.BUSH)) {
+		growth = (int) (BUSH_MULT * (growth - BUSH_START));
+	    }
+	    if(growth >= 0 && (growth < 100 || (CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG.get() && growth >= CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG_THRESHOLD.get()))) {
 		Color c = Utils.blendcol(growth / 100.0, Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN);
 		line = text(String.format("%d%%", growth), c);
 	    }
