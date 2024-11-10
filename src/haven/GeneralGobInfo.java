@@ -5,6 +5,7 @@ import me.ender.GobInfoOpts;
 import me.ender.GobInfoOpts.InfoPart;
 import me.ender.GobInfoOpts.TreeSubPart;
 import me.ender.Reflect;
+import me.ender.ResName;
 import me.ender.gob.GobContents;
 import me.ender.gob.GobTimerData;
 
@@ -169,7 +170,7 @@ public class GeneralGobInfo extends GobInfo {
 	} else if(isSpriteKind(gob, "Tree")) {
 	    if(GobInfoOpts.disabled(InfoPart.TREE_GROWTH)) {return null;}
 	    scalePercent = getTreeScale(gob);
-	    if(scalePercent < 100 && scalePercent >= 0) {
+	    if(scalePercent >= 0 && (scalePercent < 100 || (CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG.get() && scalePercent >= CFG.DISPLAY_GOB_INFO_TREE_SHOW_BIG_THRESHOLD.get()))) {
 		int growth = scalePercent;
 		if(gob.is(GobTag.TREE)) {
 		    growth = (int) (TREE_MULT * (growth - TREE_START));
@@ -217,6 +218,7 @@ public class GeneralGobInfo extends GobInfo {
 	    if(!force && GobInfoOpts.disabled(InfoPart.BARREL)) {return contents;}
 	    contents = gob.ols.stream()
 		.map(Gob.Overlay::name)
+		.filter(name -> name.startsWith(ResName.BARREL_WITH_CONTENTS))
 		.map(ClientUtils::prettyResName)
 		.findAny();
 	    

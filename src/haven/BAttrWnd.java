@@ -31,6 +31,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import haven.resutil.FoodInfo;
+import me.ender.ui.DrinkMeter;
+
 import static haven.CharWnd.*;
 import static haven.PUtils.*;
 
@@ -113,7 +115,7 @@ public class BAttrWnd extends Widget {
     public static class Constipations extends SListBox<Constipations.El, Widget> {
 	public static final PUtils.Convolution tflt = new PUtils.Hanning(1);
 	public static final Color hilit = new Color(255, 255, 0, 48);
-	public static final Color buffed = new Color(160, 255, 160), full = new Color(250, 230, 64), none = new Color(250, 19, 43);
+	public static final Color buffed = new Color(64, 255, 64), full = new Color(250, 230, 64), none = new Color(250, 19, 43);
 	public final List<El> els = new ArrayList<El>();
 	public static final Comparator<El> ecmp = (a, b) -> {
 	    if(a.a < b.a)
@@ -366,9 +368,7 @@ public class BAttrWnd extends Widget {
 	    if(trev != null) {
 		try {
 		    Collections.sort(etr, dcmp);
-		    GameUI gui = getparent(GameUI.class);
-		    if(gui != null)
-			gui.msg(String.format("You gained " + Loading.waitfor(trev).flayer(Event.class).nm), Color.WHITE, UI.MessageWidget.msgsfx);
+		    ui.msg(String.format("You gained " + Loading.waitfor(trev).flayer(Event.class).nm));
 		    trol = new TexI(mktrol(etr, trev));
 		    trtm = Utils.rtime();
 		    trev = null;
@@ -474,21 +474,10 @@ public class BAttrWnd extends Widget {
 	    return(rtip);
 	}
     }
-    
-    @Override
-    protected void attached() {
-	super.attached();
-	if(CFG.HUNGER_METER.get()) {
-	    ui.gui.addcmeter(new HungerMeter(glut));
-	}
-	if(CFG.FEP_METER.get()) {
-	    ui.gui.addcmeter(new FEPMeter(feps));
-	}
-    }
 
     public BAttrWnd(Glob glob) {
 	Widget prev;
-	prev = add(CharWnd.settip(new Img(catf.render("Base Attributes").tex()), "gfx/hud/chr/tips/base"), Coord.z);
+	prev = add(CharWnd.settip(new Img(catf.i10n_label("Base Attributes").tex()), "gfx/hud/chr/tips/base"), Coord.z);
 	attrs = new ArrayList<>();
 	Attr aw;
 	attrs.add(aw = add(new Attr(glob, "str", every), prev.pos("bl").adds(5, 0).add(wbox.btloff())));
@@ -501,14 +490,14 @@ public class BAttrWnd extends Widget {
 	attrs.add(aw = add(new Attr(glob, "wil", other), aw.pos("bl")));
 	attrs.add(aw = add(new Attr(glob, "psy", every), aw.pos("bl")));
 	prev = Frame.around(this, attrs);
-	prev = add(CharWnd.settip(new Img(catf.render("Food Event Points").tex()), "gfx/hud/chr/tips/fep"), prev.pos("bl").x(0).adds(0, 10));
+	prev = add(CharWnd.settip(new Img(catf.i10n_label("Food Event Points").tex()), "gfx/hud/chr/tips/fep"), prev.pos("bl").x(0).adds(0, 10));
 	feps = add(new FoodMeter(), prev.pos("bl").adds(5, 2));
 
 	int ah = attrs.get(attrs.size() - 1).pos("bl").y - attrs.get(0).pos("ul").y;
-	prev = add(CharWnd.settip(new Img(catf.render("Food Satiations").tex()), "gfx/hud/chr/tips/constip"), width, 0);
+	prev = add(CharWnd.settip(new Img(catf.i10n_label("Food Satiations").tex()), "gfx/hud/chr/tips/constip"), width, 0);
 	cons = add(new Constipations(Coord.of(attrw, ah)), prev.pos("bl").adds(5, 0).add(wbox.btloff()));
 	prev = Frame.around(this, Collections.singletonList(cons));
-	prev = add(CharWnd.settip(new Img(catf.render("Hunger Level").tex()), "gfx/hud/chr/tips/hunger"), prev.pos("bl").x(width).adds(0, 10));
+	prev = add(CharWnd.settip(new Img(catf.i10n_label("Hunger Level").tex()), "gfx/hud/chr/tips/hunger"), prev.pos("bl").x(width).adds(0, 10));
 	glut = add(new GlutMeter(), prev.pos("bl").adds(5, 2));
 	pack();
     }
@@ -518,6 +507,7 @@ public class BAttrWnd extends Widget {
 	    feps.update(args);
 	} else if(nm == "glut") {
 	    glut.update(args);
+	    ui.sess.character.updateGluttony(glut.gmod);
 	} else if(nm == "ftrig") {
 	    feps.trig(ui.sess.getresv(args[0]));
 	} else if(nm == "lvl") {
@@ -533,6 +523,7 @@ public class BAttrWnd extends Widget {
 		    t.sdt = new MessageBuf((byte[])args[a++]);
 		double m = Utils.dv(args[a++]);
 		cons.update(t, m);
+		ui.sess.character.constipation.update(t, m);
 	    }
 	} else {
 	    super.uimsg(nm, args);

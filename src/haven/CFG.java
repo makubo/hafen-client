@@ -17,13 +17,15 @@ import java.util.List;
 public class CFG<T> {
     public static final CFG<String> VERSION = new CFG<>("version", "");
     public static final CFG<Boolean> VIDEO_FULL_SCREEN = new CFG<>("video.full_screen", false);
-    public static final CFG<Boolean> DISPLAY_KINNAMES = new CFG<>("display.kinnames", true);
+//    public static final CFG<Boolean> DISPLAY_KINNAMES = new CFG<>("display.kinnames", true);
     public static final CFG<Boolean> DISPLAY_KINSFX = new CFG<>("display.kinsfx", true);
     public static final CFG<Boolean> DISPLAY_FLAVOR = new CFG<>("display.flavor", true);
     public static final CFG<Boolean> DISPLAY_GOB_INFO = new CFG<>("display.gob_info", false);
     public static final CFG<Set<GobInfoOpts.InfoPart>> DISPLAY_GOB_INFO_DISABLED_PARTS = new CFG<>("display.gob_info_disabled_parts", new HashSet<>(), new TypeToken<Set<GobInfoOpts.InfoPart>>(){});
     public static final CFG<Set<GobInfoOpts.TreeSubPart>> DISPLAY_GOB_INFO_TREE_ENABLED_PARTS = new CFG<>("display.gob_info_tree_enabled_parts", new HashSet<>(Arrays.asList(GobInfoOpts.TreeSubPart.SEEDS, GobInfoOpts.TreeSubPart.LEAVES)), new TypeToken<Set<GobInfoOpts.TreeSubPart>>(){});
     public static final CFG<Boolean> DISPLAY_GOB_INFO_TREE_HIDE_GROWING_PARTS = new CFG<>("display.gob_info_tree_hide_growing_parts", true);
+    public static final CFG<Boolean> DISPLAY_GOB_INFO_TREE_SHOW_BIG = new CFG<>("display.gob_info_tree_show_big", true);
+    public static final CFG<Integer> DISPLAY_GOB_INFO_TREE_SHOW_BIG_THRESHOLD = new CFG<>("display.gob_info_show_big_threshold", 110);
     public static final CFG<Boolean> DISPLAY_GOB_INFO_SHORT = new CFG<>("display.gob_info_shorten_content", false);
     public static final CFG<Boolean> DISPLAY_GOB_HITBOX_FILLED = new CFG<>("display.gob_hitbox_filled", false);
     public static final CFG<Boolean> DISPLAY_GOB_HITBOX = new CFG<>("display.gob_hitbox", false);
@@ -33,8 +35,10 @@ public class CFG<T> {
     public static final CFG<Boolean> QUEUE_PATHS = new CFG<>("general.queue_path", false);
     public static final CFG<Boolean> HIDE_TREES = new CFG<>("display.hide_gobs", false);
     public static final CFG<Boolean> SKIP_HIDING_RADAR_TREES = new CFG<>("display.skip_hide_radar_gobs", false);
-    public static final CFG<Boolean> DISPLAY_FOD_CATEGORIES = new CFG<>("display.food_category", true);
+    public static final CFG<Boolean> DISPLAY_FOOD_CATEGORIES = new CFG<>("display.food_category", true);
+    public static final CFG<Boolean> UI_INSTANT_LONG_TIPS = new CFG<>("ui.instant_long_tips", false);
     public static final CFG<Boolean> SHOW_GOB_RADIUS = new CFG<>("display.show_gob_radius", false);
+    public static final CFG<Boolean> SHOW_MINESWEEPER_OVERLAY = new CFG<>("display.minesweeper_overlay", false);
     public static final CFG<Boolean> SHOW_MINE_SUPPORT_AS_OVERLAY = new CFG<>("display.mine_support_overlay", true);
     public static final CFG<Boolean> SHOW_CONTAINER_FULLNESS = new CFG<>("display.container_status", false);
     public static final CFG<Boolean> SHOW_PROGRESS_COLOR = new CFG<>("display.progress_coloring", false);
@@ -58,11 +62,15 @@ public class CFG<T> {
     public static final CFG<Boolean> AUTO_PICK_ONLY_RADAR = new CFG<>("general.auto_pick_radar", true);
     public static final CFG<Integer> AUTO_PICK_RADIUS = new CFG<>("general.auto_pick_radius", 55);
     public static final CFG<Boolean> AUTO_DROP_RESPECT_FILTER = new CFG<>("general.auto_drop.filter", true);
+    public static final CFG<Boolean> AUTO_DROP_PARASITES = new CFG<>("general.auto_drop_parasites", false);
+    public static final CFG<Boolean> PRESERVE_SYMBEL = new CFG<>("general.preserve_symbel", false);
     
     public static final CFG<Theme> THEME = new CFG<>("ui.theme", Theme.Pretty);
     public static final CFG<Boolean> FORCE_HW_CURSOR = new CFG<>("ui.force_hw_cursor", false);
     public static final CFG<Boolean> DISABLE_UI_HIDING = new CFG<>("ui.disable_ui_hide", true);
     public static final CFG<Boolean> UI_DISABLE_CONTAINER_POS = new CFG<>("ui.disable_container_pos", false);
+    public static final CFG<Boolean> UI_SHOW_EQPROXY_HAND = new CFG<>("ui.eq_proxy.hands", true);
+    public static final CFG<Boolean> UI_SHOW_EQPROXY_POUCH = new CFG<>("ui.eq_proxy.pouch", false);
     public static final CFG<Boolean> ALT_COMBAT_UI = new CFG<>("ui.combat.alt_ui", true);
     public static final CFG<Boolean> SIMPLE_COMBAT_OPENINGS = new CFG<>("ui.combat.simple_openings", true);
     public static final CFG<Boolean> ALWAYS_MARK_COMBAT_TARGET = new CFG<>("ui.combat.always_mark_target", false);
@@ -83,6 +91,7 @@ public class CFG<T> {
     public static final CFG<Boolean> CLEAR_ALL_DMG_AFTER_COMBAT = new CFG<>("ui.combat.clear_all_damage_after", false);
     public static final CFG<Boolean> SHOW_COMBAT_KEYS = new CFG<>("ui.combat.show_keys", true);
     public static final CFG<Boolean> COMBAT_AUTO_PEACE = new CFG<>("ui.combat.peace", false);
+    public static final CFG<Boolean> COMBAT_RE_AGGRO = new CFG<>("ui.combat.reaggro", false);
     public static final CFG<Boolean> SHOW_CHAT_TIMESTAMP = new CFG<>("ui.chat.timestamp", true);
     public static final CFG<Boolean> STORE_CHAT_LOGS = new CFG<>("ui.chat.logs", false);
     public static final CFG<Boolean> LOCK_STUDY = new CFG<>("ui.lock_study", false);
@@ -113,6 +122,7 @@ public class CFG<T> {
     public static final CFG<Boolean> PROGRESS_NUMBER = new CFG<>("ui.progress_number", false);
     public static final CFG<Boolean> FEP_METER = new CFG<>("ui.fep_meter", false);
     public static final CFG<Boolean> HUNGER_METER = new CFG<>("ui.hunger_meter", false);
+    public static final CFG<Boolean> DRINKS_METER = new CFG<>("ui.drinks_meter", false);
     public static final CFG<Boolean> SHOW_BOT_MESSAGES = new CFG<>("ui.hide_bot_messages", true);
     
     //Color settings

@@ -1,6 +1,8 @@
 package me.ender;
 
 import haven.*;
+import me.ender.ui.CFGBox;
+import me.ender.ui.CFGSlider;
 
 import static haven.OptWnd.*;
 
@@ -121,6 +123,9 @@ public class CustomOptPanels {
 	panel.add(new CFGBox("Auto peace on combat start", CFG.COMBAT_AUTO_PEACE , "Automatically enter peaceful mode on combat start id enemy is aggressive - useful for taming"), x, y);
 	
 	y += STEP;
+	panel.add(new CFGBox("Re-aggro animals", CFG.COMBAT_RE_AGGRO), x, y).settip("Automatically re-start combat with animals that dropped out of combat with you.\nOnly really useful if 'Auto peace on combat start' is enabled.", true);
+
+	y += STEP;
 	panel.add(new CFGBox("Always mark current target", CFG.ALWAYS_MARK_COMBAT_TARGET , "Usually current target only marked when there's more than one"), x, y);
 	
 	y = AddCombatHighlight(panel, x, y, "Highlight party members in combat", CFG.HIGHLIGHT_PARTY_IN_COMBAT, CFG.MARK_PARTY_IN_COMBAT);
@@ -138,12 +143,7 @@ public class CustomOptPanels {
 	y += STEP;
 	Label label = panel.add(new Label(String.format("Combat info vertical offset: %d", CFG.SHOW_COMBAT_INFO_HEIGHT.get())), x + H_STEP, y);
 	y += UI.scale(15);
-	panel.add(new CFGHSlider(UI.scale(150), CFG.SHOW_COMBAT_INFO_HEIGHT, 1, 35) {
-	    @Override
-	    public void changed() {
-		label.settext(String.format("Combat info vertical offset: %d", val));
-	    }
-	}, x + H_STEP, y);
+	panel.add(new CFGSlider(UI.scale(150), 1, 35, CFG.SHOW_COMBAT_INFO_HEIGHT, label, "Combat info vertical offset: %d"), x + H_STEP, y);
 	
 	y += STEP;
 	panel.add(new CFGBox("Simplified combat openings", CFG.SIMPLE_COMBAT_OPENINGS, "Show openings as solid colors with numbers"), x, y);

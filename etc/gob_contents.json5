@@ -13,7 +13,8 @@
   "gfx/terobjs/trees/alder": {Bough: "gfx/invobjs/bough-alder"},
   "gfx/terobjs/trees/almondtree": {Seed: "gfx/invobjs/almond"},
   "gfx/terobjs/trees/appletree": {Seed: "gfx/invobjs/apple"},
-  "gfx/terobjs/trees/beech": {Bark: "gfx/invobjs/toughbark"},
+  "gfx/terobjs/trees/appletreegreen": {Seed: "gfx/invobjs/applegreen"},
+  "gfx/terobjs/trees/beech": {Seed:"gfx/invobjs/seed-beech", Bark: "gfx/invobjs/toughbark", Bough:  "gfx/invobjs/bough-beech"},
   "gfx/terobjs/trees/birch": {Bark: "gfx/invobjs/bark-birch"},
   "gfx/terobjs/trees/cedar": {Bark: "gfx/invobjs/toughbark"},
   "gfx/terobjs/trees/cherry": {Seed: "gfx/invobjs/cherry"},
@@ -36,6 +37,7 @@
   "gfx/terobjs/trees/peartree": {Seed: "gfx/invobjs/pear"},
   "gfx/terobjs/trees/persimmontree": {Seed: "gfx/invobjs/persimmon"},
   "gfx/terobjs/trees/plumtree": {Seed: "gfx/invobjs/plum"},
+  "gfx/terobjs/trees/poplar": {Bough: "gfx/invobjs/bough-poplar"},
   "gfx/terobjs/trees/quincetree": {Seed: "gfx/invobjs/quince"},
   "gfx/terobjs/trees/sorbtree": {Seed: "gfx/invobjs/sorbapple"},
   "gfx/terobjs/trees/spruce": {Bough: "gfx/invobjs/small/bough-spruce"},
@@ -43,6 +45,6 @@
   "gfx/terobjs/trees/sweetgum": {Bough: "gfx/invobjs/small/bough-sweetgum"},
   "gfx/terobjs/trees/walnuttree": {Seed: "gfx/invobjs/walnut"},
   "gfx/terobjs/trees/wartybirch": {Bark: "gfx/invobjs/bark-birch"},
-  "gfx/terobjs/trees/willow": {Bark: "gfx/invobjs/toughbark"},
+  "gfx/terobjs/trees/willow": {Bark: "gfx/invobjs/bark-willow"},
   "gfx/terobjs/trees/yew": {Bough: "gfx/invobjs/small/bough-yew"}
 }

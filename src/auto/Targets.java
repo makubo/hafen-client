@@ -14,6 +14,10 @@ public class Targets {
     public static List<ITarget> of(WItem... items) {
 	return Arrays.stream(items).map(ItemTarget::new).collect(Collectors.toList());
     }
+
+    public static List<ITarget> of(Gob... gobs) {
+	return Arrays.stream(gobs).map(GobTarget::new).collect(Collectors.toList());
+    }
     
     public static Gob gob(ITarget target) {
 	if(target instanceof GobTarget) {
@@ -74,7 +78,7 @@ public class Targets {
 	
 	@Override
 	public boolean disposed() {
-	    return true;
+	    return false;
 	}
     }
 }

@@ -28,6 +28,7 @@ package haven;
 
 import static haven.MCache.*;
 import static haven.OCache.posres;
+import static me.ender.ResName.*;
 
 import auto.Bot;
 
@@ -46,10 +47,10 @@ import haven.render.sl.Type;
 import haven.res.gfx.fx.msrad.MSRad;
 import haven.rx.Reactor;
 import me.ender.ChatCommands;
+import me.ender.CustomCursors;
+import me.ender.minimap.Minesweeper;
 
 public class MapView extends PView implements DTarget, Console.Directory, Widget.CursorQuery.Handler {
-    public static final Resource.Named inspectCursor = Resource.local().loadwait("gfx/hud/curs/studyx").indir();
-    public static final Resource.Named trackCursor = Resource.local().loadwait("gfx/hud/curs/track").indir();
     public static boolean clickdb = false;
     public long plgob = -1;
     public Coord2d cc;
@@ -69,7 +70,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
     private long mapupdate = 0;
     String stip = null;
     RichText otip = null;
-    boolean fullTip = false;
+    public boolean fullTip = false;
 
     private boolean showgrid;
 
@@ -687,6 +688,8 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	disposables.add(CFG.SHOW_MINE_SUPPORT_AS_OVERLAY.observe(this::updateSupportOverlay));
 	disposables.add(CFG.COLOR_MINE_SUPPORT_OVERLAY.observe(this::updateSupportOverlayColor));
 	disposables.add(CFG.COLOR_TILE_GRID.observe(this::updateGridMat));
+	disposables.add(CFG.DISPLAY_FLAVOR.observe(terrain::updateFlavor));
+	disposables.add(CFG.SHOW_MINESWEEPER_OVERLAY.observe(terrain::updateMinesweeper));
 	updateSupportOverlay(null);
 	updateGridMat(null);
     }
@@ -943,11 +946,25 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 		    return(map.getcut(cc));
 		}
 	    };
+	final RenderTree.Node noflav = new Nil();
 	final Grid flavobjs = new Grid<RenderTree.Node>(false) {
 		RenderTree.Node getcut(Coord cc) {
-		    return(map.getfo(cc));
+		    return CFG.DISPLAY_FLAVOR.get() ? map.getfo(cc) : noflav;
 		}
 	    };
+	final Grid<RenderTree.Node> minesweeper = new Grid<RenderTree.Node>(true) {
+	    RenderTree.Node getcut(Coord cc) {
+		return Minesweeper.getcut(ui, cc);
+	    }
+	};
+	
+	private void updateFlavor(CFG<Boolean> cfg) {
+	    if(!cfg.get()) {flavobjs.tick();}
+	}
+
+	private void updateMinesweeper(CFG<Boolean> cfg) {
+	    if(!cfg.get()) {minesweeper.tick();}
+	}
 
 	private Terrain() {
 	}
@@ -956,15 +973,15 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	    super.tick();
 	    if(area != null) {
 		main.tick();
-		flavobjs.tick();
+		if(CFG.DISPLAY_FLAVOR.get()) {flavobjs.tick();}
+		if(CFG.SHOW_MINESWEEPER_OVERLAY.get()) {minesweeper.tick();}
 	    }
 	}
 
 	public void added(RenderTree.Slot slot) {
 	    slot.add(main);
-	    if(CFG.DISPLAY_FLAVOR.get()) {
-		slot.add(flavobjs);
-	    }
+	    slot.add(flavobjs);
+	    slot.add(minesweeper);
 	    super.added(slot);
 	}
 
@@ -2212,12 +2229,13 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	
 	protected void hit(Coord pc, Coord2d mc, ClickData inf) {
 	    Object[] args = {pc, mc.floor(posres), clickb, ui.modflags()};
-	    
+
+	    if(CustomCursors.processHit(MapView.this, mc, inf)) {return;}
 	    if(inf != null) {
 		args = Utils.extend(args, inf.clickargs());
 		Gob gob = Gob.from(inf.ci);
 		if(gob != null) {
-		    if(ui.isCursor("gfx/hud/curs/study")) {
+		    if(ui.isCursor(CURSOR_STUDY)) {
 		        ui.gui.setDetectGob(gob);
 		    }
 		    if(clickb == 3) {
@@ -2225,10 +2243,6 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 		    }
 		    if(ui.gui.mapfile.domark) {
 			ui.gui.mapfile.addMarker(gob);
-			return;
-		    } else if(isTracking()) {
-			ui.gui.mapfile.track(gob);
-			stopTracking();
 			return;
 		    }
 		    if(clickb == 3) {FlowerMenu.lastGob(gob);}
@@ -2306,15 +2320,10 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
     public boolean mousedown(MouseDownEvent ev) {
 	parent.setfocus(this);
 	Loader.Future<Plob> placing_l = this.placing;
+	if(CustomCursors.processDown(this, ev)){return true;}
 	if(ev.b == 3) {
-	    if(isInspecting()) {
-		stopInspecting();
-		return true;
-	    } else if(ui.gui.mapfile.domark) {
+	    if(ui.gui.mapfile.domark) {
 		ui.gui.mapfile.domark = false;
-		return true;
-	    } else if(isTracking()) {
-		stopTracking();
 		return true;
 	    }
 	}
@@ -2347,7 +2356,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 		placing.new Adjust(ev.c, ui.modflags()).run();
 	    }
 	} else {
-	    inspect(ev.c);
+	    CustomCursors.inspect(this, ev.c);
 	}
     }
     
@@ -2435,7 +2444,7 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
 	} else if(stip != null) {
 	    if(fullTip != ui.modshift) {
 		fullTip = ui.modshift;
-		inspect(rootxlate(ui.mc));
+		CustomCursors.inspect(this, rootxlate(ui.mc));
 	    }
 	    if(otip == null) {otip = RichText.render(stip, 0);}
 	    return otip;
@@ -2712,102 +2721,13 @@ public class MapView extends PView implements DTarget, Console.Directory, Widget
     
     public void resetCamera() { camera.reset(); }
     
-    public boolean isInspecting() {
-	return cursor == inspectCursor;
-    }
-    
-    public void startInspecting() {
-	stopCustomModes();
-	if(cursor == null) {
-	    cursor = inspectCursor;
-	    inspect(rootxlate(ui.mc));
-	}
-    }
-    
-    public void stopInspecting() {
-	if(cursor == inspectCursor) {
-	    cursor = null;
-	}
-	ttip(null);
-    }
-    
-    public void toggleInspectMode() {
-	if(isInspecting()) {
-	    stopInspecting();
-	} else {
-	    startInspecting();
-	}
-    }
-    
-    private void inspect(Coord c) {
-	if(cursor == inspectCursor || cursor == trackCursor) {
-	    new Hittest(c) {
-		@Override
-		protected void hit(Coord pc, Coord2d mc, ClickData inf) {
-		    ttip(null);
-		    if(inf != null) {
-			Gob gob = Gob.from(inf.ci);
-			if(gob != null) {
-			    ttip(cursor == inspectCursor ? gob.inspect(fullTip) : gob.tooltip());
-			}
-		    } else if(cursor == inspectCursor) {
-			MCache mCache = ui.sess.glob.map;
-			int tile = mCache.gettile(mc.div(tilesz).floor());
-			Resource res = mCache.tilesetr(tile);
-			if(res != null) {
-			    ttip(res.name);
-			}
-		    }
-		}
-		
-		@Override
-		protected void nohit(Coord pc) {
-		    ttip(null);
-		}
-	    }.run();
-	} else {
-	    ttip(null);
-	}
-    }
-    
-    private void ttip(String tip) {
+    public void ttip(String tip) {
 	if(Objects.equals(tip, stip)) {return;}
 	if(otip != null) {
 	    otip.dispose();
 	    otip = null;
 	}
 	stip = tip;
-    }
-    
-    public void toggleTrackingMode() {
-	if(isTracking()) {
-	    stopTracking();
-	} else {
-	    startTracking();
-	}
-    }
-    
-    public void startTracking() {
-	stopCustomModes();
-	if(cursor == null) {
-	    cursor = trackCursor;
-	    inspect(rootxlate(ui.mc));
-	}
-    }
-    
-    public boolean isTracking() {
-	return cursor == trackCursor;
-    }
-    
-    public void stopTracking() {
-	if(cursor == trackCursor) {
-	    cursor = null;
-	}
-    }
-    
-    private void stopCustomModes() {
-	stopInspecting();
-	stopTracking();
     }
     
     @Override
