@@ -3,6 +3,10 @@ $size[14]{$u{Update for 10.11.24:}
   * improved minesweeper cursor - added 3rd marker type and allow markers be placed together with numbers
   * fixed numbers toolbelt not switching by ALT+<Number>
   * removed default key binds for pouches (ALT+1 and ALT+2) as they clashed with changing of current tool belt
+  * fixed minesweeper numbers from behind camera being shown
+  * fixed big tree threshold being calculated incorrectly
+  * if 'Highlight finished objects' is turned on Stack Furnace will show metal bar icon when it finishes smelting
+  * if 'Highlight finished objects' is turned on Stack Furnace will show snowflake icon when it needs to be heated by using bellows 
  
 $size[14]{$u{Update for 09.11.24:}
   * added second floating equipment widget - for pouches and back
