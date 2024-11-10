@@ -700,7 +700,7 @@ public class MenuGrid extends Widget implements KeyBinding.Bindable {
 		dragging = null;
 	    } else if(pressed != null) {
 		if(pressed == h)
-		    use(h, new Interaction(), false);
+		    use(h, new Interaction(1, ui.modflags()), false);
 		pressed = null;
 	    }
 	    grab.remove();
