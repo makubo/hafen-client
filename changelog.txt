@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 10.11.24:}
+  * fixed bat cape detection for bats aggro
+  * improved minesweeper cursor - added 3rd marker type and allow markers be placed together with numbers
+ 
 $size[14]{$u{Update for 09.11.24:}
   * added second floating equipment widget - for pouches and back
   * floating equipment widgets can be toggled on or off in the Options -> UI -> Show hands and belt widget and Show pouches and back widget
