@@ -2110,8 +2110,8 @@ public class GameUI extends ConsoleHost implements Console.Directory, UI.Message
 	}
 	
 	public boolean globtype(GlobKeyEvent ev) {
-	    //skip matching if CTRL or ALT pressed to not clash with global hotkeys
-	    if(ev.mods == KeyMatch.C || ev.mods == KeyMatch.M) {return super.globtype(ev);}
+	    //skip matching if CTRL is pressed to not clash with global hotkeys
+	    if(ev.mods == KeyMatch.C) {return super.globtype(ev);}
 	    if((ev.code < KeyEvent.VK_0) || (ev.code > KeyEvent.VK_9))
 		return(super.globtype(ev));
 	    int i = Utils.floormod(ev.code - KeyEvent.VK_0 - 1, 10);
