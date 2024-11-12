@@ -1,3 +1,7 @@
+$size[14]{$u{Update for 12.11.24:}
+  * merged loftar's changes
+  * added some missing biomes
+ 
 $size[14]{$u{Update for 10.11.24:}
   * fixed bat cape detection for bats aggro
   * improved minesweeper cursor - added 3rd marker type and allow markers be placed together with numbers
