@@ -44,6 +44,6 @@ public class Clickable extends State {
     }
 
     public String toString() {
-	return(String.format("#<clickable>"));
+	return("#<clickable>");
     }
 }

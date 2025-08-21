@@ -803,7 +803,7 @@ public class MapWnd extends Window implements Console.Directory {
 	}
 
 	public void mark(int cm, int nm) {
-	    this.prog = String.format("Exporting marker", cm, nm);
+	    this.prog = "Exporting marker";
 	}
     }
 

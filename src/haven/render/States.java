@@ -145,7 +145,7 @@ public abstract class States {
     public static final State.StandAlone maskdepth = new State.StandAlone(Slot.Type.GEOM) {
 	    public ShaderMacro shader() {return(null);}
 
-	    public String toString() {return(String.format("#<maskdepth>"));}
+	    public String toString() {return("#<maskdepth>");}
 	};
 
     public static final Slot<LineWidth> linewidth = new Slot<LineWidth>(Slot.Type.GEOM, LineWidth.class);

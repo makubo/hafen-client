@@ -112,7 +112,7 @@ public class Speedget extends Widget {
 
     public Object tooltip(Coord c, Widget prev) {
 	if((cur >= 0) && (cur < tips.length))
-	    return(String.format("Selected speed: " + tips[cur]));
+	    return("Selected speed: " + tips[cur]);
 	return(null);
     }
 

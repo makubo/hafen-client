@@ -624,7 +624,7 @@ public class MCache implements MapSource {
 	    for(int i = 0; i < tiles.length; i++) {
 		tiles[i] = buf.uint8();
 		if(nsets[tiles[i]] == null)
-		    throw(new Message.FormatError(String.format("Got undefined tile: " + tiles[i])));
+		    throw(new Message.FormatError("Got undefined tile: " + tiles[i]));
 	    }
 	}
 
@@ -649,7 +649,7 @@ public class MCache implements MapSource {
 	    for(int i = 0; i < tiles.length; i++) {
 		tiles[i] = tileids[lg ? buf.uint16() : buf.uint8()];
 		if(nsets[tiles[i]] == null)
-		    throw(new Message.FormatError(String.format("Got undefined tile: " + tiles[i])));
+		    throw(new Message.FormatError("Got undefined tile: " + tiles[i]));
 	    }
 	}
 
