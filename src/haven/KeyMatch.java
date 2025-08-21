@@ -156,7 +156,7 @@ public class KeyMatch {
 	} else if(code != VK_UNDEFINED) {
 	    buf.append(String.format("%c%x:%s", extmatch ? 'k' : 'K', (int)code, keyname));
 	} else {
-	    buf.append(String.format("n"));
+	    buf.append("n");
 	}
 	return(buf.toString());
     }
