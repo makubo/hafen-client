@@ -242,7 +242,7 @@ public class UI {
 	}
 
 	public String getMessage() {
-	    return(String.format("error during ui command-handling: " + cmd));
+	    return("error during ui command-handling: " + cmd);
 	}
     }
 
